@@ -1,0 +1,33 @@
+# ROS2 workspace (caso o repo seja clonado dentro de um workspace)
+build/
+install/
+log/
+.colcon_install_layout
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+*.so
+
+# Mapas gerados em runtime (guardar manualmente só os aprovados)
+maps/*.pgm
+maps/*.yaml
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Sistema
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Logs e dados temporários
+*.log
+*.bag
+*.db3
