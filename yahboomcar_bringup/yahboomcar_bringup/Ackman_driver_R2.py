@@ -1,5 +1,29 @@
 #!/usr/bin/env python
 # encoding: utf-8
+#
+# Ackman_driver_R2.py — Driver de hardware do ROSMASTER R2 (ROS2, Ackermann)
+# ============================================================================
+# Nó ROS2 equivalente ao Mcnamu_driver_X3.py mas para o modelo R2 (direção Ackermann).
+# A diferença principal está na conversão de velocidade lateral para ângulo de direção.
+#
+# Subscritores / Publicadores: idênticos ao Mcnamu_driver_X3.
+#
+# Diferença crítica no cmd_vel_callback:
+#   - R2: vy do /cmd_vel é tratado como ângulo de direção em radianos.
+#         Enviado ao Arduino como: vy × 1000 (milirradianos inteiros).
+#         Não é movimento lateral real — R2 não tem rodas mecanum.
+#
+# Diferença crítica no pub_data (joint_states):
+#   - R2: estado das rodas dianteiras inclui joints de direção (steer_joints)
+#         A posição de direção é: vy_raw × 1000 × π/180 (conversão para radianos)
+#   - Quando em movimento (vx ≠ 0 ou angular ≠ 0), as rodas de tração recebem
+#     posição aleatória (simulação de rotação para animação visual no RViz2).
+#
+# Parâmetros ROS2 adicionais vs X3:
+#   angular_limit  (default: 1.0 rad/s) — mais baixo que X3 (5.0) por segurança
+#   nav_use_rotvel (default: False) — flag para usar vel angular de navegação
+#
+# Hardware: mesmo Arduino/Rosmaster_Lib, mas configurado como car_type=5 (R2/Ackermann).
 
 #public lib
 import sys

@@ -1,5 +1,12 @@
 <?xml version="1.0" ?>
+<!--
+  rbd_common_properties.xacro — Materiais/cores reutilizáveis do robodog (ROS1)
+  ===============================================================================
+  Incluído por rbd_turtlebot3_waffle3.urdf.xacro e yahboomcar_X3_sim.urdf.xacro.
+  Define apenas materiais URDF; sem links, joints ou plugins.
 
+  Migração ROS2: este arquivo é compatível com ROS2 sem alterações.
+-->
 <robot name="xacro_properties" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <!-- Init colour -->  

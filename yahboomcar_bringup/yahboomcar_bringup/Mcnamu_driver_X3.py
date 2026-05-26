@@ -1,5 +1,40 @@
 #!/usr/bin/env python
 # encoding: utf-8
+#
+# Mcnamu_driver_X3.py — Driver de hardware do ROSMASTER X3 (ROS2, mecanum 4WD)
+# ==============================================================================
+# Nó ROS2 que faz a ponte entre o hardware do Arduino (via Rosmaster_Lib) e o ROS2.
+#
+# Subscritores:
+#   /cmd_vel  (geometry_msgs/Twist) — recebe comandos de velocidade
+#       linear.x:   velocidade longitudinal (m/s)
+#       linear.y:   velocidade lateral (m/s) — movimento holonômico das mecanum
+#       angular.z:  velocidade angular (rad/s)
+#   /RGBLight (std_msgs/Int32)  — controla efeito de LEDs RGB
+#   /Buzzer   (std_msgs/Bool)   — liga/desliga buzzer do Arduino
+#
+# Publicadores:
+#   /imu/data_raw (sensor_msgs/Imu)           — dados brutos acelerómetro + giroscópio (10Hz)
+#   /imu/mag      (sensor_msgs/MagneticField)  — dados do magnetómetro (10Hz)
+#   /vel_raw      (geometry_msgs/Twist)        — velocidade lida dos encoders do Arduino
+#   /joint_states (sensor_msgs/JointState)     — posição estimada das rodas (para TF/RViz)
+#   /voltage      (std_msgs/Float32)           — tensão da bateria (V)
+#   /edition      (std_msgs/Float32)           — versão do firmware do Arduino
+#
+# Parâmetros ROS2:
+#   car_type       (default: 'X3')   — tipo de robô (X3=mecanum, R2=Ackermann)
+#   imu_link       (default: 'imu_link') — frame do IMU para os headers
+#   Prefix         (default: '')     — prefixo de namespace para joint_states
+#   xlinear_limit  (default: 1.0)    — limite máximo de velocidade linear x (m/s)
+#   ylinear_limit  (default: 1.0)    — limite máximo de velocidade linear y (m/s)
+#   angular_limit  (default: 5.0)    — limite máximo de velocidade angular (rad/s)
+#
+# Diferença X3 vs R2 (Ackman_driver_R2.py):
+#   - X3: vy é velocidade lateral real (mecanum holonômica)
+#   - R2: vy é convertido para ângulo de direção em milirradianos
+#
+# Hardware: Arduino com firmware Rosmaster via porta série USB.
+#           A biblioteca Rosmaster_Lib abstrai o protocolo série.
 
 #public lib
 import sys

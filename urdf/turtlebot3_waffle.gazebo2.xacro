@@ -1,4 +1,23 @@
 <?xml version="1.0"?>
+<!--
+  turtlebot3_waffle.gazebo2.xacro — Plugin mecanum drive experimental (ROS1)
+  =============================================================================
+  Versão alternativa dos plugins Gazebo que usa libmecanum_plugin.so em vez
+  de dois diff_drive. Os plugins diff_drive estão comentados neste arquivo.
+
+  Plugin ativo:
+    controller:mecanum_drive_plugin — controla as 4 rodas mecanum independentemente.
+    Parâmetros: robotWidth=0.32m, robotLength=0.40m, wheelDiameter=0.10m, torque=5Nm.
+    Subscreve /cmd_vel (Twist com x, y, angular).
+
+  NOTA: libmecanum_plugin.so é um plugin não-standard — não faz parte do gazebo_ros
+  oficial. Necessita de compilação separada ou de um pacote de terceiros.
+
+  Referência para ROS2:
+    Para cinemática mecanum real no Gazebo ROS2, usar:
+    - libgazebo_ros_planar_move.so (já usado em yahboomcar_X3_sim.urdf.xacro)
+    - ou gazebo_ros2_control com plugin mecanum_drive_controller
+-->
 <robot name="turtlebot3_waffle_sim" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:arg name="laser_visual"  default="false"/>
   <xacro:arg name="camera_visual" default="false"/>
