@@ -8,7 +8,7 @@ Esta pasta contém os arquivos de configuração do RViz originados no projeto *
 
 | Arquivo | Descrição |
 |---|---|
-| [robodog1.rviz](robodog1.rviz) | Configuração completa do RViz 2 para visualização e navegação do robodog. |
+| [robodog1.rviz](robodog1.rviz) | Configuração do RViz (ROS1) para visualização e navegação do robodog. **Formato ROS1** — usa prefixo `rviz/` nas classes de display (ex: `rviz/Grid`, `rviz/LaserScan`). |
 
 ---
 
@@ -39,7 +39,7 @@ Esta pasta contém os arquivos de configuração do RViz originados no projeto *
 
 ## Adaptação para ROS2 (próximos passos)
 
-- [ ] O arquivo `.rviz` é compatível com RViz2 (formato YAML idêntico), mas os tópicos do `move_base` (ROS1) precisam ser substituídos pelos equivalentes do **Nav2** (ROS2):
+- [ ] O arquivo `.rviz` **não é diretamente compatível com RViz2** — usa classes `rviz/` (ROS1) que precisam de ser substituídas por `rviz_default_plugins/` (ROS2). Além disso, os tópicos do `move_base` (ROS1) precisam ser substituídos pelos equivalentes do **Nav2** (ROS2):
   - `/move_base/NavfnROS/plan` → `/plan`
   - `/move_base/TrajectoryPlannerROS/local_plan` → `/local_plan`
   - `/move_base/global_costmap/costmap` → `/global_costmap/costmap`

@@ -33,8 +33,8 @@ yahboomcar_description/
 
 - **Corpo (base_link):** massa 0.486 kg, inércia calculada pelo SolidWorks
 - **4 rodas mecanum:** massa 0.051 kg cada, joint contínuo em torno do eixo Z
-  - Dianteiras: x=±0.08m, y=±0.085m, z=-0.039m
-  - Traseiras: x=±0.08m, y=±0.085m, z=-0.040m
+  - Dianteiras (frente): x=+0.08m, y=±0.085m, z=-0.039m
+  - Traseiras (trás):    x=-0.08m, y=±0.085m, z≈-0.040m
 - **LiDAR (laser_link):** x=0.044m, z=0.11m (LDROBOT LD14)
 - **Câmera (camera_link):** x=0.057m, z=0.038m
 

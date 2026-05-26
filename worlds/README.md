@@ -49,7 +49,7 @@ Estes mundos são distribuídos com o pacote `turtlebot3_gazebo` e usados para t
 </physics>
 ```
 
-A taxa de 1000 Hz é alta para garantir estabilidade na simulação das rodas mecanum do X3.
+Esta configuração (1 ms por passo, 1000 Hz) é a configuração padrão para simulações de robôs móveis no Gazebo Classic, garantindo física estável com rodas e colisões.
 
 ---
 

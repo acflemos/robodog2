@@ -11,8 +11,8 @@ Esta pasta contém os arquivos URDF/Xacro que descrevem a geometria e os plugins
 | Arquivo | Descrição |
 |---|---|
 | [rbd_turtlebot3_waffle3.urdf.xacro](rbd_turtlebot3_waffle3.urdf.xacro) | **Versão atual em uso.** Corpo retangular (0.40×0.32m), 4 rodas cilíndricas, LiDAR, 4 ultrassônicos e câmera RealSense R200. Inclui `rbd_common_properties.xacro` e `rbd_turtlebot3_waffle.gazebo2.xacro`. |
-| [rbd_turtlebot3_waffle3.urdf 1.00.xacro](rbd_turtlebot3_waffle3.urdf%201.00.xacro) | Versão anterior 1.00 — colisão da caixa ligeiramente diferente (0.42×0.34×0.11 vs 0.07). Mantida para histórico/comparação. |
-| [rbd_turtlebot3_waffle3.urdf 1.01.xacro.xacro](rbd_turtlebot3_waffle3.urdf%201.01.xacro.xacro) | Versão anterior 1.01 — mesmas diferenças de colisão que 1.00. |
+| [rbd_turtlebot3_waffle3.urdf 1.00.xacro](rbd_turtlebot3_waffle3.urdf%201.00.xacro) | Versão anterior 1.00 — três diferenças em relação à versão atual: (1) colisão da caixa mais alta (0.11m vs 0.07m); (2) raio de colisão das rodas maior (0.06m vs 0.051m); (3) **todos os 4 ultrassónicos partilham o mesmo joint origin do LiDAR** (`-0.064 0 0.122`), sendo separados apenas por offset visual — ao contrário da versão atual onde cada ultrassónico tem joint com posição física própria. |
+| [rbd_turtlebot3_waffle3.urdf 1.01.xacro.xacro](rbd_turtlebot3_waffle3.urdf%201.01.xacro.xacro) | Versão anterior 1.01 — mesmas diferenças que a 1.00. |
 
 ### Plugins Gazebo (ROS1)
 
@@ -35,7 +35,7 @@ Esta pasta contém os arquivos URDF/Xacro que descrevem a geometria e os plugins
 
 | Arquivo | Descrição |
 |---|---|
-| [rbd_common_properties.xacro](rbd_common_properties.xacro) | Define as cores/materiais reutilizáveis (`black`, `dark`, `blue`, `green`, `grey`, `orange`, `brown`, `red`, `white`). Incluído por todos os arquivos URDF principais. |
+| [rbd_common_properties.xacro](rbd_common_properties.xacro) | Define as cores/materiais reutilizáveis (`black`, `dark`, `blue`, `green`, `grey`, `orange`, `brown`, `red`, `white`). Incluído pelos arquivos `rbd_turtlebot3_waffle3.urdf.xacro` e suas variantes (1.00/1.01). **Nota:** `yahboomcar_X3_sim.urdf.xacro` define os seus materiais inline (Green, LightGray) sem incluir este ficheiro. |
 
 ---
 
@@ -53,7 +53,9 @@ map → odom → base_footprint → base_link
                                   ├── ultrasom_t_scan    (ultrassónico trás)
                                   ├── ultrasom_d_scan    (ultrassónico direita)
                                   ├── ultrasom_e_scan    (ultrassónico esquerda)
-                                  └── camera_link → camera_rgb_frame → camera_depth_frame
+                                  └── camera_link
+                                        ├── camera_rgb_frame → camera_rgb_optical_frame
+                                        └── camera_depth_frame → camera_depth_optical_frame
 ```
 
 ---

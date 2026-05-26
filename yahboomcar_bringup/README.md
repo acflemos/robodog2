@@ -44,14 +44,14 @@ yahboomcar_bringup/
 Hardware Arduino
       │ (USB série / Rosmaster_Lib)
       ▼
-Mcnamu_driver_X3 ──── /imu/data_raw ──► imu_filter_madgwick ──► /imu/data
-      │               /imu/mag                                        │
-      │               /vel_raw ──────────────────────────────────────►│
-      │               /joint_states ──► robot_state_publisher (TF)    │
-      ▼                                                                ▼
-/cmd_vel ◄─── yahboom_joy_X3                               ekf_node ──► /odometry/filtered
+Mcnamu_driver_X3 ──── /imu/data_raw ──► imu_filter_madgwick ──► /imu/data ──►┐
+      │               /imu/mag                                                 │
+      │               /vel_raw ──► base_node_X3 ──► /odom ──────────────────►ekf_node
+      │               /joint_states ──► robot_state_publisher (TF)             │
+      ▼                                                                         ▼
+/cmd_vel ◄─── yahboom_joy_X3                                        /odometry/filtered
       ▲                                                                         │
-      └──────────────── Nav2 / teleop ──────────────────────────────────────────┘
+      └──────────────────────── Nav2 / teleop ─────────────────────────────────┘
 ```
 
 ---
