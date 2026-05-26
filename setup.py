@@ -11,10 +11,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/launch', [
-            'launch/rbd_bringup.launch.py',
-            'launch/rbd_gazebo_launch.py',
-        ]),
+        ('share/' + package_name + '/launch', glob.glob('launch/*.py')),
         ('share/' + package_name + '/urdf', glob.glob('urdf/*.xacro') + glob.glob('urdf/*.urdf')),
         ('share/' + package_name + '/worlds', glob.glob('worlds/*.world')),
         ('share/' + package_name + '/config', []),
