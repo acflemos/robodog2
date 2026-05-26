@@ -16,11 +16,15 @@
 # Argumentos:
 #   world  (default: empty.world) — ficheiro de mundo Gazebo (relativo a worlds/)
 #   rviz   (default: false)       — se 'true', abre RViz2 com a config de navegação
+#   x_pos  (default: 0.0)         — posição X inicial do robô (metros)
+#   y_pos  (default: 0.0)         — posição Y inicial do robô (metros)
+#   z_pos  (default: 0.0)         — posição Z inicial do robô (metros)
+#   yaw    (default: 0.0)         — orientação inicial em torno do eixo Z (radianos)
 #
 # Uso:
 #   ros2 launch robodog2 rbd_gazebo_launch.py
 #   ros2 launch robodog2 rbd_gazebo_launch.py world:=turtlebot3_world.world
-#   ros2 launch robodog2 rbd_gazebo_launch.py world:=cma_moveis_final.world rviz:=true
+#   ros2 launch robodog2 rbd_gazebo_launch.py world:=cma_moveis.world x_pos:=-3.0 y_pos:=-2.0 rviz:=true
 #
 # Pré-requisito: colcon build + source install/setup.bash
 #
@@ -67,6 +71,22 @@ def generate_launch_description():
         choices=['true', 'false'],
         description='Abrir RViz2 com configuração de navegação'
     )
+    x_pos_arg = DeclareLaunchArgument(
+        name='x_pos', default_value='0.0',
+        description='Posição X inicial do robô (metros)'
+    )
+    y_pos_arg = DeclareLaunchArgument(
+        name='y_pos', default_value='0.0',
+        description='Posição Y inicial do robô (metros)'
+    )
+    z_pos_arg = DeclareLaunchArgument(
+        name='z_pos', default_value='0.0',
+        description='Posição Z inicial do robô (metros)'
+    )
+    yaw_arg = DeclareLaunchArgument(
+        name='yaw', default_value='0.0',
+        description='Orientação inicial em torno do eixo Z (radianos)'
+    )
 
     world_path = PathJoinSubstitution([
         FindPackageShare('robodog2'), 'worlds', LaunchConfiguration('world')
@@ -94,7 +114,14 @@ def generate_launch_description():
     spawn_entity_node = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
-        arguments=['-topic', 'robot_description', '-entity', 'yahboomcar'],
+        arguments=[
+            '-topic', 'robot_description',
+            '-entity', 'rosmaster_x3',
+            '-x', LaunchConfiguration('x_pos'),
+            '-y', LaunchConfiguration('y_pos'),
+            '-z', LaunchConfiguration('z_pos'),
+            '-Y', LaunchConfiguration('yaw'),
+        ],
         output='screen'
     )
 
@@ -116,6 +143,10 @@ def generate_launch_description():
     return LaunchDescription([
         world_arg,
         rviz_arg,
+        x_pos_arg,
+        y_pos_arg,
+        z_pos_arg,
+        yaw_arg,
         gazebo,
         robot_state_publisher_node,
         spawn_entity_node,
