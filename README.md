@@ -135,6 +135,20 @@ alias rbd2_teclado='ros2 run teleop_twist_keyboard teleop_twist_keyboard'
 - [x] Port da lógica de comportamento (rbd_tabelas, rbd_md, rbd_funcoes, rbd_navega)
 - [x] Integração com Nav2 (NavigateToPose action)
 - [x] Correção de bugs de gestão de pesos do robodog1
+- [x] Repositório GitHub criado (privado): https://github.com/acflemos/robodog2
+
+### Próximas etapas (em ordem)
+
+1. **Criar branch de desenvolvimento** — todas as próximas alterações em branch separada, nunca direto na main
+2. **Documentar o ROSMASTER X3** — abrir `~/codigo_referencia/Rosmaster-x3/` no VS Code, comentar todos os arquivos dos pacotes yahboomcar e criar um README de referência para o projeto Rosmaster
+3. **Escolher pacotes essenciais para navegação** — a partir da documentação gerada, selecionar os pacotes mínimos para fazer o robodog2 navegar no mapa do robodog1 (mundo simulado)
+4. **Integrar pacotes yahboomcar no workspace** — copiar/linkar os pacotes selecionados para `~/ros2_ws/src/` e integrar com o launch do robodog2
+5. **Validar navegação no mundo do robodog1** — testar o ciclo completo: bringup → mapa → Nav2 → rbd_navega
+6. **Migrar etapas restantes gradativamente** — SLAM, mapa real da casa, calibração dos PDs, testes no hardware físico
+
+- [ ] Branch de desenvolvimento criada
+- [ ] Documentação dos pacotes yahboomcar gerada
+- [ ] Pacotes essenciais selecionados para navegação
 - [ ] Integração dos pacotes yahboomcar (bringup, base_node, laser, description)
 - [ ] Launch file de SLAM com mapa da casa
 - [ ] Launch file de navegação autônoma completo
