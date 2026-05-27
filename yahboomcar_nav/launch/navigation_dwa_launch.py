@@ -16,15 +16,8 @@
 #   BT Navigator → coordena o pipeline de navegação
 #   recoveries_server → spin, backup, wait em caso de bloqueio
 #
-# ATENÇÃO — BUG crítico em dwa_nav_params.yaml:
-#   robot_model_type: "differential"  — ERRADO para o X3 (mecanum/holonómico)
-#   Deve ser "omni" para AMCL funcionar corretamente com mecanum wheels.
-#   Além disso, max_vel_y: 0.0 e vy_samples: 0 desativam movimento lateral,
-#   negando a vantagem holonómica do X3.
-#
 # Relevância para robodog2:
-#   Template principal de navegação. Corrigir robot_model_type e habilitar
-#   velocidade Y antes de usar com robodog2.
+#   Template principal de navegação.
 
 import os
 from ament_index_python.packages import get_package_share_directory
@@ -36,7 +29,7 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    package_path = get_package_share_directory('yahboomcar_nav')
+    package_path = os.path.join(get_package_share_directory('robodog2'), 'yahboomcar_nav')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
