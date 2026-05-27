@@ -1,3 +1,37 @@
+# yahboomcar_bringup_X3_launch.py — Bringup completo do ROSMASTER X3 (hardware real, ROS2)
+#
+# Finalidade: inicia todos os nós necessários para operar o robô X3 físico.
+#             NÃO é para simulação — usa o driver de hardware Mcnamu_driver_X3.
+#
+# Nós lançados:
+#   1. robot_state_publisher  — publica TF a partir do URDF (yahboomcar_X3.urdf)
+#   2. joint_state_publisher  — publica joint_states (sem GUI por defeito)
+#   3. Mcnamu_driver_X3       — driver de hardware: lê IMU/encoders do Arduino,
+#                               publica /imu/data_raw, /imu/mag, /vel_raw, /joint_states
+#                               e subscreve /cmd_vel para controlo das rodas mecanum
+#   4. base_node_X3           — nó de cinemática: calcula /odom a partir de /vel_raw
+#                               (parâmetro pub_odom_tf: false quando EKF está ativo)
+#   5. imu_filter_madgwick    — fusão IMU (acelerómetro + giroscópio, sem magnetómetro)
+#                               parâmetros em param/imu_filter_param.yaml
+#   6. ekf (robot_localization) — fusão /odom + /imu/data para odometria melhorada
+#                               lança ekf_x1_x3_launch.py do pacote robot_localization
+#   7. yahboom_joy_X3         — controlo por joystick (mapeamento de eixos para cmd_vel)
+#
+# Argumentos:
+#   gui           (default: false) — joint_state_publisher_gui (normalmente desligado)
+#   model         (default: yahboomcar_X3.urdf) — URDF do robô
+#   rvizconfig    (default: yahboomcar.rviz) — configuração RViz2
+#   pub_odom_tf   (default: false) — TF odom→base_footprint publicado pelo EKF, não base_node
+#
+# Uso:
+#   ros2 launch yahboomcar_bringup yahboomcar_bringup_X3_launch.py
+#
+# Dependências externas:
+#   - yahboomcar_base_node (base_node_X3)
+#   - robot_localization (ekf_x1_x3_launch.py)
+#   - yahboomcar_ctrl (yahboom_joy_X3)
+#   - Rosmaster_Lib (biblioteca Python de hardware do Arduino)
+
 from ament_index_python.packages import get_package_share_path
 
 from launch import LaunchDescription

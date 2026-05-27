@@ -1,4 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  yahboomcar_X3.urdf.xacro — Descrição parametrizada do ROSMASTER X3 (ROS2)
+  ===========================================================================
+  Versão xacro do robô X3 (rodas mecanum 4WD) para uso com robot_state_publisher.
+  Gerada a partir do modelo SolidWorks (yahboomcar_X3.urdf é a versão compilada).
+
+  NOTA: este arquivo descreve apenas a geometria e inércia — SEM plugins Gazebo.
+  Para simulação, usar yahboomcar_X3_sim.urdf.xacro (pasta urdf/ do robodog2).
+
+  Parâmetro obrigatório:
+    ns — namespace do robô (ex: "" para robô único, "robot1" para multi-robô)
+
+  Macros definidas:
+    common_link(name, material, path, *origin) — link com malha STL + inércia
+    continuous_joint(name, parent, child, xyz, rpy, axis) — joint de roda
+    fixed_joint(name, parent, child, xyz, rpy) — joint fixo (sensores)
+
+  Malhas STL (relativas a package://yahboomcar_description/meshes/):
+    mecanum/base_link.STL, mecanum/front_right_wheel.STL, etc.
+    sensor/laser_link.STL, sensor/camera_link.STL
+
+  Topologia TF publicada pelo robot_state_publisher:
+    {ns}/base_footprint → {ns}/base_link
+      ├── {ns}/front_right_wheel  (continuous joint, eixo Z)
+      ├── {ns}/front_left_wheel   (continuous joint, eixo Z)
+      ├── {ns}/back_right_wheel   (continuous joint, eixo Z)
+      ├── {ns}/back_left_wheel    (continuous joint, eixo Z)
+      ├── {ns}/laser_link         (fixed, x=0.0435m, z=0.11m)
+      └── {ns}/camera_link        (fixed, x=0.057m, z=0.038m)
+    {ns}/base_link → {ns}/imu_link (fixed, x=-0.06m)
+
+  Uso no robodog2:
+    - Referência para adaptar o URDF do robodog1 para ROS2 com suporte a namespace
+    - O arquivo yahboomcar_X3.urdf (compilado) pode ser usado diretamente como
+      robot_description sem xacro quando ns="" não é necessário
+-->
 <robot name="yahboomcar" xmlns:xacro="http://wiki.ros.org/xacro">
     <material name="Green">
         <color rgba="0 0.7 0 1"/>
