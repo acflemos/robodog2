@@ -48,14 +48,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/base_link_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/base_link_X3.STL"/>
       </geometry>
       <material name="Green"><color rgba="0 0.7 0 1"/></material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/base_link_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/base_link_X3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -83,14 +83,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/front_right_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/front_right_wheel_X3.STL"/>
       </geometry>
       <material name="LightGray"><color rgba="0.7 0.7 0.7 1"/></material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/front_right_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/front_right_wheel_X3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -113,14 +113,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/front_left_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/front_left_wheel_X3.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/front_left_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/front_left_wheel_X3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -143,14 +143,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/back_right_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/back_right_wheel_X3.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/back_right_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/back_right_wheel_X3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -173,14 +173,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/back_left_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/back_left_wheel_X3.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/back_left_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/mecanum/back_left_wheel_X3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -203,14 +203,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/sensor/laser_link.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/sensor/laser_link.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/sensor/laser_link.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/sensor/laser_link.STL"/>
       </geometry>
     </collision>
   </link>
@@ -230,14 +230,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/sensor/camera_link.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/sensor/camera_link.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/sensor/camera_link.STL"/>
+        <mesh filename="package://robodog2/yahboomcar_description/meshes/sensor/camera_link.STL"/>
       </geometry>
     </collision>
   </link>
