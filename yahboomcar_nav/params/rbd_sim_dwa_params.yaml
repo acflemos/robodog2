@@ -108,7 +108,7 @@ controller_server:
     use_sim_time: True
     controller_frequency: 10.0
     min_x_velocity_threshold: 0.001
-    min_y_velocity_threshold: 0.5
+    min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
     controller_plugins: ["FollowPath"]
 
@@ -118,19 +118,19 @@ controller_server:
       min_vel_x: 0.0
       min_vel_y: 0.0
       max_vel_x: 0.26
-      max_vel_y: 0.0
+      max_vel_y: 0.26
       max_vel_theta: 1.0
       min_speed_xy: 0.0
       max_speed_xy: 0.26
       min_speed_theta: 0.0
       acc_lim_x: 2.5
-      acc_lim_y: 0.0
+      acc_lim_y: 0.5
       acc_lim_theta: 0.5
       decel_lim_x: -0.5
-      decel_lim_y: 0.0
+      decel_lim_y: -0.5
       decel_lim_theta: -0.5
       vx_samples: 20
-      vy_samples: 0
+      vy_samples: 5
       vtheta_samples: 40
       sim_time: 1.5
       linear_granularity: 0.05
