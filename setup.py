@@ -18,43 +18,7 @@ setup(
             glob.glob('urdf/*.xacro') + glob.glob('urdf/*.urdf')),
         # Mundos Gazebo
         ('share/' + package_name + '/worlds', glob.glob('worlds/*.world')),
-        # yahboomcar_bringup
-        ('share/' + package_name + '/yahboomcar_bringup/launch',
-            glob.glob('yahboomcar_bringup/launch/*.py')),
-        ('share/' + package_name + '/yahboomcar_bringup/param',
-            glob.glob('yahboomcar_bringup/param/*.yaml')),
-        ('share/' + package_name + '/yahboomcar_bringup/rviz',
-            glob.glob('yahboomcar_bringup/rviz/*.rviz')),
-        # yahboomcar_description — meshes (subpastas)
-        ('share/' + package_name + '/yahboomcar_description/urdf',
-            glob.glob('yahboomcar_description/urdf/*.xacro') +
-            glob.glob('yahboomcar_description/urdf/*.urdf')),
-        ('share/' + package_name + '/yahboomcar_description/launch',
-            glob.glob('yahboomcar_description/launch/*.py')),
-        ('share/' + package_name + '/yahboomcar_description/rviz',
-            glob.glob('yahboomcar_description/rviz/*.rviz')),
-        ('share/' + package_name + '/yahboomcar_description/meshes',
-            glob.glob('yahboomcar_description/meshes/*.STL')),
-        ('share/' + package_name + '/yahboomcar_description/meshes/mecanum',
-            glob.glob('yahboomcar_description/meshes/mecanum/*.STL')),
-        ('share/' + package_name + '/yahboomcar_description/meshes/Ackermann',
-            glob.glob('yahboomcar_description/meshes/Ackermann/*.STL')),
-        ('share/' + package_name + '/yahboomcar_description/meshes/sensor',
-            glob.glob('yahboomcar_description/meshes/sensor/*.STL')),
-        # yahboomcar_nav
-        ('share/' + package_name + '/yahboomcar_nav/launch',
-            glob.glob('yahboomcar_nav/launch/*.py')),
-        ('share/' + package_name + '/yahboomcar_nav/params',
-            glob.glob('yahboomcar_nav/params/*.yaml') +
-            glob.glob('yahboomcar_nav/params/*.lua')),
-        ('share/' + package_name + '/yahboomcar_nav/rviz',
-            glob.glob('yahboomcar_nav/rviz/*.rviz')),
-        ('share/' + package_name + '/yahboomcar_nav/maps',
-            glob.glob('yahboomcar_nav/maps/*.pgm') +
-            glob.glob('yahboomcar_nav/maps/*.yaml')),
-        # yahboomcar_laser
-        ('share/' + package_name + '/yahboomcar_laser/launch',
-            glob.glob('yahboomcar_laser/launch/*.py')),
+
     ],
     install_requires=['setuptools'],
     zip_safe=True,

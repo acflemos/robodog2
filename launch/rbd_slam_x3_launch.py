@@ -36,8 +36,8 @@ from launch_ros.actions import Node
 def generate_launch_description():
     pkg_robodog2 = get_package_share_directory('robodog2')
 
-    slam_params = os.path.join(pkg_robodog2, 'yahboomcar_nav', 'params', 'rbd_slam_toolbox_params.yaml')
-    rviz_config = os.path.join(pkg_robodog2, 'yahboomcar_nav', 'rviz', 'map.rviz')
+    slam_params = os.path.join(get_package_share_directory('yahboomcar_nav'), 'params', 'rbd_slam_toolbox_params.yaml')
+    rviz_config = os.path.join(get_package_share_directory('yahboomcar_nav'), 'rviz', 'map.rviz')
 
     # Passo 1: Gazebo + X3 em cma_moveis.world, spawn em (-3.0, -2.0)
     casa_x3 = IncludeLaunchDescription(
