@@ -5,7 +5,7 @@
   Adaptado de yahboomcar_X3_sim.urdf.xacro (ROS1/robodog1).
 
   Alterações em relação ao original ROS1:
-    1. Caminhos das malhas: package://robodog1 → package://yahboomcar_description
+    1. Caminhos das malhas: package://robodog1 → package://robodog2
        Sufixo _X3 adicionado nos ficheiros da pasta mecanum/ (ex: base_link_X3.STL).
     2. Plugin planar_move: parâmetros renomeados para convenção ROS2 (snake_case).
     3. Plugin LiDAR: libgazebo_ros_laser.so → libgazebo_ros_ray_sensor.so;
@@ -48,7 +48,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/base_link_X3.STL"/>
+        <mesh filename="package://robodog2/meshes/mecanum/base_link_X3.STL"/>
       </geometry>
       <material name="Green"><color rgba="0 0.7 0 1"/></material>
     </visual>
@@ -83,7 +83,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/front_right_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/meshes/mecanum/front_right_wheel_X3.STL"/>
       </geometry>
       <material name="LightGray"><color rgba="0.7 0.7 0.7 1"/></material>
     </visual>
@@ -113,7 +113,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/front_left_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/meshes/mecanum/front_left_wheel_X3.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
@@ -143,7 +143,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/back_right_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/meshes/mecanum/back_right_wheel_X3.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
@@ -173,7 +173,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/mecanum/back_left_wheel_X3.STL"/>
+        <mesh filename="package://robodog2/meshes/mecanum/back_left_wheel_X3.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
@@ -203,7 +203,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/sensor/laser_link.STL"/>
+        <mesh filename="package://robodog2/meshes/sensor/laser_link.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>
@@ -230,7 +230,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://yahboomcar_description/meshes/sensor/camera_link.STL"/>
+        <mesh filename="package://robodog2/meshes/sensor/camera_link.STL"/>
       </geometry>
       <material name="LightGray"/>
     </visual>

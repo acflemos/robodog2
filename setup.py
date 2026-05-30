@@ -18,6 +18,9 @@ setup(
             glob.glob('urdf/*.xacro') + glob.glob('urdf/*.urdf')),
         # Mundos Gazebo
         ('share/' + package_name + '/worlds', glob.glob('worlds/*.world')),
+        # Malhas STL (visual Gazebo/RViz)
+        ('share/' + package_name + '/meshes/mecanum', glob.glob('meshes/mecanum/*.STL')),
+        ('share/' + package_name + '/meshes/sensor', glob.glob('meshes/sensor/*.STL')),
 
     ],
     install_requires=['setuptools'],
