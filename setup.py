@@ -11,10 +11,17 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        # Launch files principais
         ('share/' + package_name + '/launch', glob.glob('launch/*.py')),
-        ('share/' + package_name + '/urdf', glob.glob('urdf/*.xacro') + glob.glob('urdf/*.urdf')),
+        # URDF e xacro
+        ('share/' + package_name + '/urdf',
+            glob.glob('urdf/*.xacro') + glob.glob('urdf/*.urdf')),
+        # Mundos Gazebo
         ('share/' + package_name + '/worlds', glob.glob('worlds/*.world')),
-        ('share/' + package_name + '/config', []),
+        # Malhas STL (visual Gazebo/RViz)
+        ('share/' + package_name + '/meshes/mecanum', glob.glob('meshes/mecanum/*.STL')),
+        ('share/' + package_name + '/meshes/sensor', glob.glob('meshes/sensor/*.STL')),
+
     ],
     install_requires=['setuptools'],
     zip_safe=True,

@@ -53,12 +53,10 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     pkg_robodog2 = get_package_share_directory('robodog2')
-    pkg_bringup = get_package_share_directory('yahboomcar_bringup')
-    pkg_nav = get_package_share_directory('yahboomcar_nav')
 
     urdf_path = os.path.join(pkg_robodog2, 'urdf', 'rbd_X3_sim.urdf.xacro')
-    imu_filter_config = os.path.join(pkg_bringup, 'param', 'imu_filter_param.yaml')
-    default_rviz_config = os.path.join(pkg_nav, 'rviz', 'nav.rviz')
+    imu_filter_config = os.path.join(get_package_share_directory('yahboomcar_bringup'), 'param', 'imu_filter_param.yaml')
+    default_rviz_config = os.path.join(get_package_share_directory('yahboomcar_nav'), 'rviz', 'nav.rviz')
 
     world_arg = DeclareLaunchArgument(
         name='world',
