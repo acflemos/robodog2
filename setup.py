@@ -21,6 +21,8 @@ setup(
         # Malhas STL (visual Gazebo/RViz)
         ('share/' + package_name + '/meshes/mecanum', glob.glob('meshes/mecanum/*.STL')),
         ('share/' + package_name + '/meshes/sensor', glob.glob('meshes/sensor/*.STL')),
+        # Configuração de bridges ROS↔Gazebo
+        ('share/' + package_name + '/config', glob.glob('config/*.yaml')),
 
     ],
     install_requires=['setuptools'],
