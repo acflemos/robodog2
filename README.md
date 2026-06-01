@@ -124,7 +124,7 @@ source install/setup.bash
 
 ## Aliases
 
-Adicionar ao `~/.bash_aliases` (ou usar o ficheiro já configurado):
+Arquivo `~/.bash_aliases` (já configurado):
 
 ```bash
 # Workspace
@@ -137,9 +137,18 @@ alias rbd2_source='source ~/ros2_ws/install/setup.bash'
 alias rbd2_bringup='ros2 launch robodog2 rbd_bringup.launch.py'
 alias rbd2_navega='ros2 run robodog2 rbd_navega'
 
-# Simulação — ambiente Gazebo
-alias rbd2_casa_x3='ros2 launch robodog2 rbd_casa_x3_launch.py'          # Gazebo + cma_moveis.world
-alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_casa_x3_launch.py rviz:=true'
+# Simulação Gazebo Harmonic — mundo vazio (rbd_gz_empty.world)
+alias rbd2_gz_x3='ros2 launch robodog2 rbd_gz_x3_launch.py'
+alias rbd2_gz_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true'
+
+# Simulação Gazebo Harmonic — mundo da casa (cma_vazio.world)
+alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world'
+alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world rviz:=true'
+
+# Simulação Gazebo Harmonic — mundos de teste
+alias rbd2_casa_x3_teste='ros2 launch robodog2 rbd_gz_x3_launch.py world:=turtlebot3_house.world'
+alias rbd2_casa_x3_teste2='ros2 launch robodog2 rbd_gz_x3_launch.py world:=gz/cma_vazio_teste2.world'
+# gz/cma_vazio_teste2.world: cópia do arquivo gerado pelo gz sdf (sem bloco <state> do Classic)
 
 # Simulação — gerar o mapa (fazer uma única vez)
 alias rbd2_slam_x3='ros2 launch robodog2 rbd_slam_x3_launch.py'          # Gazebo + slam_toolbox + RViz
@@ -238,10 +247,11 @@ Nav2 DWB                   →  /cmd_vel
 
 ### Próximas etapas
 
-1. **Gerar o mapa** — executar `rbd2_slam_x3` + `rbd2_teclado`, guardar com `rbd2_salva_mapa_moveis`
-2. **Testar ciclo completo em simulação** — `rbd2_simulador_x3` + `rbd2_navega`
-3. **Calibrar pontos de destino (PD)** em `rbd_tabelas.py` para o mundo `cma_moveis.world`
-4. **Migrar para hardware físico** — substituir `rbd_gazebo_launch.py` pelo bringup real
+1. **Corrigir mundo `cma_vazio.world`** — reconstruir manualmente no Gazebo Editor a partir do mundo vazio funcional; o arquivo gerado pelo `gz sdf` (em `worlds/gz/`) ainda apresenta paredes fora do lugar devido ao bloco `<state>` do Gazebo Classic
+2. **Gerar o mapa** — executar `rbd2_slam_x3` + `rbd2_teclado`, guardar com `rbd2_salva_mapa_moveis`
+3. **Testar ciclo completo em simulação** — `rbd2_simulador_x3` + `rbd2_navega`
+4. **Calibrar pontos de destino (PD)** em `rbd_tabelas.py` para o mundo `cma_moveis.world`
+5. **Migrar para hardware físico** — substituir `rbd_gazebo_launch.py` pelo bringup real
 
 ---
 
