@@ -60,6 +60,7 @@
             </contact>
             <bounce/>
           </surface>
+          <max_contacts>10</max_contacts>
         </collision>
         <visual name='visual'>
           <cast_shadows>0</cast_shadows>
@@ -108,6 +109,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -146,6 +148,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -184,6 +187,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -222,6 +226,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -260,6 +265,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -298,6 +304,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -336,6 +343,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -374,6 +382,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -412,6 +421,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -450,6 +460,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -488,6 +499,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -520,6 +532,482 @@
       </link>
       <static>1</static>
     </model>
+    <state world_name='default'>
+      <sim_time>8932 204000000</sim_time>
+      <real_time>48 929109195</real_time>
+      <wall_time>1595210313 940312558</wall_time>
+      <iterations>48777</iterations>
+      <model name='cma_L2'>
+        <pose>4.51683 -3.24587 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_10'>
+          <pose>5.69183 -3.24587 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_9'>
+          <pose>4.51683 -2.07087 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_L3'>
+        <pose>6.37221 -2.26022 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_12'>
+          <pose>5.69721 -1.51022 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_13'>
+          <pose>6.37221 -1.08522 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_14'>
+          <pose>7.04721 -2.26022 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_L5'>
+        <pose>3.77502 1.45512 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_0'>
+          <pose>1.85002 3.45512 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_1'>
+          <pose>3.77502 3.88012 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_3'>
+          <pose>5.70002 1.45512 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_U'>
+        <pose>4.97895 -9.92408 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_16'>
+          <pose>1.55395 -9.92408 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_17'>
+          <pose>4.97895 -11.0991 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_18'>
+          <pose>8.40395 -9.92408 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_area2'>
+        <pose>4.52275 5.67862 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_23'>
+          <pose>4.52275 7.47862 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_24'>
+          <pose>5.69775 5.67862 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_25'>
+          <pose>5.52275 3.87862 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_banheiro'>
+        <pose>-5.22928 3.4871 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_0'>
+          <pose>-6.10428 2.8121 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_1'>
+          <pose>-6.52928 3.4871 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_2'>
+          <pose>-5.22928 4.1621 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_4'>
+          <pose>-3.92928 3.6121 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_banheiro_e'>
+        <pose>1.18358 3.89879 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_10'>
+          <pose>1.18358 2.97379 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_11'>
+          <pose>0.508584 3.89879 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_12'>
+          <pose>1.18358 4.82379 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_13'>
+          <pose>1.85858 3.89879 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_dispensa'>
+        <pose>2.52584 4.40119 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_5'>
+          <pose>1.85084 4.40119 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_6'>
+          <pose>2.52584 4.82619 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_7'>
+          <pose>3.20084 4.40119 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_8'>
+          <pose>2.52584 3.97619 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_escritorio'>
+        <pose>-1.79682 1.02121 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_11'>
+          <pose>-3.19682 2.95121 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_2'>
+          <pose>-0.921816 1.02621 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_25'>
+          <pose>-4.34682 -0.908794 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_26'>
+          <pose>-5.52182 1.01621 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_27'>
+          <pose>-5.34682 2.94121 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_3'>
+          <pose>0.503184 2.95121 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_4'>
+          <pose>1.92818 1.02621 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_5'>
+          <pose>1.00318 -0.898794 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_7'>
+          <pose>-1.59682 2.95121 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_8'>
+          <pose>-2.27182 1.02621 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_9'>
+          <pose>-2.09682 -0.898794 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_lavabo'>
+        <pose>7.72297 -4.09302 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_4'>
+          <pose>7.04797 -4.09302 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_5'>
+          <pose>7.72297 -3.41802 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_6'>
+          <pose>8.39797 -4.09302 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_7'>
+          <pose>7.72297 -4.76802 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_parede_L'>
+        <pose>4.97628 -6.69992 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_0'>
+          <pose>4.97628 -8.62492 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_1'>
+          <pose>8.40128 -6.69992 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_2'>
+          <pose>7.72628 -4.77492 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_parede_t'>
+        <pose>0.164039 -3.24829 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_15'>
+          <pose>-0.460961 -3.24829 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_16'>
+          <pose>-0.635961 -2.07329 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_18'>
+          <pose>0.339039 -2.07329 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_qe'>
+        <pose>1.79561 6.31228 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_15'>
+          <pose>0.370608 6.31228 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_16'>
+          <pose>1.79561 7.73728 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_17'>
+          <pose>3.22061 6.31228 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_quartos'>
+        <pose>-2.58169 -7.26456 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_0'>
+          <pose>-1.93669 -6.45456 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_1'>
+          <pose>-3.73669 -8.62956 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_10'>
+          <pose>-3.97669 -9.44956 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_11'>
+          <pose>-5.27669 -10.2496 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_12'>
+          <pose>-6.57669 -8.69956 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_13'>
+          <pose>-6.02669 -7.14956 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_2'>
+          <pose>-5.53669 -6.45456 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_3'>
+          <pose>-3.73669 -4.27956 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_6'>
+          <pose>-0.261693 -4.27956 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_7'>
+          <pose>1.41331 -6.45456 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_8'>
+          <pose>-0.261693 -8.62956 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cma_varanda1'>
+        <pose>-6.32518 -2.59313 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_0'>
+          <pose>-5.52518 -2.59313 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_1'>
+          <pose>-6.32518 -4.26813 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_2'>
+          <pose>-7.12518 -2.59313 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_3'>
+          <pose>-6.32518 -0.918131 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>5.52188 -1.48708 32.9333 -2e-06 1.5618 1.57228</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
     <model name='cma_banheiro'>
       <pose>-0.82 -2.595 0 0 -0 0</pose>
       <link name='Wall_0'>
@@ -530,6 +1018,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -568,6 +1057,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -606,6 +1096,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -644,6 +1135,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -699,6 +1191,7 @@
             </box>
           </geometry>
           <pose>-0.5525 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -731,6 +1224,7 @@
             </box>
           </geometry>
           <pose>1.6375 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -763,6 +1257,7 @@
             </box>
           </geometry>
           <pose>1.085 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -788,6 +1283,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -826,6 +1322,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -864,6 +1361,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -906,6 +1404,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -957,6 +1456,7 @@
             </box>
           </geometry>
           <pose>-0.7225 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -989,6 +1489,7 @@
             </box>
           </geometry>
           <pose>1.6025 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1021,6 +1522,7 @@
             </box>
           </geometry>
           <pose>0.88 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1046,6 +1548,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1084,6 +1587,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1122,6 +1626,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1160,6 +1665,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1198,6 +1704,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1249,6 +1756,7 @@
             </box>
           </geometry>
           <pose>-0.7325 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1281,6 +1789,7 @@
             </box>
           </geometry>
           <pose>1.5925 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1313,6 +1822,7 @@
             </box>
           </geometry>
           <pose>0.86 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1351,6 +1861,7 @@
             </box>
           </geometry>
           <pose>-1.4575 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1383,6 +1894,7 @@
             </box>
           </geometry>
           <pose>0.7425 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1415,6 +1927,7 @@
             </box>
           </geometry>
           <pose>-0.715 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1440,6 +1953,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1478,6 +1992,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1520,6 +2035,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1558,6 +2074,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1596,6 +2113,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1651,6 +2169,7 @@
             </box>
           </geometry>
           <pose>-1.985 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1683,6 +2202,7 @@
             </box>
           </geometry>
           <pose>2.24 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1715,6 +2235,7 @@
             </box>
           </geometry>
           <pose>0.255 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1740,6 +2261,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1778,6 +2300,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1833,6 +2356,7 @@
             </box>
           </geometry>
           <pose>-0.635 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1865,6 +2389,7 @@
             </box>
           </geometry>
           <pose>0.48 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1897,6 +2422,7 @@
             </box>
           </geometry>
           <pose>-0.155 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1922,6 +2448,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1960,6 +2487,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -1998,6 +2526,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2040,6 +2569,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2078,6 +2608,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2133,6 +2664,7 @@
             </box>
           </geometry>
           <pose>-0.46 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2165,6 +2697,7 @@
             </box>
           </geometry>
           <pose>0.405 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2197,6 +2730,7 @@
             </box>
           </geometry>
           <pose>-0.055 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2222,6 +2756,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2273,6 +2808,7 @@
             </box>
           </geometry>
           <pose>-1.0175 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2305,6 +2841,7 @@
             </box>
           </geometry>
           <pose>0.6825 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2337,6 +2874,7 @@
             </box>
           </geometry>
           <pose>-0.335 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2366,6 +2904,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2404,6 +2943,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2442,6 +2982,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2484,6 +3025,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2535,6 +3077,7 @@
             </box>
           </geometry>
           <pose>-0.7525 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2567,6 +3110,7 @@
             </box>
           </geometry>
           <pose>1.6975 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2599,6 +3143,7 @@
             </box>
           </geometry>
           <pose>0.945 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2624,6 +3169,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2666,6 +3212,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2704,6 +3251,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2755,6 +3303,7 @@
             </box>
           </geometry>
           <pose>-0.4275 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2787,6 +3336,7 @@
             </box>
           </geometry>
           <pose>0.4225 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2819,6 +3369,7 @@
             </box>
           </geometry>
           <pose>-0.005 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2844,6 +3395,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2886,6 +3438,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2924,6 +3477,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -2975,6 +3529,7 @@
             </box>
           </geometry>
           <pose>-0.4625 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3007,6 +3562,7 @@
             </box>
           </geometry>
           <pose>0.6475 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3039,6 +3595,7 @@
             </box>
           </geometry>
           <pose>0.185 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3064,6 +3621,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3106,6 +3664,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3144,6 +3703,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3195,6 +3755,7 @@
             </box>
           </geometry>
           <pose>-0.945 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3227,6 +3788,7 @@
             </box>
           </geometry>
           <pose>0.92 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3259,6 +3821,7 @@
             </box>
           </geometry>
           <pose>-0.025 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3288,6 +3851,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3339,6 +3903,7 @@
             </box>
           </geometry>
           <pose>-0.6425 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3371,6 +3936,7 @@
             </box>
           </geometry>
           <pose>1.6825 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3403,6 +3969,7 @@
             </box>
           </geometry>
           <pose>1.04 0 2.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
@@ -3428,6 +3995,7 @@
             </box>
           </geometry>
           <pose>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
           <surface>
             <contact>
               <ode/>
