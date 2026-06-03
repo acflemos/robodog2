@@ -39,6 +39,16 @@ def generate_launch_description():
         os.path.join(pkg_robodog2, '..')
     )
 
+    # Permite que o Ignition Gazebo encontre model://turtlebot3_house
+    set_tb3_resource_path = AppendEnvironmentVariable(
+        'IGN_GAZEBO_RESOURCE_PATH',
+        os.path.join(
+            os.path.expanduser('~'),
+            'turtlebot3_gz_ws', 'install', 'turtlebot3_gazebo',
+            'share', 'turtlebot3_gazebo', 'models'
+        )
+    )
+
     world_arg = DeclareLaunchArgument(
         name='world',
         default_value='rbd_gz_empty.world',
@@ -134,6 +144,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         set_ign_resource_path,
+        set_tb3_resource_path,
         world_arg,
         rviz_arg,
         gz_server,

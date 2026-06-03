@@ -124,7 +124,7 @@ source install/setup.bash
 
 ## Aliases
 
-Adicionar ao `~/.bash_aliases` (ou usar o ficheiro já configurado):
+Arquivo `~/.bash_aliases` (já configurado):
 
 ```bash
 # Workspace
@@ -137,9 +137,18 @@ alias rbd2_source='source ~/ros2_ws/install/setup.bash'
 alias rbd2_bringup='ros2 launch robodog2 rbd_bringup.launch.py'
 alias rbd2_navega='ros2 run robodog2 rbd_navega'
 
-# Simulação — ambiente Gazebo
-alias rbd2_casa_x3='ros2 launch robodog2 rbd_casa_x3_launch.py'          # Gazebo + cma_moveis.world
-alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_casa_x3_launch.py rviz:=true'
+# Simulação Gazebo Harmonic — mundo vazio (rbd_gz_empty.world)
+alias rbd2_gz_x3='ros2 launch robodog2 rbd_gz_x3_launch.py'
+alias rbd2_gz_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true'
+
+# Simulação Gazebo Harmonic — mundo da casa (cma_vazio.world)
+alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world'
+alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world rviz:=true'
+
+# Simulação Gazebo Harmonic — mundos de teste
+alias rbd2_casa_x3_teste='ros2 launch robodog2 rbd_gz_x3_launch.py world:=turtlebot3_house.world'
+alias rbd2_casa_x3_teste2='ros2 launch robodog2 rbd_gz_x3_launch.py world:=gz/cma_vazio_teste2.world'
+# gz/cma_vazio_teste2.world: cópia do arquivo gerado pelo gz sdf (sem bloco <state> do Classic)
 
 # Simulação — gerar o mapa (fazer uma única vez)
 alias rbd2_slam_x3='ros2 launch robodog2 rbd_slam_x3_launch.py'          # Gazebo + slam_toolbox + RViz
@@ -222,6 +231,52 @@ Nav2 DWB                   →  /cmd_vel
 
 ---
 
+## Mundos Gazebo — conversão Classic → Harmonic
+
+### O problema do bloco `<state>`
+
+Os mundos do robodog1 foram criados no **Gazebo Classic** (SDF 1.6). Quando o editor salva um arquivo `.world`, ele grava **dois conjuntos de poses** para cada modelo:
+
+1. **Pose na definição `<model>`** — posição original de quando o modelo foi criado/importado
+2. **Pose no bloco `<state>`** — posição real após qualquer movimentação no editor
+
+O **Gazebo Classic** aplica o bloco `<state>` ao carregar o mundo, sobrescrevendo as poses originais. As paredes ficam nas posições corretas.
+
+O **Gazebo Harmonic** não possui esse mecanismo: usa apenas a `<pose>` da definição `<model>`. Resultado: as paredes aparecem nas posições originais (erradas), frequentemente metros deslocadas.
+
+**Exemplo concreto (`cma_escritorio`):**
+
+| | x | y |
+|---|---|---|
+| Pose na definição (errada para Harmonic) | -7.395 | -4.04 |
+| Pose no bloco `<state>` (posição real) | -1.797 | 1.021 |
+
+### Solução adotada
+
+Para cada modelo, substituir a `<pose>` da definição pela pose correspondente no bloco `<state>` do arquivo Classic. As poses relativas dos links dentro do modelo permanecem inalteradas.
+
+Script de conversão: [`tools/convert_world_classic_to_harmonic.py`](tools/convert_world_classic_to_harmonic.py)
+
+Para reutilizar com outro mundo:
+1. Extrair as poses do bloco `<state>` do arquivo `.world` Classic:
+   ```bash
+   # O bloco <state> começa depois das definições de modelo e antes de </world>
+   # Procurar: grep -n '<state\|</state>' arquivo.world
+   ```
+2. Atualizar `SRC`, `DST`, `STATE_POSES` e `MODEL_LINE_RANGES` no topo do script
+3. Executar: `python3 tools/convert_world_classic_to_harmonic.py`
+
+### Estado dos mundos
+
+| Arquivo | Formato | Status |
+|---|---|---|
+| `worlds/robodog1_classic/cma_vazio.world` | SDF 1.6 Classic | Original de referência — não editar |
+| `worlds/robodog1_classic/cma_moveis.world` | SDF 1.6 Classic | Original de referência — não editar |
+| `worlds/cma_vazio.world` | SDF 1.8 Harmonic | ✅ Convertido — 15 cômodos, poses corretas |
+| `worlds/cma_moveis.world` | SDF 1.8 Harmonic | ⚠️ Incompleto — apenas 4 modelos, falta conversão completa |
+
+---
+
 ## Status do projeto
 
 - [x] Port da lógica de comportamento (rbd_tabelas, rbd_md, rbd_funcoes, rbd_navega)
@@ -235,13 +290,15 @@ Nav2 DWB                   →  /cmd_vel
 - [x] Launch do simulador completo com Nav2 (`rbd_simulador_x3_launch.py` — equiv. `rbd_simulador_x3` do robodog1)
 - [x] Parâmetros Nav2 para simulação (`rbd_sim_dwa_params.yaml`) com `use_sim_time` e pose inicial AMCL
 - [x] Parâmetros slam_toolbox para simulação (`rbd_slam_toolbox_params.yaml`)
+- [x] `cma_vazio.world` convertido para Harmonic com poses corretas (15 cômodos)
 
 ### Próximas etapas
 
-1. **Gerar o mapa** — executar `rbd2_slam_x3` + `rbd2_teclado`, guardar com `rbd2_salva_mapa_moveis`
-2. **Testar ciclo completo em simulação** — `rbd2_simulador_x3` + `rbd2_navega`
-3. **Calibrar pontos de destino (PD)** em `rbd_tabelas.py` para o mundo `cma_moveis.world`
-4. **Migrar para hardware físico** — substituir `rbd_gazebo_launch.py` pelo bringup real
+1. **Converter `cma_moveis.world`** — aplicar o mesmo script de conversão com as poses do `<state>` do robodog1_classic/cma_moveis.world
+2. **Gerar o mapa** — executar `rbd2_slam_x3` + `rbd2_teclado`, guardar com `rbd2_salva_mapa_moveis`
+3. **Testar ciclo completo em simulação** — `rbd2_simulador_x3` + `rbd2_navega`
+4. **Calibrar pontos de destino (PD)** em `rbd_tabelas.py` para o mundo `cma_moveis.world`
+5. **Migrar para hardware físico** — substituir `rbd_gazebo_launch.py` pelo bringup real
 
 ---
 
