@@ -141,9 +141,13 @@ alias rbd2_navega='ros2 run robodog2 rbd_navega'
 alias rbd2_gz_x3='ros2 launch robodog2 rbd_gz_x3_launch.py'
 alias rbd2_gz_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true'
 
-# Simulação Gazebo Harmonic — mundo da casa (cma_vazio.world)
+# Simulação Gazebo Harmonic — mundo da casa vazio (cma_vazio.world)
 alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world'
 alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world rviz:=true'
+
+# Simulação Gazebo Harmonic — mundo da casa com móveis (cma_moveis.world)
+alias rbd2_casa_x3_moveis='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world'
+alias rbd2_casa_x3_moveis_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world rviz:=true'
 
 # Simulação Gazebo Harmonic — mundos de teste
 alias rbd2_casa_x3_teste='ros2 launch robodog2 rbd_gz_x3_launch.py world:=turtlebot3_house.world'
@@ -273,7 +277,7 @@ Para reutilizar com outro mundo:
 | `worlds/robodog1_classic/cma_vazio.world` | SDF 1.6 Classic | Original de referência — não editar |
 | `worlds/robodog1_classic/cma_moveis.world` | SDF 1.6 Classic | Original de referência — não editar |
 | `worlds/cma_vazio.world` | SDF 1.8 Harmonic | ✅ Convertido — 15 cômodos, poses corretas |
-| `worlds/cma_moveis.world` | SDF 1.8 Harmonic | ⚠️ Incompleto — apenas 4 modelos, falta conversão completa |
+| `worlds/cma_moveis.world` | SDF 1.8 Harmonic | ✅ Convertido — 79 modelos (paredes + 64 móveis), poses corretas, testado em 2026-06-04 |
 
 ---
 
@@ -291,14 +295,48 @@ Para reutilizar com outro mundo:
 - [x] Parâmetros Nav2 para simulação (`rbd_sim_dwa_params.yaml`) com `use_sim_time` e pose inicial AMCL
 - [x] Parâmetros slam_toolbox para simulação (`rbd_slam_toolbox_params.yaml`)
 - [x] `cma_vazio.world` convertido para Harmonic com poses corretas (15 cômodos)
+- [x] `cma_moveis.world` convertido para Harmonic com poses corretas (79 modelos: paredes + 64 móveis)
+- [x] Robô rosmaster_x3 aparece corretamente no mundo com móveis (testado 2026-06-04)
+
+### Marcos alcançados — simulação completa em Gazebo Harmonic
+
+Em 2026-06-04 foi validado o ciclo completo de lançamento do simulador:
+
+```
+rbd2_casa_x3_moveis   →  Gazebo Harmonic + cma_moveis.world + rosmaster_x3
+```
+
+O mundo carrega os 79 modelos (cômodos + 64 objetos de mobiliário) nas posições
+corretas, herdadas do robodog1. O robô aparece no centro da sala de estar.
+
+**Aviso esperado em simulação pura** (não é erro):
+```
+[imu_filter_madgwick]: Still waiting for data on topic imu/data_raw
+```
+O nó `imu_filter_madgwick` aguarda dados do IMU real. Em simulação, o tópico
+`imu/data_raw` é publicado pelo bridge GZ→ROS mas pode demorar alguns segundos
+a ter fluxo contínuo. Não afecta a navegação por teclado nem o SLAM.
 
 ### Próximas etapas
 
-1. **Converter `cma_moveis.world`** — aplicar o mesmo script de conversão com as poses do `<state>` do robodog1_classic/cma_moveis.world
-2. **Gerar o mapa** — executar `rbd2_slam_x3` + `rbd2_teclado`, guardar com `rbd2_salva_mapa_moveis`
-3. **Testar ciclo completo em simulação** — `rbd2_simulador_x3` + `rbd2_navega`
-4. **Calibrar pontos de destino (PD)** em `rbd_tabelas.py` para o mundo `cma_moveis.world`
-5. **Migrar para hardware físico** — substituir `rbd_gazebo_launch.py` pelo bringup real
+#### Fase 1 — Validar simulação completa (prioridade imediata)
+
+1. **Teleop por teclado** (`rbd2_teclado`) — confirmar que o robô se move no mundo com móveis
+2. **Visualização RViz** (`rbd2_casa_x3_moveis_rviz`) — confirmar laser scan, odometria e TF
+3. **Gerar o mapa** — executar `rbd2_slam_x3` + `rbd2_teclado`, percorrer todos os cômodos, guardar com `rbd2_salva_mapa_moveis`
+4. **Ciclo completo de navegação** — `rbd2_simulador_x3` + `rbd2_navega` — validar que o robô visita pontos de destino autonomamente
+
+#### Fase 2 — Ajustes de simulação
+
+5. **Calibrar pontos de destino (PD)** em `rbd_tabelas.py` para o mundo `cma_moveis.world`
+6. **DWB lateral** — configurar `max_vel_y` / `vy_samples` para aproveitar as rodas mecanum em simulação
+7. **EKF com `vy`** — habilitar velocidade lateral no filtro de estado do robô
+
+#### Fase 3 — Hardware físico
+
+8. **Bringup real** (`rbd2_bringup`) — ligar o ROSMASTER X3 real e verificar tópicos
+9. **Transferir mapa** — copiar `~/rbd_mapa_moveis.yaml` para o robô real
+10. **Ciclo autónomo em hardware** — `rbd2_simulador_x3` equivalente no robô real
 
 ---
 
