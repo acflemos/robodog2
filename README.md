@@ -141,9 +141,13 @@ alias rbd2_navega='ros2 run robodog2 rbd_navega'
 alias rbd2_gz_x3='ros2 launch robodog2 rbd_gz_x3_launch.py'
 alias rbd2_gz_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true'
 
-# Simulação Gazebo Harmonic — mundo da casa (cma_vazio.world)
+# Simulação Gazebo Harmonic — mundo da casa vazio (cma_vazio.world)
 alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world'
 alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world rviz:=true'
+
+# Simulação Gazebo Harmonic — mundo da casa com móveis (cma_moveis.world)
+alias rbd2_casa_x3_moveis='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world'
+alias rbd2_casa_x3_moveis_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world rviz:=true'
 
 # Simulação Gazebo Harmonic — mundos de teste
 alias rbd2_casa_x3_teste='ros2 launch robodog2 rbd_gz_x3_launch.py world:=turtlebot3_house.world'
