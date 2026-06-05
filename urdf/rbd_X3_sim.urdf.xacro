@@ -90,7 +90,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.033" length="0.028"/>
+        <sphere radius="0.033"/>
       </geometry>
     </collision>
   </link>
@@ -120,7 +120,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.033" length="0.028"/>
+        <sphere radius="0.033"/>
       </geometry>
     </collision>
   </link>
@@ -150,7 +150,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.033" length="0.028"/>
+        <sphere radius="0.033"/>
       </geometry>
     </collision>
   </link>
@@ -180,7 +180,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.033" length="0.028"/>
+        <sphere radius="0.033"/>
       </geometry>
     </collision>
   </link>
@@ -253,10 +253,35 @@
 
   <!-- Cores Gazebo -->
   <gazebo reference="base_link"><material>Gazebo/Green</material></gazebo>
-  <gazebo reference="front_right_wheel"><material>Gazebo/DarkGrey</material></gazebo>
-  <gazebo reference="front_left_wheel"><material>Gazebo/DarkGrey</material></gazebo>
-  <gazebo reference="back_right_wheel"><material>Gazebo/DarkGrey</material></gazebo>
-  <gazebo reference="back_left_wheel"><material>Gazebo/DarkGrey</material></gazebo>
+  <!-- Fricção anisotrópica para simulação de rodas mecanum.
+       mu=1.0 na direção de tração (fdir1), mu2=0.0 na direção livre do rolo.
+       fdir1 calculado no frame do link a partir da diagonal no frame do chassi:
+         FL/BL chassis [1,±1,0] → link Rx(+π/2)  → FL:[1,0,-1]  BL:[1,0,1]
+         FR/BR chassis [1,±1,0] → link Rz(π)Rx(-π/2) → FR:[-1,0,-1] BR:[-1,0,1] -->
+  <gazebo reference="front_right_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu>1.0</mu>
+    <mu2>0.0</mu2>
+    <fdir1>-1 0 -1</fdir1>
+  </gazebo>
+  <gazebo reference="front_left_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu>1.0</mu>
+    <mu2>0.0</mu2>
+    <fdir1>1 0 -1</fdir1>
+  </gazebo>
+  <gazebo reference="back_right_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu>1.0</mu>
+    <mu2>0.0</mu2>
+    <fdir1>-1 0 1</fdir1>
+  </gazebo>
+  <gazebo reference="back_left_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu>1.0</mu>
+    <mu2>0.0</mu2>
+    <fdir1>1 0 1</fdir1>
+  </gazebo>
   <gazebo reference="laser_link"><material>Gazebo/FlatBlack</material></gazebo>
 
   <!--
