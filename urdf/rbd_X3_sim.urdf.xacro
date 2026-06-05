@@ -90,7 +90,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.033" length="0.028"/>
+        <sphere radius="0.033"/>
       </geometry>
     </collision>
   </link>
@@ -98,7 +98,7 @@
     <origin xyz="0.08 -0.0845 -0.0389" rpy="-1.5703 0 3.14159"/>
     <parent link="base_link"/>
     <child link="front_right_wheel"/>
-    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <axis xyz="0 0 -1" rpy="0 0 0"/>
     <limit effort="100" velocity="1"/>
   </joint>
 
@@ -120,7 +120,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.033" length="0.028"/>
+        <sphere radius="0.033"/>
       </geometry>
     </collision>
   </link>
@@ -150,7 +150,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.033" length="0.028"/>
+        <sphere radius="0.033"/>
       </geometry>
     </collision>
   </link>
@@ -158,7 +158,7 @@
     <origin xyz="-0.08 -0.0845 -0.03946" rpy="-1.57 0 3.14159"/>
     <parent link="base_link"/>
     <child link="back_right_wheel"/>
-    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <axis xyz="0 0 -1" rpy="0 0 0"/>
     <limit effort="100" velocity="1"/>
   </joint>
 
@@ -180,7 +180,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.033" length="0.028"/>
+        <sphere radius="0.033"/>
       </geometry>
     </collision>
   </link>
@@ -253,33 +253,58 @@
 
   <!-- Cores Gazebo -->
   <gazebo reference="base_link"><material>Gazebo/Green</material></gazebo>
-  <gazebo reference="front_right_wheel"><material>Gazebo/DarkGrey</material></gazebo>
-  <gazebo reference="front_left_wheel"><material>Gazebo/DarkGrey</material></gazebo>
-  <gazebo reference="back_right_wheel"><material>Gazebo/DarkGrey</material></gazebo>
-  <gazebo reference="back_left_wheel"><material>Gazebo/DarkGrey</material></gazebo>
+  <!-- Fricção anisotrópica para simulação de rodas mecanum.
+       mu=1.0 na direção de tração (fdir1), mu2=0.0 na direção livre do rolo.
+       fdir1 calculado no frame do link a partir da diagonal no frame do chassi:
+         FL/BL chassis [1,±1,0] → link Rx(+π/2)  → FL:[1,0,-1]  BL:[1,0,1]
+         FR/BR chassis [1,±1,0] → link Rz(π)Rx(-π/2) → FR:[-1,0,-1] BR:[-1,0,1] -->
+  <gazebo reference="front_right_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu>1.0</mu>
+    <mu2>0.0</mu2>
+    <fdir1>-1 0 -1</fdir1>
+  </gazebo>
+  <gazebo reference="front_left_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu>1.0</mu>
+    <mu2>0.0</mu2>
+    <fdir1>1 0 -1</fdir1>
+  </gazebo>
+  <gazebo reference="back_right_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu>1.0</mu>
+    <mu2>0.0</mu2>
+    <fdir1>-1 0 1</fdir1>
+  </gazebo>
+  <gazebo reference="back_left_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu>1.0</mu>
+    <mu2>0.0</mu2>
+    <fdir1>1 0 1</fdir1>
+  </gazebo>
   <gazebo reference="laser_link"><material>Gazebo/FlatBlack</material></gazebo>
 
   <!--
-    Movimento mecanum omnidirecional.
-    Recebe /cmd_vel, publica /odom e TF odom→base_footprint.
-    Dimensões: wheelbase=0.16m, wheel_separation=0.169m, radius=0.033m.
+    Controlo cinemático directo — equivalente ao libgazebo_ros_planar_move do ROS1.
+    Aplica linear.x / linear.y / angular.z directamente ao corpo do modelo,
+    sem depender da física de contacto das rodas.
+    Tópico gz subscrito: /model/rosmaster_x3/cmd_vel (configurado no bridge YAML).
   -->
   <gazebo>
-    <plugin filename="ignition-gazebo-mecanum-drive-system"
-            name="ignition::gazebo::systems::MecanumDrive">
-      <front_left_joint>front_left_joint</front_left_joint>
-      <front_right_joint>front_right_joint</front_right_joint>
-      <back_left_joint>back_left_joint</back_left_joint>
-      <back_right_joint>back_right_joint</back_right_joint>
-      <wheel_separation>0.169</wheel_separation>
-      <wheelbase>0.16</wheelbase>
-      <wheel_radius>0.033</wheel_radius>
-      <topic>cmd_vel</topic>
+    <plugin filename="gz-sim-velocity-control-system"
+            name="gz::sim::systems::VelocityControl">
+    </plugin>
+  </gazebo>
+
+  <!-- Publica /odom e TF odom→base_footprint observando o movimento real do modelo. -->
+  <gazebo>
+    <plugin filename="gz-sim-odometry-publisher-system"
+            name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
       <odom_topic>odom</odom_topic>
-      <tf_topic>/tf</tf_topic>
-      <frame_id>odom</frame_id>
-      <child_frame_id>base_footprint</child_frame_id>
-      <odom_publisher_frequency>30</odom_publisher_frequency>
+      <tf_topic>tf</tf_topic>
+      <odom_publish_frequency>30</odom_publish_frequency>
     </plugin>
   </gazebo>
 

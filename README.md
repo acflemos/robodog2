@@ -210,7 +210,8 @@ rbd2_navega                      # loop autônomo de patrulha
 ## Cadeia de nós — simulação Gazebo
 
 ```
-Gazebo plugin planar_move  →  /odom  +  TF odom→base_footprint
+Gazebo VelocityControl     →  controlo cinemático (linear.x/y + angular.z) — sem física de rodas
+Gazebo OdometryPublisher   →  /odom  +  TF odom→base_footprint
 Gazebo plugin IMU          →  /imu/data_raw  →  imu_filter_madgwick  →  /imu/data
 Gazebo plugin LiDAR        →  /scan
 robot_state_publisher      →  TF base_footprint→base_link→{rodas, laser_link, imu_link}
@@ -297,17 +298,24 @@ Para reutilizar com outro mundo:
 - [x] `cma_vazio.world` convertido para Harmonic com poses corretas (15 cômodos)
 - [x] `cma_moveis.world` convertido para Harmonic com poses corretas (79 modelos: paredes + 64 móveis)
 - [x] Robô rosmaster_x3 aparece corretamente no mundo com móveis (testado 2026-06-04)
+- [x] Teleop omnidirecional mecanum validado em Gazebo Harmonic (testado 2026-06-05)
 
 ### Marcos alcançados — simulação completa em Gazebo Harmonic
 
-Em 2026-06-04 foi validado o ciclo completo de lançamento do simulador:
-
+**2026-06-04** — Mundo com móveis validado:
 ```
 rbd2_casa_x3_moveis   →  Gazebo Harmonic + cma_moveis.world + rosmaster_x3
 ```
-
 O mundo carrega os 79 modelos (cômodos + 64 objetos de mobiliário) nas posições
 corretas, herdadas do robodog1. O robô aparece no centro da sala de estar.
+
+**2026-06-05** — Teleop mecanum omnidirecional validado:
+```
+rbd2_casa_x3_moveis + rbd2_teclado  →  todos os movimentos funcionais
+```
+Movimentos validados: frente/trás, strafe esquerda/direita, rotação horária/anti-horária,
+diagonais, círculos. Plugin `MecanumDrive` substituído por `VelocityControl`
+(controlo cinemático directo, equivalente ao `planar_move` do ROS1).
 
 **Aviso esperado em simulação pura** (não é erro):
 ```
@@ -321,10 +329,9 @@ a ter fluxo contínuo. Não afecta a navegação por teclado nem o SLAM.
 
 #### Fase 1 — Validar simulação completa (prioridade imediata)
 
-1. **Teleop por teclado** (`rbd2_teclado`) — confirmar que o robô se move no mundo com móveis
-2. **Visualização RViz** (`rbd2_casa_x3_moveis_rviz`) — confirmar laser scan, odometria e TF
-3. **Gerar o mapa** — executar `rbd2_slam_x3` + `rbd2_teclado`, percorrer todos os cômodos, guardar com `rbd2_salva_mapa_moveis`
-4. **Ciclo completo de navegação** — `rbd2_simulador_x3` + `rbd2_navega` — validar que o robô visita pontos de destino autonomamente
+1. **Visualização RViz** — `rbd2_casa_x3_moveis_rviz`: fazer aparecer o mapa de casa do laser scan (mapa do robodog1 ou novo via SLAM)
+2. **Gerar o mapa** — executar `rbd2_slam_x3` + `rbd2_teclado`, percorrer todos os cômodos, guardar com `rbd2_salva_mapa_moveis`
+3. **Ciclo completo de navegação** — `rbd2_simulador_x3` + `rbd2_navega` — validar que o robô visita pontos de destino autonomamente
 
 #### Fase 2 — Ajustes de simulação
 
