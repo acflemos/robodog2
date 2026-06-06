@@ -10,22 +10,24 @@
   direction: GZ_TO_ROS
 
 # Estado dos joints (rodas)
+# Tópico com namespace de modelo — OdometryPublisher e JointStatePublisher
+# publicam em /model/<nome>/... no Gazebo Harmonic (não em tópicos globais)
 - ros_topic_name: "joint_states"
-  gz_topic_name: "joint_states"
+  gz_topic_name: "/model/rosmaster_x3/joint_states"
   ros_type_name: "sensor_msgs/msg/JointState"
   gz_type_name: "gz.msgs.Model"
   direction: GZ_TO_ROS
 
 # Odometria
 - ros_topic_name: "odom"
-  gz_topic_name: "odom"
+  gz_topic_name: "/model/rosmaster_x3/odom"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "gz.msgs.Odometry"
   direction: GZ_TO_ROS
 
-# Transformadas TF
+# Transformadas TF  (odom → base_footprint publicado pelo OdometryPublisher)
 - ros_topic_name: "tf"
-  gz_topic_name: "tf"
+  gz_topic_name: "/model/rosmaster_x3/tf"
   ros_type_name: "tf2_msgs/msg/TFMessage"
   gz_type_name: "gz.msgs.Pose_V"
   direction: GZ_TO_ROS
