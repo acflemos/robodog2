@@ -2,17 +2,16 @@
 # ==========================
 # Lança Nav2 (AMCL + DWB) + RViz2 sobre uma fonte de sensores já activa.
 #
-# NÃO lança o Gazebo. Deve ser usado em conjunto com um dos seguintes:
-#   Simulação: rbd2_casa_x3_teste  (Gazebo + robô no turtlebot3_house.world)
-#   Hardware:  rbd2_bringup        (robô real X3)
+# NÃO lança o Gazebo. Deve ser chamado depois de rbd2_casa_x3 (simulação)
+# ou depois do bringup do hardware real (rosmaster X3).
 #
 # Fluxo simulação:
-#   Terminal 1: rbd2_casa_x3_teste   ← Gazebo + sensores
-#   Terminal 2: rbd2_simulador_x3    ← Nav2 + RViz (este ficheiro)
+#   Terminal 1: rbd2_casa_x3        ← Gazebo + robô em cma_moveis.world
+#   Terminal 2: rbd2_simulador_x3   ← Nav2 + RViz2 (este ficheiro)
 #
-# Fluxo hardware:
-#   Terminal 1: rbd2_bringup         ← bringup real
-#   Terminal 2: rbd2_simulador_x3 sim:=false  ← Nav2 + RViz
+# Fluxo hardware real (X3 físico na posição equivalente ao spawn):
+#   Terminal 1: rbd2_bringup        ← bringup do hardware
+#   Terminal 2: rbd2_simulador_x3 sim:=false  ← Nav2 + RViz2
 #
 # Pré-requisito — mapa da casa:
 #   ~/rbd_mapa_moveis.yaml deve existir.
@@ -43,7 +42,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     default_map = os.path.join(os.path.expanduser('~'), 'rbd_mapa_moveis.yaml')
     sim_params = os.path.join(get_package_share_directory('yahboomcar_nav'), 'params', 'rbd_sim_dwa_params.yaml')
-    rviz_config = os.path.join(get_package_share_directory('yahboomcar_nav'), 'rviz', 'nav.rviz')
+    rviz_config = os.path.join(get_package_share_directory('robodog2'), 'rviz', 'robodog2.rviz')
 
     map_arg = DeclareLaunchArgument(
         name='map',

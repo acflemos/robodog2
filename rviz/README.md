@@ -1,49 +1,46 @@
-# rviz/ — Configurações do RViz
-
-Esta pasta contém os arquivos de configuração do RViz originados no projeto **robodog1 (ROS1)**.
-
----
+# rviz/ — Configurações do RViz2
 
 ## Arquivos
 
 | Arquivo | Descrição |
 |---|---|
-| [robodog1.rviz](robodog1.rviz) | Configuração do RViz (ROS1) para visualização e navegação do robodog. **Formato ROS1** — usa prefixo `rviz/` nas classes de display (ex: `rviz/Grid`, `rviz/LaserScan`). |
+| [robodog2.rviz](robodog2.rviz) | Configuração principal RViz2 (ROS2). Usada por `rbd2_simulador_x3`. |
+| [robodog1.rviz](robodog1.rviz) | Configuração original ROS1 — mantida como referência histórica. Não compatível com RViz2. |
 
 ---
 
-## O que o robodog1.rviz exibe
+## robodog2.rviz — displays activos
 
-| Display | Tópico/Fonte | Notas |
+| Display | Tópico | Notas |
 |---|---|---|
 | Grid | — | Células de 1m, plano XY |
-| RobotModel | `/robot_description` | Colisões desativadas |
-| TF | — | Árvore completa: `map → odom → base_footprint → base_link` |
-| LaserScan | `/scan` | Verde, 360°, estilo flat squares |
-| Map | `/map` | Mapa de custo global (AMCL) |
-| Path | `/move_base/NavfnROS/plan` | Plano global de navegação |
-| Path | `/move_base/TrajectoryPlannerROS/local_plan` | Plano local (DWA) |
-| Costmap | `/move_base/global_costmap/costmap` | Mapa de custo global |
-| Costmap | `/move_base/local_costmap/costmap` | Mapa de custo local |
-| PoseArray | `/particlecloud` | Nuvem de partículas AMCL |
-| Range | `/ultrasonico_f` | Ultrassónico frente |
-| Range | `/ultrasonico_t` | Ultrassónico trás |
-| Range | `/ultrasonico_d` | Ultrassónico direita |
-| Range | `/ultrasonico_e` | Ultrassónico esquerda |
-| InteractiveMarkers | `/move_base_simple/goal` | Destino de navegação |
+| LaserScan | `/scan` | Verde, 360°, Flat Squares |
+| RobotModel | `/robot_description` | Links do X3 |
+| TF | — | Cadeia `map → odom → base_footprint → base_link` |
+| Map (global_costmap) | `/global_costmap/costmap` | Mapa de custo global |
+| Map | `/map` | Mapa de navegação (AMCL/map_server) |
+| Path (global_path) | `/plan` | Plano global Nav2 (verde) |
+| PoseArray | `/particle_cloud` | Nuvem de partículas AMCL |
+| Map (local_costmap) | `/local_costmap/costmap` | Mapa de custo local |
+| Odometry | `/odom` | Odometria com elipse de covariância |
+| Path (local_path) | `/local_plan` | Plano local DWB (ciano) |
+| PoseWithCovariance | `/amcl_pose` | Pose estimada pelo AMCL |
+| Pose (goal) | `/goal_pose` | Destino de navegação |
 
-- **Fixed Frame:** `map`  
-- **Taxa de atualização:** 30 FPS
+- **Fixed Frame:** `map`
+- **Vista inicial:** centrada em (-3.0, -2.0) — posição de spawn do X3
+- **Painel Nav2:** botões Nav2 para envio de goals e gestão da missão
 
 ---
 
-## Adaptação para ROS2 (próximos passos)
+## Diferenças em relação ao robodog1.rviz (ROS1 → ROS2)
 
-- [ ] O arquivo `.rviz` **não é diretamente compatível com RViz2** — usa classes `rviz/` (ROS1) que precisam de ser substituídas por `rviz_default_plugins/` (ROS2). Além disso, os tópicos do `move_base` (ROS1) precisam ser substituídos pelos equivalentes do **Nav2** (ROS2):
-  - `/move_base/NavfnROS/plan` → `/plan`
-  - `/move_base/TrajectoryPlannerROS/local_plan` → `/local_plan`
-  - `/move_base/global_costmap/costmap` → `/global_costmap/costmap`
-  - `/move_base/local_costmap/costmap` → `/local_costmap/costmap`
-  - `/particlecloud` → `/particle_cloud`
-- [ ] Criar uma cópia `robodog2.rviz` com os tópicos atualizados para Nav2
-- [ ] Verificar compatibilidade do display `Range` com RViz2 (plugin `rviz_default_plugins`)
+| Aspecto | robodog1 (ROS1) | robodog2 (ROS2) |
+|---|---|---|
+| Classes display | `rviz/Grid`, `rviz/LaserScan` | `rviz_default_plugins/Grid`, etc. |
+| Partículas AMCL | `/particlecloud` | `/particle_cloud` |
+| Plano global | `/move_base/NavfnROS/plan` | `/plan` |
+| Plano local | `/move_base/TrajectoryPlannerROS/local_plan` | `/local_plan` |
+| Costmap global | `/move_base/global_costmap/costmap` | `/global_costmap/costmap` |
+| Costmap local | `/move_base/local_costmap/costmap` | `/local_costmap/costmap` |
+| Painel navegação | Interactive Markers ROS1 | `nav2_rviz_plugins/Navigation 2` |
