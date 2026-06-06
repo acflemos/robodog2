@@ -134,7 +134,18 @@ def generate_launch_description():
         }]
     )
 
-    # 7. RViz2 (opcional)
+    # 7. TF broadcaster: odom → base_footprint
+    # O bridge ros_gz_bridge não converte correctamente o TF do OdometryPublisher
+    # do Gazebo Harmonic. Este nó lê /odom (bridged) e publica o TF directamente,
+    # completando a cadeia: map → odom → base_footprint → base_link → laser_link
+    odom_tf_broadcaster = Node(
+        package='robodog2',
+        executable='rbd_odom_tf',
+        parameters=[{'use_sim_time': True}],
+        output='screen'
+    )
+
+    # 8. RViz2 (opcional)
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -153,5 +164,6 @@ def generate_launch_description():
         spawn_robot,
         bridge,
         imu_filter,
+        odom_tf_broadcaster,
         rviz_node,
     ])

@@ -43,6 +43,7 @@ setup(
     entry_points={
         'console_scripts': [
             'rbd_navega = robodog2.rbd_navega:main',
+            'rbd_odom_tf = robodog2.rbd_odom_tf:main',
         ],
     },
 )
