@@ -25,10 +25,18 @@
   gz_type_name: "gz.msgs.Odometry"
   direction: GZ_TO_ROS
 
-# NOTA: TF odom→base_footprint NÃO é bridged aqui.
-# O bridge ros_gz_bridge não converte correctamente gz.msgs.Pose_V → tf2_msgs/TFMessage
-# no Gazebo Harmonic. Em substituição, o nó rbd_odom_tf (rbd_gz_x3_launch.py)
-# lê /odom e publica o TF directamente via TransformBroadcaster.
+# TF odom→base_footprint — publicado pelo OdometryPublisher como gz.msgs.Pose_V.
+# O nó rbd_odom_tf (rbd_gz_x3_launch.py) lê /odom e publica o TF via TransformBroadcaster.
+#
+# PLANO B2 — bridge directo do TF (descomentar se rbd_odom_tf não funcionar):
+# Verificar primeiro com: ign topic -l | grep tf
+# O tópico Gazebo pode ser /model/rosmaster_x3/tf ou /world/<world>/model/rosmaster_x3/tf
+#
+# - ros_topic_name: "/tf"
+#   gz_topic_name: "/model/rosmaster_x3/tf"
+#   ros_type_name: "tf2_msgs/msg/TFMessage"
+#   gz_type_name: "gz.msgs.Pose_V"
+#   direction: GZ_TO_ROS
 
 # Comando de velocidade → VelocityControl subscrito em /model/rosmaster_x3/cmd_vel
 - ros_topic_name: "cmd_vel"

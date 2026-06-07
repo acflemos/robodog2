@@ -16,9 +16,19 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import TransformStamped
 from tf2_ros import TransformBroadcaster
+
+# ros_gz_bridge publica /odom com BEST_EFFORT (sensor data profile).
+# Usar RELIABLE causaria mismatch silencioso — a callback nunca seria chamada.
+_SENSOR_QOS = QoSProfile(
+    reliability=ReliabilityPolicy.BEST_EFFORT,
+    durability=DurabilityPolicy.VOLATILE,
+    history=HistoryPolicy.KEEP_LAST,
+    depth=10,
+)
 
 
 class OdomTfBroadcaster(Node):
@@ -26,7 +36,7 @@ class OdomTfBroadcaster(Node):
     def __init__(self):
         super().__init__('odom_tf_broadcaster')
         self.tf_broadcaster = TransformBroadcaster(self)
-        self.create_subscription(Odometry, '/odom', self._odom_cb, 10)
+        self.create_subscription(Odometry, '/odom', self._odom_cb, _SENSOR_QOS)
         self.get_logger().info('odom_tf_broadcaster: publicando odom→base_footprint')
 
     def _odom_cb(self, msg: Odometry):
