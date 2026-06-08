@@ -40,6 +40,12 @@ class OdomTfBroadcaster(Node):
         self.get_logger().info('odom_tf_broadcaster: publicando odom→base_footprint')
 
     def _odom_cb(self, msg: Odometry):
+        q = msg.pose.pose.orientation
+        # Gazebo Fortress publica (0,0,0,0) no primeiro frame antes da física inicializar.
+        # Um quaternião nulo é inválido — o TF listener rejeita-o. Usar identidade.
+        if q.x == 0.0 and q.y == 0.0 and q.z == 0.0 and q.w == 0.0:
+            q.w = 1.0
+
         t = TransformStamped()
         t.header.stamp = msg.header.stamp
         t.header.frame_id = 'odom'
@@ -47,7 +53,7 @@ class OdomTfBroadcaster(Node):
         t.transform.translation.x = msg.pose.pose.position.x
         t.transform.translation.y = msg.pose.pose.position.y
         t.transform.translation.z = msg.pose.pose.position.z
-        t.transform.rotation = msg.pose.pose.orientation
+        t.transform.rotation = q
         self.tf_broadcaster.sendTransform(t)
 
 
