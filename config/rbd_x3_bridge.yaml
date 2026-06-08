@@ -19,10 +19,11 @@
   direction: GZ_TO_ROS
 
 # Odometria
+# No Fortress v6, OdometryPublisher publica em odometry_with_covariance (não em odom).
 - ros_topic_name: "odom"
-  gz_topic_name: "/model/rosmaster_x3/odom"
+  gz_topic_name: "/model/rosmaster_x3/odometry_with_covariance"
   ros_type_name: "nav_msgs/msg/Odometry"
-  gz_type_name: "gz.msgs.Odometry"
+  gz_type_name: "gz.msgs.OdometryWithCovariance"
   direction: GZ_TO_ROS
 
 # TF odom→base_footprint — publicado pelo OdometryPublisher como gz.msgs.Pose_V.
