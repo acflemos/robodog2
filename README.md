@@ -34,9 +34,12 @@ O robodog2 aproveita:
 
 ---
 
-## Arquitetura de comportamento
+## Ambiente de desenvolvimento
 
-O comportamento autônomo é construído em três camadas (herdadas do robodog1):
+- Ubuntu 22.04, ROS2 Humble
+- Gazebo Fortress v6.17.1 (`ign gazebo`)
+- Workspace principal: `~/ros2_ws/`
+- Branch activa de desenvolvimento: `fix/rbd2_casa_x3_claude`
 
 ```
 rbd_tabelas.py   — dados estáticos: pontos de destino, rotas, pesos de tarefas
@@ -52,11 +55,23 @@ rbd_navega.py    — nó ROS2 principal: MultiThreadedExecutor + thread do loop
 4. O peso da tarefa executada é decrementado, reduzindo sua prioridade
 5. Quando todos os pesos ficam negativos, o ciclo é reiniciado
 
-Isso cria um padrão de patrulha cíclica por todos os cômodos, com prioridade configurável por cômodo.
+### Build e workspace
+```bash
+alias rbd2_build_pkg='cd ~/ros2_ws && colcon build --packages-select robodog2'
+alias rbd2_source='source ~/ros2_ws/install/setup.bash'
+alias rbd2_ws='cd ~/ros2_ws'
+alias gemini_ws='cd ~/workspace_gemini'
+alias source_gemini='source /opt/ros/humble/setup.bash && source ~/workspace_gemini/install/setup.bash'
+alias source_ros2ws='source /opt/ros/humble/setup.bash && source ~/ros2_ws/install/setup.bash'
+```
 
----
+### Simulação Gazebo Fortress (em desenvolvimento activo)
+```bash
+# Mundo vazio — teste base do robô
+alias rbd2_gz_x3='ros2 launch robodog2 rbd_gz_x3_launch.py'
 
-## Estrutura do repositório
+# Mundo da casa com móveis — alias principal da branch fix/rbd2_casa_x3_claude
+alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world'
 
 ```
 robodog2/
@@ -87,9 +102,11 @@ robodog2/
 └── yahboomcar_laser/                # nós autônomos de laser (avoidance, tracker, warning)
 ```
 
----
-
-## Dependências
+### SLAM e mapeamento
+```bash
+alias rbd2_slam_x3='ros2 launch robodog2 rbd_slam_x3_launch.py'
+alias rbd2_salva_mapa_moveis='ros2 run nav2_map_server map_saver_cli -f ~/rbd_mapa_moveis'
+```
 
 ```bash
 sudo apt install -y \
@@ -106,7 +123,7 @@ sudo apt install -y \
 
 ---
 
-## Instalação e build
+## Arquitetura de simulação (Gazebo Fortress)
 
 ```bash
 # clonar dentro do workspace
@@ -119,6 +136,23 @@ cd ~/ros2_ws
 colcon build --packages-select robodog2
 source install/setup.bash
 ```
+rbd_gz_x3_launch.py
+├── ign gazebo (servidor + GUI)        ← mundo .world em worlds/
+├── robot_state_publisher              ← URDF: urdf/rbd_X3_sim.urdf.xacro
+├── ros_gz_sim create                  ← spawn do robô no mundo
+├── ros_gz_bridge (parameter_bridge)   ← config: config/rbd_x3_bridge.yaml
+└── rviz2 (opcional)
+```
+
+**Plugins activos no URDF (Fortress v6):**
+- `ignition-gazebo-velocity-control-system` → subscreve `/model/rosmaster_x3/cmd_vel`
+- `ignition-gazebo-odometry-publisher-system` → publica `/odom` e `/tf`
+- `ignition-gazebo-joint-state-publisher-system` → publica `/joint_states`
+- LiDAR `gpu_lidar` → publica `/scan`
+
+**Bridge activo (`rbd_x3_bridge.yaml`):**
+- `/clock`, `/joint_states`, `/odom`, `/tf`, `/scan` (GZ→ROS)
+- `/cmd_vel` (ROS→GZ via `/model/rosmaster_x3/cmd_vel`)
 
 ---
 
@@ -354,3 +388,4 @@ a ter fluxo contínuo. Não afecta a navegação por teclado nem o SLAM.
 - [Nav2](https://navigation.ros.org/) — stack de navegação ROS2
 - [slam_toolbox](https://github.com/SteveMacenski/slam_toolbox) — SLAM padrão Nav2 Humble
 - [ROS2 Humble](https://docs.ros.org/en/humble/)
+- [Ignition Gazebo / Fortress](https://gazebosim.org/docs/fortress)
