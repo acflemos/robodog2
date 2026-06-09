@@ -298,8 +298,8 @@
 
   <!-- Publica /odom e TF odom→base_footprint observando o movimento real do modelo. -->
   <gazebo>
-    <plugin filename="ignition-gazebo-odometry-publisher-system"
-            name="ignition::gazebo::systems::OdometryPublisher">
+    <plugin filename="gz-sim-odometry-publisher-system"
+            name="gz::sim::systems::OdometryPublisher">
       <odom_frame>odom</odom_frame>
       <robot_base_frame>base_footprint</robot_base_frame>
       <odom_topic>odom</odom_topic>
@@ -353,7 +353,22 @@
     </sensor>
   </gazebo>
 
-  <!-- IMU sensor desactivado — não necessário para simulação/AMCL.
-       imu_link mantido como link estrutural para compatibilidade com hardware real. -->
+  <!--
+    IMU nativo do Gazebo Harmonic.
+    Publica em /imu via gz-transport; bridge mapeia para /imu/data_raw (ROS).
+    imu_filter_madgwick produz /imu/data com orientação fundida.
+  -->
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <topic>imu</topic>
+      <gz_frame_id>imu_link</gz_frame_id>
+      <imu>
+        <angular_velocity/>
+        <linear_acceleration/>
+      </imu>
+    </sensor>
+  </gazebo>
 
 </robot>

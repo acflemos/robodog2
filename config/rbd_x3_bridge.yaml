@@ -37,7 +37,12 @@
   gz_type_name: "gz.msgs.Twist"
   direction: ROS_TO_GZ
 
-# IMU desactivado — não necessário para AMCL/Nav2 em simulação
+# IMU — publicado em /imu/data_raw para compatibilidade com imu_filter_madgwick
+- ros_topic_name: "imu/data_raw"
+  gz_topic_name: "imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
 
 # LiDAR
 - ros_topic_name: "scan"

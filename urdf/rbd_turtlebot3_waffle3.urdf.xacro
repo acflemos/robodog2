@@ -1,5 +1,33 @@
 <?xml version="1.0" ?>
+<!--
+  rbd_turtlebot3_waffle3.urdf.xacro — URDF principal do robodog (ROS1)
+  ======================================================================
+  Descreve o corpo físico do robô robodog para simulação no Gazebo (ROS1).
+  Esta é a versão ATUAL usada nos testes do robodog1.
+
+  Estrutura do robô:
+    - Corpo: caixa 0.40×0.32×0.05m (visual), 0.42×0.34×0.07m (colisão), 1.0 kg
+    - 4 rodas cilíndricas: raio 0.05m, largura 0.042m, 0.1 kg cada
+        · frente esquerda/direita: x=+0.115m, y=±0.20m
+        · trás esquerda/direita:   x=-0.115m, y=±0.20m
+    - IMU: posição central superior (z=0.068m)
+    - LiDAR (base_scan): atrás do topo (x=-0.064m, z=0.122m), malha TurtleBot3 LDS
+    - 4 ultrassónicos: frente, trás, direita (d), esquerda (e) — sem colisão ativa
+    - Câmera RealSense R200: frente direita (x=0.064m, z=0.094m)
+
+  Plugins Gazebo (definidos em rbd_turtlebot3_waffle.gazebo2.xacro):
+    - 2x diff_drive (rodas dianteiras e traseiras geridas separadamente)
+    - IMU libgazebo_ros_imu.so
+    - LiDAR libgazebo_ros_laser.so → tópico /scan
+    - 4x range libgazebo_ros_range.so → /ultrasonico_f/t/d/e
+    - Câmera de profundidade libgazebo_ros_openni_kinect.so → /camera
+
+  Migração ROS2:
+    - Substituir $(find robodog1) por $(find robodog2)
+    - Substituir plugins ROS1 pelos equivalentes gazebo_ros2_control / gazebo_ros
+-->
 <robot name="turtlebot3_waffle" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- TODO ROS2: substituir robodog1 por robodog2 -->
   <xacro:include filename="$(find robodog1)/urdf/rbd_common_properties.xacro"/>
   <xacro:include filename="$(find robodog1)/urdf/rbd_turtlebot3_waffle.gazebo2.xacro"/>
 
