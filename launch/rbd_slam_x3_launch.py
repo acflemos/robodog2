@@ -1,34 +1,39 @@
 # rbd_slam_x3_launch.py
 # ======================
-# SLAM em simulação Gazebo — gera o mapa ~/rbd_mapa_moveis.yaml da casa.
+# SLAM em simulação Gazebo Fortress — gera mapa da casa (vazia ou com móveis).
 #
 # Etapa única de mapeamento: percorrer a casa com teleop enquanto o
 # slam_toolbox constrói o mapa em tempo real. Guardar quando pronto.
 #
 # O que lança:
-#   1. rbd_casa_x3_launch.py — Gazebo + X3 em cma_moveis.world (-3.0, -2.0)
+#   1. rbd_gz_x3_launch.py — Gazebo Fortress + X3 no mundo escolhido
 #   2. slam_toolbox (async_slam_toolbox_node) — SLAM 2D online
 #   3. RViz2 com map.rviz — visualiza /map + /scan + TF em tempo real
 #
-# Fluxo completo para gerar ~/rbd_mapa_moveis.yaml:
-#   Terminal 1: rbd2_slam_x3            (este launch — Gazebo + SLAM + RViz)
-#   Terminal 2: rbd2_teclado            (percorrer a casa)
-#   Terminal 2: rbd2_salva_mapa_moveis  (quando o mapa estiver completo)
-#   Depois:     rbd2_simulador_x3       (simulador completo com o mapa)
+# Fluxo completo:
+#   Terminal 1: rbd2_slam_x3_vazio        — Gazebo + SLAM + RViz (casa vazia)
+#            ou rbd2_slam_x3_moveis       — Gazebo + SLAM + RViz (casa com móveis)
+#   Terminal 2: rbd2_teclado              — percorrer a casa
+#   Terminal 2: rbd2_salva_mapa_vazio     — guardar ~/rbd_mapa_vazio.yaml
+#            ou rbd2_salva_mapa_moveis    — guardar ~/rbd_mapa_moveis.yaml
+#   Depois:     rbd2_simulador_x3        — simulador completo com o mapa
 #
 # Uso:
-#   ros2 launch robodog2 rbd_slam_x3_launch.py
+#   ros2 launch robodog2 rbd_slam_x3_launch.py                          (casa vazia — default)
+#   ros2 launch robodog2 rbd_slam_x3_launch.py world:=cma_moveis.world  (casa com móveis)
 #
-# Alias:
-#   alias rbd2_slam_x3='ros2 launch robodog2 rbd_slam_x3_launch.py'
+# Aliases:
+#   alias rbd2_slam_x3_vazio='ros2 launch robodog2 rbd_slam_x3_launch.py'
+#   alias rbd2_slam_x3_moveis='ros2 launch robodog2 rbd_slam_x3_launch.py world:=cma_moveis.world'
 
 import os
 
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 
@@ -39,12 +44,21 @@ def generate_launch_description():
     slam_params = os.path.join(get_package_share_directory('yahboomcar_nav'), 'params', 'rbd_slam_toolbox_params.yaml')
     rviz_config = os.path.join(get_package_share_directory('yahboomcar_nav'), 'rviz', 'map.rviz')
 
-    # Passo 1: Gazebo + X3 em cma_moveis.world, spawn em (-3.0, -2.0)
+    world_arg = DeclareLaunchArgument(
+        name='world',
+        default_value='cma_vazio.world',
+        description='Mundo Gazebo: cma_vazio.world (default) ou cma_moveis.world'
+    )
+
+    # Passo 1: Gazebo Fortress + X3 no mundo escolhido, spawn em (-3.0, -2.0)
     casa_x3 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_robodog2, 'launch', 'rbd_casa_x3_launch.py')
+            os.path.join(pkg_robodog2, 'launch', 'rbd_gz_x3_launch.py')
         ),
-        launch_arguments={'rviz': 'false'}.items()
+        launch_arguments={
+            'world': LaunchConfiguration('world'),
+            'rviz': 'false',
+        }.items()
     )
 
     # Passo 2: slam_toolbox — mapeamento 2D online assíncrono
@@ -69,6 +83,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        world_arg,
         casa_x3,
         slam_node,
         rviz_node,
