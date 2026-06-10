@@ -1,32 +1,33 @@
 # rbd_simulador_x3_launch.py
 # ==========================
-# Lança Nav2 (AMCL + DWB) + RViz2 sobre uma fonte de sensores já activa.
+# Simulador completo: Gazebo Fortress + Nav2 (AMCL omni + DWB) + RViz.
 #
-# NÃO lança o Gazebo. Deve ser usado em conjunto com um dos seguintes:
-#   Simulação: rbd2_casa_x3_teste  (Gazebo + robô no turtlebot3_house.world)
-#   Hardware:  rbd2_bringup        (robô real X3)
+# Pré-requisito: mapa da casa gerado com rbd2_slam_x3_vazio ou rbd2_slam_x3_moveis.
+#   ~/rbd_mapa_vazio.yaml   (casa vazia — gerado em 2026-06-10)
+#   ~/rbd_mapa_moveis.yaml  (casa com móveis — gerar com rbd2_slam_x3_moveis)
 #
-# Fluxo simulação:
-#   Terminal 1: rbd2_casa_x3_teste   ← Gazebo + sensores
-#   Terminal 2: rbd2_simulador_x3    ← Nav2 + RViz (este ficheiro)
+# O que lança:
+#   1. rbd_gz_x3_launch.py  — Gazebo Fortress + X3 no mundo escolhido
+#   2. navigation_dwa_launch.py — Nav2 (AMCL + DWB + BT Navigator + recoveries)
+#   3. RViz2 com nav.rviz   — visualiza mapa + costmaps + TF + scan
 #
-# Fluxo hardware:
-#   Terminal 1: rbd2_bringup         ← bringup real
-#   Terminal 2: rbd2_simulador_x3 sim:=false  ← Nav2 + RViz
+# Fluxo completo:
+#   Terminal 1: rbd2_simulador_x3          — Gazebo + Nav2 + RViz (mapa vazio — default)
+#            ou rbd2_simulador_x3_moveis   — Gazebo + Nav2 + RViz (mapa com móveis)
+#   Terminal 2: rbd2_navega               — loop autónomo de patrulha por pesos
+#   Terminal 2: rbd2_teclado             — teleop manual alternativo
 #
-# Pré-requisito — mapa da casa:
-#   ~/rbd_mapa_moveis.yaml deve existir.
-#   Para gerar com simulação: rbd2_slam_x3 + rbd2_teclado + rbd2_salva_mapa_moveis
+# Uso:
+#   ros2 launch robodog2 rbd_simulador_x3_launch.py
+#   ros2 launch robodog2 rbd_simulador_x3_launch.py world:=cma_moveis.world map:=$HOME/rbd_mapa_moveis.yaml
 #
-# Argumentos:
-#   map      (default: ~/rbd_mapa_moveis.yaml)
-#   sim      (default: true) — true=use_sim_time, false=hardware real
-#
-# Alias:
+# Aliases:
 #   alias rbd2_simulador_x3='ros2 launch robodog2 rbd_simulador_x3_launch.py'
+#   alias rbd2_simulador_x3_moveis='ros2 launch robodog2 rbd_simulador_x3_launch.py world:=cma_moveis.world map:=$HOME/rbd_mapa_moveis.yaml'
 #
-# Referência ROS1:
-#   robodog1/launch/rbd/robodog_simulador_x3.launch
+# Hardware real (sem Gazebo):
+#   Terminal 1: rbd2_bringup
+#   Terminal 2: ros2 launch robodog2 rbd_simulador_x3_launch.py sim:=false map:=<caminho>
 
 import os
 
@@ -34,6 +35,7 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
@@ -41,24 +43,45 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    default_map = os.path.join(os.path.expanduser('~'), 'rbd_mapa_moveis.yaml')
+    pkg_robodog2 = get_package_share_directory('robodog2')
+    default_map = os.path.join(os.path.expanduser('~'), 'rbd_mapa_vazio.yaml')
     sim_params = os.path.join(get_package_share_directory('yahboomcar_nav'), 'params', 'rbd_sim_dwa_params.yaml')
     rviz_config = os.path.join(get_package_share_directory('yahboomcar_nav'), 'rviz', 'nav.rviz')
+
+    world_arg = DeclareLaunchArgument(
+        name='world',
+        default_value='cma_vazio.world',
+        description='Mundo Gazebo: cma_vazio.world (default) ou cma_moveis.world'
+    )
 
     map_arg = DeclareLaunchArgument(
         name='map',
         default_value=default_map,
-        description='Caminho para o ficheiro YAML do mapa da casa'
+        description='Caminho para o ficheiro YAML do mapa (default: ~/rbd_mapa_vazio.yaml)'
     )
 
     sim_arg = DeclareLaunchArgument(
         name='sim',
         default_value='true',
         choices=['true', 'false'],
-        description='true=simulação (use_sim_time), false=hardware real'
+        description='true=simulação (lança Gazebo + use_sim_time), false=hardware real'
     )
 
-    # Nav2 — AMCL (omni) + DWB + mapa pré-construído
+    # Passo 1: Gazebo Fortress + X3 no mundo escolhido (apenas em modo simulação)
+    casa_x3 = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_robodog2, 'launch', 'rbd_gz_x3_launch.py')
+        ),
+        launch_arguments={
+            'world': LaunchConfiguration('world'),
+            'rviz': 'false',
+        }.items(),
+        condition=IfCondition(LaunchConfiguration('sim'))
+    )
+
+    # Passo 2: Nav2 — AMCL (OmniMotionModel) + DWB + BT Navigator + recoveries
+    #   Publica: TF map→odom (AMCL), /cmd_vel (DWB)
+    #   Subscreve: /scan, /odom, TF odom→base_footprint
     nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('yahboomcar_nav'), 'launch', 'navigation_dwa_launch.py')
@@ -70,7 +93,7 @@ def generate_launch_description():
         }.items()
     )
 
-    # RViz2 com configuração de navegação (mapa + laser + costmaps + TF)
+    # Passo 3: RViz2 — mapa + costmaps + TF + scan + seta de goal
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -81,8 +104,10 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        world_arg,
         map_arg,
         sim_arg,
+        casa_x3,
         nav2,
         rviz_node,
     ])
