@@ -123,18 +123,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 6. Filtro IMU: /imu/data_raw (bridge) → /imu/data (orientação fundida)
-    imu_filter = Node(
-        package='imu_filter_madgwick',
-        executable='imu_filter_madgwick_node',
-        parameters=[{
-            'use_sim_time': True,
-            'use_mag': False,
-            'publish_tf': False,
-        }]
-    )
-
-    # 7. RViz2 (opcional)
+    # 6. RViz2 (opcional)
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -152,6 +141,5 @@ def generate_launch_description():
         robot_state_publisher,
         spawn_robot,
         bridge,
-        imu_filter,
         rviz_node,
     ])
