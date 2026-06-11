@@ -44,23 +44,29 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 ### Validado ✅
 
 - Robô ROSMASTER X3 spawnado em `cma_moveis.world` e `cma_vazio.world` sem flickering
-- Teleop mecanum omnidirecional: frente/trás, strafe, rotação, diagonais
+- Teleop mecanum omnidirecional: frente/trás, strafe, rotação, diagonais — `/cmd_vel` chega ao robô ✅
 - `OdometryPublisher` publicando `/odom` e TF `odom→base_footprint`
 - LiDAR `/scan` bridgado e funcional
 - **SLAM funcional** — `rbd2_slam_x3_vazio` gera mapa em tempo real
 - **Mapa da casa vazia gerado e guardado:** `~/rbd_mapa_vazio.yaml` (485×378 @ 0.05 m/px)
 - **`rbd2_simulador_x3` funcional** — Gazebo Fortress + Nav2 (AMCL omni + DWB) + RViz tudo-em-um
 - **Nav2 stack activo** — `bt_navigator`, `planner_server`, `controller_server`, `amcl` todos em `active`
-- AMCL localiza robô em (-3.0, -2.0) com `~/rbd_mapa_vazio.yaml` (485×378 @ 0.05 m/px)
-- Terminal sem warnings accionáveis
+- AMCL localiza robô em (-3.0, -2.0) com `~/rbd_mapa_vazio.yaml`
+- Global path planeado correctamente (linha amarela visível no RViz)
+- Velocity commands chegam ao robô: Nav2 gera **rotação** (robô roda), mas **não gera velocidade linear**
 
-### Em progresso ⚠️
+### Em diagnóstico ⚠️
 
-- Teste de goal autónomo via RViz (2D Nav Goal) — a validar
-- `rbd2_navega` — loop autónomo de patrulha por pesos
+**Sintoma**: `rbd2_navega` e 2D Nav Goal no RViz → robô roda em direcção ao caminho mas não avança.
+**Teleop funciona** → bridge `/cmd_vel`→Gazebo OK. O problema está no DWB a não gerar `vx/vy ≠ 0`.
+
+Hipótese mais provável: o `ObstacleLayer` do local costmap marca obstáculos demasiado próximos do robô
+(leituras LiDAR próximas + `inflation_radius` → área em redor do robô fica tudo bloqueado para DWB).
+Próximo passo: comparar com código de navegação nativo da Yahboom / rosmaster X3 para encontrar diferença.
 
 ### Por fazer ❌
 
+- **Diagnóstico DWB** — encontrar porque DWB não gera velocidade linear (ver ponto seguinte)
 - Mapa da casa com móveis (`rbd2_slam_x3_moveis`)
 - Navegação autónoma validada em simulação (`rbd2_navega`)
 - Calibração dos pontos de destino `rbd_tabelas.py` para `cma_vazio.world`
@@ -227,8 +233,11 @@ sudo apt install -y \
 `~/ros2_ws/src/yahboomcar_nav/params/rbd_sim_dwa_params.yaml`:
 - `robot_model_type: "nav2_amcl::OmniMotionModel"` — AMCL omni para mecanum
 - `set_initial_pose: true`, `x: -3.0`, `y: -2.0` — pose de spawn
-- `inflation_radius: 0.15` (local e global costmap) — maior que inscribed radius 0.108
+- `inflation_radius: 0.12` (local e global costmap) — acima do inscribed radius 0.108
+- `cost_scaling_factor: 3.0` — gradiente mais suave para dar mais espaço ao DWB
+- `sim_time: 0.5` (DWB) — trajectórias mais curtas (era 1.5 s)
 - `plugin_lib_names` — adicionar: `nav2_remove_passed_goals_action_bt_node`, `nav2_compute_path_through_poses_action_bt_node`, `nav2_navigate_to_pose_action_bt_node`, `nav2_navigate_through_poses_action_bt_node`
+- `critics: ["BaseObstacle", "PathDist", "GoalDist"]` — removidos `RotateToGoal`, `GoalAlign`, `PathAlign`, `Oscillation` (inadequados para mecanum omnidireccional)
 
 `~/ros2_ws/src/yahboomcar_nav/params/rbd_slam_toolbox_params.yaml`:
 - `base_frame: base_footprint`, `scan_topic: /scan`, `max_laser_range: 12.0`
