@@ -27,6 +27,8 @@ setup(
         ('share/' + package_name + '/config', glob.glob('config/*.yaml')),
         # Parâmetros Nav2 (git-tracked — substituem yahboomcar_nav para simulação)
         ('share/' + package_name + '/params', glob.glob('params/*.yaml')),
+        # Configurações RViz (rbd_nav.rviz, rbd_map.rviz — copiados do yahboomcar_nav)
+        ('share/' + package_name + '/rviz', glob.glob('rviz/*.rviz')),
 
     ],
     install_requires=['setuptools'],
