@@ -39,7 +39,7 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 
 ---
 
-## Status actual (2026-06-10)
+## Status actual (2026-06-11)
 
 ### Validado ✅
 
@@ -49,13 +49,15 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 - LiDAR `/scan` bridgado e funcional
 - **SLAM funcional** — `rbd2_slam_x3_vazio` gera mapa em tempo real
 - **Mapa da casa vazia gerado e guardado:** `~/rbd_mapa_vazio.yaml` (485×378 @ 0.05 m/px)
+- **`rbd2_simulador_x3` funcional** — Gazebo Fortress + Nav2 (AMCL omni + DWB) + RViz tudo-em-um
+- **Nav2 stack activo** — `bt_navigator`, `planner_server`, `controller_server`, `amcl` todos em `active`
+- AMCL localiza robô em (-3.0, -2.0) com `~/rbd_mapa_vazio.yaml` (485×378 @ 0.05 m/px)
 - Terminal sem warnings accionáveis
 
 ### Em progresso ⚠️
 
-- `rbd2_simulador_x3` — Nav2 + AMCL com mapa guardado
-- `bt_navigator` inactivo (a diagnosticar)
-- TF chain completa para RViz (`map→odom→base_footprint→base_link`)
+- Teste de goal autónomo via RViz (2D Nav Goal) — a validar
+- `rbd2_navega` — loop autónomo de patrulha por pesos
 
 ### Por fazer ❌
 
@@ -219,6 +221,18 @@ sudo apt install -y \
   ros-humble-xacro \
   ros-humble-teleop-twist-keyboard
 ```
+
+**Configurações em `yahboomcar_nav` (fora do git — aplicar manualmente após clone):**
+
+`~/ros2_ws/src/yahboomcar_nav/params/rbd_sim_dwa_params.yaml`:
+- `robot_model_type: "nav2_amcl::OmniMotionModel"` — AMCL omni para mecanum
+- `set_initial_pose: true`, `x: -3.0`, `y: -2.0` — pose de spawn
+- `inflation_radius: 0.15` (local e global costmap) — maior que inscribed radius 0.108
+- `plugin_lib_names` — adicionar: `nav2_remove_passed_goals_action_bt_node`, `nav2_compute_path_through_poses_action_bt_node`, `nav2_navigate_to_pose_action_bt_node`, `nav2_navigate_through_poses_action_bt_node`
+
+`~/ros2_ws/src/yahboomcar_nav/params/rbd_slam_toolbox_params.yaml`:
+- `base_frame: base_footprint`, `scan_topic: /scan`, `max_laser_range: 12.0`
+- `min_laser_range: 0.13` — LiDAR simulado tem min=0.12
 
 ---
 
