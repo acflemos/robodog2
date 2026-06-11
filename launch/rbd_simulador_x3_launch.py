@@ -45,7 +45,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     pkg_robodog2 = get_package_share_directory('robodog2')
     default_map = os.path.join(os.path.expanduser('~'), 'rbd_mapa_vazio.yaml')
-    sim_params = os.path.join(get_package_share_directory('yahboomcar_nav'), 'params', 'rbd_sim_dwa_params.yaml')
+    sim_params = os.path.join(pkg_robodog2, 'params', 'rbd_sim_dwa_params.yaml')
     rviz_config = os.path.join(get_package_share_directory('yahboomcar_nav'), 'rviz', 'nav.rviz')
 
     world_arg = DeclareLaunchArgument(

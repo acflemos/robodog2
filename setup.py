@@ -25,6 +25,8 @@ setup(
         ('share/' + package_name + '/meshes/sensor', glob.glob('meshes/sensor/*.STL')),
         # Configuração de bridges ROS↔Gazebo
         ('share/' + package_name + '/config', glob.glob('config/*.yaml')),
+        # Parâmetros Nav2 (git-tracked — substituem yahboomcar_nav para simulação)
+        ('share/' + package_name + '/params', glob.glob('params/*.yaml')),
 
     ],
     install_requires=['setuptools'],
@@ -41,6 +43,7 @@ setup(
     entry_points={
         'console_scripts': [
             'rbd_navega = robodog2.rbd_navega:main',
+            'rbd_nav_simples = robodog2.rbd_nav_simples:main',
         ],
     },
 )
