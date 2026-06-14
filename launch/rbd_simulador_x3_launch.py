@@ -45,8 +45,8 @@ from launch_ros.actions import Node
 def generate_launch_description():
     pkg_robodog2 = get_package_share_directory('robodog2')
     default_map = os.path.join(os.path.expanduser('~'), 'rbd_mapa_vazio.yaml')
-    sim_params = os.path.join(get_package_share_directory('yahboomcar_nav'), 'params', 'rbd_sim_dwa_params.yaml')
-    rviz_config = os.path.join(get_package_share_directory('yahboomcar_nav'), 'rviz', 'nav.rviz')
+    sim_params = os.path.join(pkg_robodog2, 'params', 'dwa_nav_params.yaml')
+    rviz_config = os.path.join(pkg_robodog2, 'rviz', 'nav.rviz')
 
     world_arg = DeclareLaunchArgument(
         name='world',
@@ -84,7 +84,7 @@ def generate_launch_description():
     #   Subscreve: /scan, /odom, TF odom→base_footprint
     nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('yahboomcar_nav'), 'launch', 'navigation_dwa_launch.py')
+            os.path.join(pkg_robodog2, 'launch', 'navigation_dwa_launch.py')
         ),
         launch_arguments={
             'use_sim_time': LaunchConfiguration('sim'),
