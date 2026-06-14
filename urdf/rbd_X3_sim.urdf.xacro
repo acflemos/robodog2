@@ -304,7 +304,7 @@
       <robot_base_frame>base_footprint</robot_base_frame>
       <odom_topic>odom</odom_topic>
       <tf_topic>tf</tf_topic>
-      <odom_publish_frequency>30</odom_publish_frequency>
+      <odom_publish_frequency>10</odom_publish_frequency>
       <dimensions>2</dimensions>
     </plugin>
   </gazebo>
