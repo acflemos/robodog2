@@ -52,17 +52,19 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 - **Nav2 + DWB funcional em simulação** — `rbd2_simulador_x3` arranca sem erros
 - **Navegação autónoma por goal**: Nav2 Goal → robô chega ao destino de forma eficiente
 - RViz com `robodog2.rviz`: Nav2 panel, mapa, costmaps local/global, paths visíveis
+- **`rbd2_navega` funcional em simulação** — robô patrulha de forma fluida entre cômodos via loop por pesos; pesos altos no Quarto M e Banheiro M induzem visita ao cômodo mais difícil — robô chega lá ✅
 
 ### Em progresso ⚠️
 
-- `rbd2_navega` — loop autónomo de patrulha (Nav2 funcionou, pronto para testar)
-- Calibração de `rbd_tabelas.py` — pontos de destino precisam ser ajustados para `cma_vazio.world`
+- Robô fica preso em cantos de cômodos pequenos (Banheiro M) — lógica de escape a implementar
+- Calibração de `rbd_tabelas.py` — alguns pontos de destino precisam de ajuste fino para `cma_vazio.world`
 
 ### Por fazer ❌
 
+- Lógica de escape de cantos apertados em `rbd_md.py` / `rbd_funcoes.py`
 - Mapa da casa com móveis (`rbd2_slam_x3_moveis`)
-- Navegação autónoma validada em simulação (`rbd2_navega`)
 - Calibração completa dos pontos de destino para a casa simulada
+- Limpeza de código — remover ficheiros/params/launches não usados; preparar projecto para público
 - `rbd2_bringup` no ROSMASTER X3 real
 - Ciclo autónomo em hardware físico
 
