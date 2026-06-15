@@ -106,40 +106,44 @@ def foge_de_parede():
     Chamada automaticamente no início de move_to_goal(). Usa leituras do laser
     em m = [Frente, Trás, Direita, Esquerda] para decidir a direção de escape.
     Publica directamente em /cmd_vel (Nav2 está idle após goal falhado).
+    Tenta até 2 vezes se ainda estiver perto após a primeira manobra.
     """
     global m, _cmd_vel_pub, _node
     if _cmd_vel_pub is None:
         return
     if min(m) == 0:      # laser ainda não recebido (arranque)
         return
-    if min(m) >= DIST_PAREDE_MIN:
-        return           # espaço suficiente — nada a fazer
 
-    F, T, D, E = m[0], m[1], m[2], m[3]
-    _node.get_logger().info(
-        f'Parede próxima (F={F:.2f} T={T:.2f} D={D:.2f} E={E:.2f}) — a recuar'
-    )
+    for tentativa in range(2):
+        if min(m) >= DIST_PAREDE_MIN:
+            return       # espaço suficiente — nada a fazer
 
-    twist = Twist()
-    # escapar para o lado com mais espaço livre
-    if T >= F:
-        twist.linear.x = -0.15   # mais livre atrás → recua
-    else:
-        twist.linear.x = 0.15    # mais livre à frente → avança
+        F, T, D, E = m[0], m[1], m[2], m[3]
+        _node.get_logger().info(
+            f'Parede próxima (F={F:.2f} T={T:.2f} D={D:.2f} E={E:.2f})'
+            f' — tentativa {tentativa + 1}'
+        )
 
-    for _ in range(15):           # 1.5 s de translação
-        _cmd_vel_pub.publish(twist)
-        time.sleep(0.1)
+        twist = Twist()
+        # escapar para o lado com mais espaço livre
+        if T >= F:
+            twist.linear.x = -0.15   # mais livre atrás → recua
+        else:
+            twist.linear.x = 0.15    # mais livre à frente → avança
 
-    # roda ~90° para alinhar com direcção livre
-    rot = Twist()
-    rot.angular.z = 1.0
-    for _ in range(10):           # 1 s de rotação
-        _cmd_vel_pub.publish(rot)
-        time.sleep(0.1)
+        for _ in range(25):           # 2.5 s (~0.38 m de translação)
+            _cmd_vel_pub.publish(twist)
+            time.sleep(0.1)
 
-    _cmd_vel_pub.publish(Twist())  # para
-    time.sleep(0.5)                # aguarda costmap atualizar com nova scan
+        # roda ~170° para sair do alinhamento com o canto
+        rot = Twist()
+        rot.angular.z = 1.0
+        for _ in range(30):           # 3.0 s (~170°)
+            _cmd_vel_pub.publish(rot)
+            time.sleep(0.1)
+
+        _cmd_vel_pub.publish(Twist())  # para
+        time.sleep(1.0)               # aguarda costmap actualizar com nova scan
 
 
 # =============================================================================
