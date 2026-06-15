@@ -9,7 +9,7 @@
 # O que lança:
 #   1. rbd_gz_x3_launch.py  — Gazebo Fortress + X3 no mundo escolhido
 #   2. navigation_dwa_launch.py — Nav2 (AMCL + DWB + BT Navigator + recoveries)
-#   3. RViz2 com nav.rviz   — visualiza mapa + costmaps + TF + scan
+#   3. RViz2 com robodog2.rviz — visualiza mapa + costmaps + TF + scan + Nav2 panel
 #
 # Fluxo completo:
 #   Terminal 1: rbd2_simulador_x3          — Gazebo + Nav2 + RViz (mapa vazio — default)
@@ -46,7 +46,7 @@ def generate_launch_description():
     pkg_robodog2 = get_package_share_directory('robodog2')
     default_map = os.path.join(os.path.expanduser('~'), 'rbd_mapa_vazio.yaml')
     sim_params = os.path.join(pkg_robodog2, 'params', 'rbd_dwa_nav_params.yaml')
-    rviz_config = os.path.join(pkg_robodog2, 'rviz', 'nav.rviz')
+    rviz_config = os.path.join(pkg_robodog2, 'rviz', 'robodog2.rviz')
 
     world_arg = DeclareLaunchArgument(
         name='world',
