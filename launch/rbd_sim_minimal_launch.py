@@ -114,7 +114,7 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         arguments=['-d', os.path.join(
-            get_package_share_directory('yahboomcar_nav'), 'rviz', 'nav.rviz'
+            pkg_robodog2, 'rviz', 'nav.rviz'
         )],
         parameters=[{'use_sim_time': True}],
         condition=IfCondition(LaunchConfiguration('rviz'))

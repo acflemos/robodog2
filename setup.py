@@ -25,6 +25,11 @@ setup(
         ('share/' + package_name + '/meshes/sensor', glob.glob('meshes/sensor/*.STL')),
         # Configuração de bridges ROS↔Gazebo
         ('share/' + package_name + '/config', glob.glob('config/*.yaml')),
+        # Parâmetros Nav2
+        ('share/' + package_name + '/params',
+            glob.glob('params/*.yaml') + glob.glob('params/*.lua')),
+        # Configurações RViz
+        ('share/' + package_name + '/rviz', glob.glob('rviz/*.rviz')),
 
     ],
     install_requires=['setuptools'],

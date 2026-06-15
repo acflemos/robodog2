@@ -39,7 +39,7 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 
 ---
 
-## Status actual (2026-06-10)
+## Status actual (2026-06-15)
 
 ### Validado ✅
 
@@ -49,19 +49,20 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 - LiDAR `/scan` bridgado e funcional
 - **SLAM funcional** — `rbd2_slam_x3_vazio` gera mapa em tempo real
 - **Mapa da casa vazia gerado e guardado:** `~/rbd_mapa_vazio.yaml` (485×378 @ 0.05 m/px)
-- Terminal sem warnings accionáveis
+- **Nav2 + DWB funcional em simulação** — `rbd2_simulador_x3` arranca sem erros
+- **Navegação autónoma por goal**: Nav2 Goal → robô chega ao destino de forma eficiente
+- RViz com `robodog2.rviz`: Nav2 panel, mapa, costmaps local/global, paths visíveis
 
 ### Em progresso ⚠️
 
-- `rbd2_simulador_x3` — Nav2 + AMCL com mapa guardado
-- `bt_navigator` inactivo (a diagnosticar)
-- TF chain completa para RViz (`map→odom→base_footprint→base_link`)
+- `rbd2_navega` — loop autónomo de patrulha (Nav2 funcionou, pronto para testar)
+- Calibração de `rbd_tabelas.py` — pontos de destino precisam ser ajustados para `cma_vazio.world`
 
 ### Por fazer ❌
 
 - Mapa da casa com móveis (`rbd2_slam_x3_moveis`)
 - Navegação autónoma validada em simulação (`rbd2_navega`)
-- Calibração dos pontos de destino `rbd_tabelas.py` para `cma_vazio.world`
+- Calibração completa dos pontos de destino para a casa simulada
 - `rbd2_bringup` no ROSMASTER X3 real
 - Ciclo autónomo em hardware físico
 
@@ -162,10 +163,16 @@ rbd_gz_x3_launch.py
 ├── ros_gz_sim create                 ← spawn rosmaster_x3 em (-3.0, -2.0, 0.1)
 └── ros_gz_bridge (parameter_bridge)  ← config: config/rbd_x3_bridge.yaml
 
+rbd_simulador_x3_launch.py
+├── rbd_gz_x3_launch.py               ← Gazebo Fortress (world configurável)
+├── navigation_dwa_launch.py          ← Nav2: AMCL omni + DWB + BT Navigator + recoveries
+│                                        params: params/rbd_dwa_nav_params.yaml
+└── rviz2                             ← config: rviz/robodog2.rviz (Nav2 panel + costmaps)
+
 rbd_slam_x3_launch.py
 ├── rbd_gz_x3_launch.py               ← Gazebo Fortress (world configurável)
-├── async_slam_toolbox_node           ← params: yahboomcar_nav/params/rbd_slam_toolbox_params.yaml
-└── rviz2                             ← config: yahboomcar_nav/rviz/map.rviz
+├── async_slam_toolbox_node           ← params: params/rbd_slam_toolbox_params.yaml
+└── rviz2                             ← config: rviz/map.rviz
 ```
 
 **Plugins URDF activos (Fortress v6):**
