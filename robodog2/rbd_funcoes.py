@@ -14,13 +14,14 @@
 
 import math
 import threading
+import time
 
 import rclpy
 from rclpy.action import ActionClient
 from sensor_msgs.msg import LaserScan
 from nav2_msgs.action import NavigateToPose
 from action_msgs.msg import GoalStatus
-from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import Quaternion, Twist
 
 from .rbd_tabelas import (PD, CM, RT, PC, PT,
                           Tarefas_Ativas, Pesos_Tarefas, Decrementa_Peso)
@@ -31,12 +32,16 @@ from .rbd_tabelas import (PD, CM, RT, PC, PT,
 # =============================================================================
 _node = None
 _nav_client = None
+_cmd_vel_pub = None
+
+DIST_PAREDE_MIN = 0.35  # distância mínima a parede para navegação segura (metros)
 
 
 def set_node(node):
-    global _node, _nav_client
+    global _node, _nav_client, _cmd_vel_pub
     _node = node
     _nav_client = ActionClient(node, NavigateToPose, 'navigate_to_pose')
+    _cmd_vel_pub = node.create_publisher(Twist, '/cmd_vel', 10)
 
 
 # =============================================================================
@@ -92,6 +97,56 @@ def average_between_indices(ranges, i, j):
 
 
 # =============================================================================
+# Recuperação de proximidade a paredes
+# =============================================================================
+
+def foge_de_parede():
+    """Recua e roda para ganhar espaço quando preso junto a uma parede.
+
+    Chamada automaticamente no início de move_to_goal(). Usa leituras do laser
+    em m = [Frente, Trás, Direita, Esquerda] para decidir a direção de escape.
+    Publica directamente em /cmd_vel (Nav2 está idle após goal falhado).
+    Tenta até 2 vezes se ainda estiver perto após a primeira manobra.
+    """
+    global m, _cmd_vel_pub, _node
+    if _cmd_vel_pub is None:
+        return
+    if min(m) == 0:      # laser ainda não recebido (arranque)
+        return
+
+    for tentativa in range(2):
+        if min(m) >= DIST_PAREDE_MIN:
+            return       # espaço suficiente — nada a fazer
+
+        F, T, D, E = m[0], m[1], m[2], m[3]
+        _node.get_logger().info(
+            f'Parede próxima (F={F:.2f} T={T:.2f} D={D:.2f} E={E:.2f})'
+            f' — tentativa {tentativa + 1}'
+        )
+
+        twist = Twist()
+        # escapar para o lado com mais espaço livre
+        if T >= F:
+            twist.linear.x = -0.15   # mais livre atrás → recua
+        else:
+            twist.linear.x = 0.15    # mais livre à frente → avança
+
+        for _ in range(25):           # 2.5 s (~0.38 m de translação)
+            _cmd_vel_pub.publish(twist)
+            time.sleep(0.1)
+
+        # roda ~170° para sair do alinhamento com o canto
+        rot = Twist()
+        rot.angular.z = 1.0
+        for _ in range(30):           # 3.0 s (~170°)
+            _cmd_vel_pub.publish(rot)
+            time.sleep(0.1)
+
+        _cmd_vel_pub.publish(Twist())  # para
+        time.sleep(1.0)               # aguarda costmap actualizar com nova scan
+
+
+# =============================================================================
 # Navegação via Nav2 (NavigateToPose action)
 # =============================================================================
 
@@ -105,6 +160,8 @@ def move_to_goal(xGoal, yGoal):
     # que causaria deadlock com o MultiThreadedExecutor ativo em rbd_navega.py.
     # ==========================================================================
     global goal, _node, _nav_client
+
+    foge_de_parede()   # escapa de cantos/paredes antes de enviar goal ao Nav2
 
     goal_msg = NavigateToPose.Goal()
     goal_msg.pose.header.frame_id = 'map'
