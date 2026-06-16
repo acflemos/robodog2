@@ -14,8 +14,8 @@
 #   Terminal 1: rbd2_slam_x3_vazio        — Gazebo + SLAM + RViz (casa vazia)
 #            ou rbd2_slam_x3_moveis       — Gazebo + SLAM + RViz (casa com móveis)
 #   Terminal 2: rbd2_teclado              — percorrer a casa
-#   Terminal 2: rbd2_salva_mapa_vazio     — guardar ~/rbd_mapa_vazio.yaml
-#            ou rbd2_salva_mapa_moveis    — guardar ~/rbd_mapa_moveis.yaml
+#   Terminal 2: rbd2_salva_mapa_vazio     — salvar ~/rbd_mapa_vazio.yaml
+#            ou rbd2_salva_mapa_moveis    — salvar ~/rbd_mapa_moveis.yaml
 #   Depois:     rbd2_simulador_x3        — simulador completo com o mapa
 #
 # Uso:
@@ -63,7 +63,7 @@ def generate_launch_description():
 
     # Passo 2: slam_toolbox — mapeamento 2D online assíncrono
     #   Publica: /map (OccupancyGrid), TF map→odom
-    #   Subscreve: /scan, TF odom→base_footprint (via Gazebo planar_move plugin)
+    #   Subscreve: /scan, TF odom→base_footprint (via Gazebo odometry publisher)
     slam_node = Node(
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
