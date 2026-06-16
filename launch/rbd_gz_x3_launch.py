@@ -1,12 +1,11 @@
 # rbd_gz_x3_launch.py
 # ====================
-# Launch para Gazebo Harmonic (Ignition Gazebo 6) + ROS2 Humble.
+# Gazebo Fortress (Ignition Gazebo v6) + ROSMASTER X3 + ROS2 Humble.
 #
-# Substitui rbd_casa_x3_launch.py (Gazebo Classic) após migração.
-# Para uso inicial usa o mundo vazio (rbd_gz_empty.world).
-# Quando estiver validado, trocar para o mundo da casa.
+# Lança o simulador Gazebo com o robô spawnado em (-3.0, -2.0).
+# Usado como base por rbd_simulador_x3_launch.py e rbd_slam_x3_launch.py.
 #
-# Uso:
+# Uso direto (Gazebo isolado, sem Nav2):
 #   ros2 launch robodog2 rbd_gz_x3_launch.py
 #   ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true
 #   ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world
@@ -32,27 +31,17 @@ def generate_launch_description():
     urdf_path = os.path.join(pkg_robodog2, 'urdf', 'rbd_X3_sim.urdf.xacro')
     bridge_config = os.path.join(pkg_robodog2, 'config', 'rbd_x3_bridge.yaml')
 
-    # Permite que o Ignition Gazebo encontre os ficheiros model://robodog2/meshes/...
-    # O share/ contém a pasta robodog2/ que o Gazebo usa como raiz do modelo
+    # Permite que o Ignition Gazebo encontre os arquivos model://robodog2/meshes/...
+    # O share/ contém a pasta robodog2/ que o Gazebo usa como raiz do modelo.
     set_ign_resource_path = AppendEnvironmentVariable(
         'IGN_GAZEBO_RESOURCE_PATH',
         os.path.join(pkg_robodog2, '..')
     )
 
-    # Permite que o Ignition Gazebo encontre model://turtlebot3_house
-    set_tb3_resource_path = AppendEnvironmentVariable(
-        'IGN_GAZEBO_RESOURCE_PATH',
-        os.path.join(
-            os.path.expanduser('~'),
-            'turtlebot3_gz_ws', 'install', 'turtlebot3_gazebo',
-            'share', 'turtlebot3_gazebo', 'models'
-        )
-    )
-
     world_arg = DeclareLaunchArgument(
         name='world',
         default_value='rbd_gz_empty.world',
-        description='Ficheiro world em share/robodog2/worlds/'
+        description='Arquivo world em share/robodog2/worlds/'
     )
 
     rviz_arg = DeclareLaunchArgument(
@@ -72,7 +61,7 @@ def generate_launch_description():
         value_type=str
     )
 
-    # 1. Servidor Gazebo Harmonic
+    # 1. Servidor Gazebo Fortress
     gz_server = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
@@ -133,7 +122,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         set_ign_resource_path,
-        set_tb3_resource_path,
         world_arg,
         rviz_arg,
         gz_server,

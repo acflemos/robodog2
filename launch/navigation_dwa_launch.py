@@ -1,30 +1,21 @@
 # navigation_dwa_launch.py
 # =========================
-# Navegação autónoma Nav2 com planeador local DWB (Dynamic Window-Based).
-# Assume que o mapa já existe (yahboomcar.yaml) e que o bringup do hardware
-# e o LiDAR estão ativos (executar laser_bringup_launch.py separadamente).
+# Nav2 com planejador local DWB (Dynamic Window-Based).
+# Incluído pelo rbd_simulador_x3_launch.py — não usar diretamente.
 #
-# Argumentos:
-#   use_sim_time  — false por padrão (hardware real); mudar para true em Gazebo
-#   map           — caminho para o .yaml do mapa (padrão: maps/yahboomcar.yaml)
-#   params_file   — caminho para o YAML de parâmetros Nav2 (padrão: dwa_nav_params.yaml)
+# Argumentos (passados pelo rbd_simulador_x3_launch.py):
+#   use_sim_time  — true em simulação, false em hardware real
+#   map           — caminho para o .yaml do mapa
+#   params_file   — caminho para o YAML de parâmetros Nav2
 #
-# Cadeia (dentro do nav2_bringup):
-#   AMCL → localização probabilística com mapa
-#   DWB (controller_server) → planeador local (janela dinâmica)
-#   NavFn (planner_server) → planeador global (Dijkstra/A*)
-#   BT Navigator → coordena o pipeline de navegação
-#   recoveries_server → spin, backup, wait em caso de bloqueio
+# Pipeline Nav2 (via nav2_bringup):
+#   AMCL (OmniMotionModel) → localização probabilística com mapa
+#   DWB (controller_server) → planejador local de trajetória
+#   NavFn (planner_server)  → planejador global (Dijkstra/A*)
+#   BT Navigator            → coordena o pipeline de navegação
+#   recoveries_server       → spin, backup, wait em caso de bloqueio
 #
-# ATENÇÃO — BUG crítico em dwa_nav_params.yaml:
-#   robot_model_type: "differential"  — ERRADO para o X3 (mecanum/holonómico)
-#   Deve ser "omni" para AMCL funcionar corretamente com mecanum wheels.
-#   Além disso, max_vel_y: 0.0 e vy_samples: 0 desativam movimento lateral,
-#   negando a vantagem holonómica do X3.
-#
-# Relevância para robodog2:
-#   Template principal de navegação. Corrigir robot_model_type e habilitar
-#   velocidade Y antes de usar com robodog2.
+# Parâmetros ativos em robodog2: params/rbd_dwa_nav_params.yaml
 
 import os
 from ament_index_python.packages import get_package_share_directory

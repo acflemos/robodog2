@@ -14,7 +14,7 @@
 # Fluxo completo:
 #   Terminal 1: rbd2_simulador_x3          — Gazebo + Nav2 + RViz (mapa vazio — default)
 #            ou rbd2_simulador_x3_moveis   — Gazebo + Nav2 + RViz (mapa com móveis)
-#   Terminal 2: rbd2_navega               — loop autónomo de patrulha por pesos
+#   Terminal 2: rbd2_navega               — loop autônomo de patrulha por pesos
 #   Terminal 2: rbd2_teclado             — teleop manual alternativo
 #
 # Uso:
@@ -57,7 +57,7 @@ def generate_launch_description():
     map_arg = DeclareLaunchArgument(
         name='map',
         default_value=default_map,
-        description='Caminho para o ficheiro YAML do mapa (default: ~/rbd_mapa_vazio.yaml)'
+        description='Caminho para o arquivo YAML do mapa (default: ~/rbd_mapa_vazio.yaml)'
     )
 
     sim_arg = DeclareLaunchArgument(
