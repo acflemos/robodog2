@@ -52,11 +52,11 @@ def set_node(node):
 m  = [0, 0, 0, 0]
 m1 = m  # mesma referência (não é cópia)
 
-lc = [0, 0, 0, 0]
-dc = [0, 0, 0, 0]
+lc = [0, 0, 0, 0]  # legacy — não usado no loop principal
+dc = [0, 0, 0, 0]  # legacy — não usado no loop principal
 
-p1 = PD[0]
-p2 = PD[42]
+p1 = PD[0]   # legacy — não usado no loop principal
+p2 = PD[42]  # legacy — não usado no loop principal
 
 CX = [0, 0, 0, 0]
 CY = [0, 0, 0, 0]
@@ -105,7 +105,7 @@ def foge_de_parede():
 
     Chamada automaticamente no início de move_to_goal(). Usa leituras do laser
     em m = [Frente, Trás, Direita, Esquerda] para decidir a direção de escape.
-    Publica directamente em /cmd_vel (Nav2 está idle após goal falhado).
+    Publica diretamente em /cmd_vel (Nav2 está idle após goal falhado).
     Tenta até 2 vezes se ainda estiver perto após a primeira manobra.
     """
     global m, _cmd_vel_pub, _node
@@ -143,7 +143,7 @@ def foge_de_parede():
             time.sleep(0.1)
 
         _cmd_vel_pub.publish(Twist())  # para
-        time.sleep(1.0)               # aguarda costmap actualizar com nova scan
+        time.sleep(1.0)               # aguarda costmap atualizar com nova scan
 
 
 # =============================================================================
@@ -158,7 +158,7 @@ def move_to_goal(xGoal, yGoal):
     #
     # Usa threading.Event para esperar o resultado sem chamar spin_until_future,
     # que causaria deadlock com o MultiThreadedExecutor ativo em rbd_navega.py.
-    # ==========================================================================
+    # -------------------------------------------------------------------------
     global goal, _node, _nav_client
 
     foge_de_parede()   # escapa de cantos/paredes antes de enviar goal ao Nav2

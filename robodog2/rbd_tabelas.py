@@ -10,6 +10,9 @@
 
 # =============================================================================
 # Sistema de tarefas ponderadas
+#
+# Tarefas[0] = "Geral" (percurso completo) — definido mas não ativo por padrão;
+# tarefa 0 percorre todos os cômodos em sequência e é muito longa para uso normal.
 # =============================================================================
 
 Tarefas         = [  0    ,  1  ,   2   ,   3 ,  4 ,   5  ,   6 ,  7 ,   8 ,  9 , 10 ,  11 , 12 ,  13 ,  14 , 15 , 16 ,  17 ,  18 ]
@@ -49,6 +52,8 @@ RT = [
 # =============================================================================
 # CM — Propriedades dos cômodos
 # CM[n] = [ nome, rota, x, y, l, a, A, ponto_central ]
+#   x, y, l, a, A — dimensões físicas; todos 0.0 (não usados no robodog2)
+#   ponto_central  — índice em PD usado por procura_centro_de_partida()
 # =============================================================================
 CM = [
   [ 'Geral        '        , RT[ 0] , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 72 ] ,
