@@ -16,7 +16,7 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 | Navegação | move_base + AMCL | Nav2 (AMCL omni + DWB) |
 | SLAM | gmapping | slam_toolbox |
 | Build | catkin | colcon / ament_python |
-| Status | congelado — referência de código | em desenvolvimento activo |
+| Status | congelado — referência de código | em desenvolvimento ativo |
 
 ---
 
@@ -39,7 +39,7 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 
 ---
 
-## Status actual (2026-06-17)
+## Status atual (2026-06-17)
 
 ### Validado ✅
 
@@ -68,7 +68,7 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 - **Activar movimento lateral mecanum no DWB** — `max_vel_y: 0.0→0.26`, `vy_samples: 0→5` para o robô poder fazer strafe em corredores apertados (evita rotações desnecessárias)
 - Calibração completa dos pontos de destino para `cma_moveis.world`
 - `rbd2_bringup` no ROSMASTER X3 real
-- Ciclo autónomo em hardware físico
+- Ciclo autônomo em hardware físico
 
 ---
 
@@ -80,9 +80,6 @@ alias rbd2_ws='cd ~/ros2_ws'
 alias rbd2_build='cd ~/ros2_ws && colcon build'
 alias rbd2_build_pkg='cd ~/ros2_ws && colcon build --packages-select robodog2'
 alias rbd2_source='source ~/ros2_ws/install/setup.bash'
-alias source_ros2ws='source /opt/ros/humble/setup.bash && source ~/ros2_ws/install/setup.bash'
-alias source_gemini='source /opt/ros/humble/setup.bash && source ~/workspace_gemini/install/setup.bash'
-alias gemini_ws='cd ~/workspace_gemini'
 ```
 
 ### Simulação Gazebo Fortress
@@ -133,7 +130,7 @@ alias rbd2_bringup='ros2 launch robodog2 rbd_bringup.launch.py'
 # Terminal 1
 rbd2_slam_x3_vazio          # Gazebo + slam_toolbox + RViz
 
-# Terminal 2 — percorrer todos os cômodos
+# Terminal 2 — percorrer todos os cômodos com o teclado
 rbd2_teclado
 
 # Terminal 2 — quando o mapa estiver completo
@@ -165,12 +162,12 @@ rbd2_navega                 # loop autónomo de patrulha por pesos
 rbd2_simulador_x3_moveis    # Gazebo + Nav2 + AMCL + RViz (mapa: ~/rbd_mapa_moveis.yaml)
 
 # Terminal 2
-rbd2_navega                 # loop autónomo de patrulha por pesos
+rbd2_navega                 # loop autônomo de patrulha por pesos
 ```
 
 ---
 
-## Arquitectura de simulação (Gazebo Fortress)
+## Arquitetura de simulação (Gazebo Fortress)
 
 ```
 rbd_gz_x3_launch.py
@@ -197,19 +194,19 @@ rbd_slam_x3_launch.py
 └── rviz2                             ← config: rviz/map.rviz
 ```
 
-**Plugins URDF activos (Fortress v6):**
+**Plugins URDF ativos (Fortress v6):**
 - `ignition-gazebo-velocity-control-system` → subscreve `/model/rosmaster_x3/cmd_vel`
 - `ignition-gazebo-odometry-publisher-system` → publica `/odom` e TF `odom→base_footprint`
 - `ignition-gazebo-joint-state-publisher-system` → publica `/joint_states`
 - LiDAR `gpu_lidar` → publica `/scan`
 
-**Bridge activo (`rbd_x3_bridge.yaml`):**
+**Bridge ativo (`rbd_x3_bridge.yaml`):**
 - GZ→ROS: `/clock`, `/joint_states`, `/odom`, `/tf`, `/scan`
 - ROS→GZ: `/cmd_vel` → `/model/rosmaster_x3/cmd_vel`
 
 ---
 
-## Arquitectura de comportamento autónomo
+## Arquitetura de comportamento autônomo
 
 ```
 rbd_tabelas.py   — pontos de destino, rotas, pesos de tarefas (dados estáticos)
@@ -218,8 +215,8 @@ rbd_funcoes.py   — move_to_goal() via Nav2, leitura do laser scan
 rbd_navega.py    — nó ROS2 principal: MultiThreadedExecutor + thread do loop
 ```
 
-**Loop de selecção de tarefas por peso (instintos programados):**
-1. A cada ciclo todos os pesos das tarefas activas são incrementados
+**Loop de seleção de tarefas por peso (instintos programados):**
+1. A cada ciclo todos os pesos das tarefas ativas são incrementados
 2. A tarefa com maior peso é escolhida (desempate aleatório)
 3. O robô percorre os pontos de destino do cômodo via Nav2
 4. O peso da tarefa executada é decrementado (reduz prioridade)
@@ -253,19 +250,19 @@ sudo apt install -y \
 
 ## Mundos Gazebo
 
-| Ficheiro | Conteúdo | Estado |
+| Arquivo | Conteúdo | Status |
 |---|---|---|
 | `worlds/cma_vazio.world` | Casa sem móveis — 15 cômodos | ✅ Fortress |
 | `worlds/cma_moveis.world` | Casa com móveis — 79 modelos | ✅ Fortress |
 | `worlds/rbd_gz_empty.world` | Mundo vazio para testes | ✅ Fortress |
 
-Os mundos foram convertidos de Gazebo Classic (SDF 1.6) para Fortress: poses dos modelos actualizadas a partir do bloco `<state>` do ficheiro original.
+Os mundos foram convertidos de Gazebo Classic (SDF 1.6) para Fortress: poses dos modelos atualizadas a partir do bloco `<state>` do arquivo original.
 
 ---
 
 ## Mapas gerados
 
-| Ficheiro | Mundo | Resolução | Data |
+| Arquivo | Mundo | Resolução | Data |
 |---|---|---|---|
 | `~/rbd_mapa_vazio.yaml` | `cma_vazio.world` | 485×378 @ 0.05 m/px | 2026-06-10 |
 | `~/rbd_mapa_moveis.yaml` | `cma_moveis.world` | — | por gerar |

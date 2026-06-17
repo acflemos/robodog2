@@ -43,8 +43,8 @@ class TAREFAS:
         self.rt = casa.rt
         self.pc = casa.rc
         self.pt = casa.pt
-        self.p1 = self.cs.pd[0]
-        self.p2 = self.cs.pd[42]
+        self.p1 = self.cs.pd[0]   # ponto de spawn do robô (Sala de Estar - base)
+        self.p2 = self.cs.pd[42]  # ponto de referência secundário (Sala - base)
 
     # -------------------------------------------------------------------------
     def direciona(self, d):
@@ -120,6 +120,10 @@ class TAREFAS:
 
     # -------------------------------------------------------------------------
     def procura_centro_de_partida(self, comodo_destino):
+    # -------------------------------------------------------------------------
+    # Traça o caminho entre os pontos centrais do cômodo atual e do destino.
+    # Usa as rotas de PC para encontrar a sequência de pontos intermediários;
+    # se origem e destino estiverem em rotas distintas, passa pelo PT[0] (junção).
     # -------------------------------------------------------------------------
         global Comodo_Atual
         PC  = self.pc

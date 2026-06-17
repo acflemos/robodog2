@@ -1,3 +1,11 @@
+# rbd_navega.py — Nó principal do robodog2
+#
+# Inicializa a casa, as tarefas e o robô; lança o loop autônomo de patrulha
+# em thread separada enquanto o MultiThreadedExecutor processa callbacks ROS2.
+#
+# Uso:
+#   alias rbd2_navega='ros2 run robodog2 rbd_navega'
+
 import threading
 
 import rclpy
