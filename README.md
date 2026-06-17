@@ -39,7 +39,7 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 
 ---
 
-## Status atual (2026-06-16)
+## Status atual (2026-06-17)
 
 ### Validado ✅
 
@@ -47,24 +47,26 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 - Teleop mecanum omnidirecional: frente/trás, strafe, rotação, diagonais
 - `OdometryPublisher` publicando `/odom` e TF `odom→base_footprint`
 - LiDAR `/scan` bridgado e funcional
-- **SLAM funcional** — `rbd2_slam_x3_vazio` gera mapa em tempo real
-- **Mapa da casa vazia gerado e salvo:** `~/rbd_mapa_vazio.yaml` (485×378 @ 0.05 m/px)
-- **Nav2 + DWB funcional em simulação** — `rbd2_simulador_x3` arranca sem erros
-- **Navegação autônoma por goal**: Nav2 Goal → robô chega ao destino de forma eficiente
+- **SLAM funcional** — `rbd2_slam_x3_vazio` e `rbd2_slam_x3_moveis` geram mapas em tempo real
+- **Mapa da casa vazia gerado:** `~/rbd_mapa_vazio.yaml` (485×378 @ 0.05 m/px)
+- **Mapa da casa com móveis gerado:** `~/rbd_mapa_moveis.yaml` (312×374 @ 0.05 m/px)
+- **Nav2 + DWB funcional em simulação** — `rbd2_simulador_x3` e `rbd2_simulador_x3_moveis` arrancam sem erros
+- **Navegação autónoma por goal**: Nav2 Goal → robô chega ao destino de forma eficiente
 - RViz com `robodog2.rviz`: Nav2 panel, mapa, costmaps local/global, paths visíveis
-- **`rbd2_navega` com patrulha autônoma robusta** — robô percorre toda a casa (Banheiro M, Quarto M, Banheiro S, Banheiro R, Banheiro C, Dispensa, Área, Cozinha ✅); `foge_de_parede()` resolve situações de canto automaticamente
-- **Limpeza de código** — arquivos não utilizados removidos; projeto publicado no GitHub
+- **`rbd2_navega` funcional em `cma_vazio.world`** — percorre toda a casa; `foge_de_parede()` resolve situações de canto
+- **`rbd2_navega` funcional em `cma_moveis.world`** — navegação autónoma com mapa de móveis validada
+- Fix GLSL RViz em VM: `OGRE_RTT_MODE=Copy` em `~/.bash_aliases`
 
 ### Em progresso ⚠️
 
-- Timeouts ocasionais em alguns waypoints — robô recupera e continua, mas perde tempo
-- Calibração de `rbd_tabelas.py` — pontos de destino para `cma_vazio.world`
+- **Ajuste de navegação para espaços com móveis** — espaços mais apertados requerem tuning de inflation, velocidades e recoveries
+- Alguns timeouts ocasionais em waypoints de rota — robô recupera e continua, mas perde tempo
+- Calibração de `rbd_tabelas.py` — pontos de destino para `cma_moveis.world`
 
 ### Por fazer ❌
 
-- **Melhorar eficiência da navegação** — investigar uso do movimento lateral mecanum (strafe) no DWB para reduzir rotações desnecessárias em corredores apertados
-- Mapa da casa com móveis (`rbd2_slam_x3_moveis`)
-- Calibração completa dos pontos de destino para a casa simulada
+- **Activar movimento lateral mecanum no DWB** — `max_vel_y: 0.0→0.26`, `vy_samples: 0→5` para o robô poder fazer strafe em corredores apertados (evita rotações desnecessárias)
+- Calibração completa dos pontos de destino para `cma_moveis.world`
 - `rbd2_bringup` no ROSMASTER X3 real
 - Ciclo autônomo em hardware físico
 
@@ -110,6 +112,10 @@ alias rbd2_salva_mapa_moveis='ros2 run nav2_map_server map_saver_cli -f ~/rbd_ma
 ```bash
 # Pré-requisito: ~/rbd_mapa_vazio.yaml gerado pelo rbd2_slam_x3_vazio
 alias rbd2_simulador_x3='ros2 launch robodog2 rbd_simulador_x3_launch.py'
+
+# Casa com móveis — Pré-requisito: ~/rbd_mapa_moveis.yaml gerado pelo rbd2_slam_x3_moveis
+alias rbd2_simulador_x3_moveis='ros2 launch robodog2 rbd_simulador_x3_moveis_launch.py'
+
 alias rbd2_teclado='ros2 run teleop_twist_keyboard teleop_twist_keyboard'
 alias rbd2_navega='ros2 run robodog2 rbd_navega'
 alias rbd2_bringup='ros2 launch robodog2 rbd_bringup.launch.py'
@@ -141,10 +147,19 @@ rbd2_teclado
 rbd2_salva_mapa_moveis      # → ~/rbd_mapa_moveis.yaml
 ```
 
-### Simulação autônoma (mapa já existe)
+### Simulação autónoma — casa vazia
 ```bash
 # Terminal 1
-rbd2_simulador_x3           # Gazebo + Nav2 + AMCL + RViz
+rbd2_simulador_x3           # Gazebo + Nav2 + AMCL + RViz (mapa: ~/rbd_mapa_vazio.yaml)
+
+# Terminal 2
+rbd2_navega                 # loop autónomo de patrulha por pesos
+```
+
+### Simulação autónoma — casa com móveis
+```bash
+# Terminal 1
+rbd2_simulador_x3_moveis    # Gazebo + Nav2 + AMCL + RViz (mapa: ~/rbd_mapa_moveis.yaml)
 
 # Terminal 2
 rbd2_navega                 # loop autônomo de patrulha por pesos
@@ -162,11 +177,16 @@ rbd_gz_x3_launch.py
 ├── ros_gz_sim create                 ← spawn rosmaster_x3 em (-3.0, -2.0, 0.1)
 └── ros_gz_bridge (parameter_bridge)  ← config: config/rbd_x3_bridge.yaml
 
-rbd_simulador_x3_launch.py
+rbd_simulador_x3_launch.py            ← default: cma_vazio.world + ~/rbd_mapa_vazio.yaml
 ├── rbd_gz_x3_launch.py               ← Gazebo Fortress (world configurável)
 ├── navigation_dwa_launch.py          ← Nav2: AMCL omni + DWB + BT Navigator + recoveries
 │                                        params: params/rbd_dwa_nav_params.yaml
 └── rviz2                             ← config: rviz/robodog2.rviz (Nav2 panel + costmaps)
+
+rbd_simulador_x3_moveis_launch.py     ← default: cma_moveis.world + ~/rbd_mapa_moveis.yaml
+├── rbd_gz_x3_launch.py               ← Gazebo Fortress
+├── navigation_dwa_launch.py          ← Nav2 (mesmos params)
+└── rviz2                             ← config: rviz/robodog2.rviz
 
 rbd_slam_x3_launch.py
 ├── rbd_gz_x3_launch.py               ← Gazebo Fortress (world configurável)
