@@ -20,6 +20,19 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 
 ---
 
+## Simulação Gazebo Fortress — o que o fabricante não fornece
+
+O fabricante Yahboom **não fornece suporte a Gazebo** para o ROSMASTER X3. O robodog2 preenche essa lacuna com uma integração completa para ROS2 Humble + Gazebo Fortress:
+
+- **URDF de simulação** com plugins Fortress (`ignition-gazebo-velocity-control`, `ignition-gazebo-odometry-publisher`, `ignition-gazebo-joint-state-publisher`, LiDAR `gpu_lidar`)
+- **Bridge ROS–Gazebo** configurado via `ros_gz_bridge` (`/cmd_vel`, `/odom`, `/scan`, `/tf`, `/clock`)
+- **Mundos SDF** convertidos de Gazebo Classic para Fortress (`cma_vazio.world`, `cma_moveis.world`)
+- **SLAM funcional** com `slam_toolbox` — mapas gerados e versionados dentro do pacote
+- **Nav2 + DWB + AMCL omni** em simulação, com tuning para ambiente doméstico
+- **Navegação autónoma** com patrulha por pesos (`rbd2_navega`) — validada em simulação
+
+---
+
 ## Hardware
 
 **ROSMASTER X3 — Yahboom**
@@ -39,7 +52,7 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 
 ---
 
-## Status atual (2026-06-17)
+## Status atual (2026-06-19)
 
 ### Validado ✅
 
@@ -48,27 +61,26 @@ Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) par
 - `OdometryPublisher` publicando `/odom` e TF `odom→base_footprint`
 - LiDAR `/scan` bridgado e funcional
 - **SLAM funcional** — `rbd2_slam_x3_vazio` e `rbd2_slam_x3_moveis` geram mapas em tempo real
-- **Mapa da casa vazia gerado:** `~/rbd_mapa_vazio.yaml` (485×378 @ 0.05 m/px)
-- **Mapa da casa com móveis gerado:** `~/rbd_mapa_moveis.yaml` (312×374 @ 0.05 m/px)
+- **Mapas gerados e versionados** — `maps/rbd_mapa_vazio.yaml` e `maps/rbd_mapa_moveis.yaml` dentro do pacote
 - **Nav2 + DWB funcional em simulação** — `rbd2_simulador_x3` e `rbd2_simulador_x3_moveis` arrancam sem erros
 - **Navegação autónoma por goal**: Nav2 Goal → robô chega ao destino de forma eficiente
 - RViz com `robodog2.rviz`: Nav2 panel, mapa, costmaps local/global, paths visíveis
 - **`rbd2_navega` funcional em `cma_vazio.world`** — percorre toda a casa; `foge_de_parede()` resolve situações de canto
-- **`rbd2_navega` funcional em `cma_moveis.world`** — navegação autónoma com mapa de móveis validada
+- **`rbd2_navega` funcional em `cma_moveis.world`** — navegação autónoma validada com tuning Nav2
+- **Tuning Nav2 para `cma_moveis.world`** — `inflation_radius`, `cost_scaling_factor`, `sim_time`, `acc_lim_theta` e partículas AMCL ajustados
 - Fix GLSL RViz em VM: `OGRE_RTT_MODE=Copy` em `~/.bash_aliases`
 
-### Em progresso ⚠️
+### Em progresso 🎯
 
-- **Ajuste de navegação para espaços com móveis** — espaços mais apertados requerem tuning de inflation, velocidades e recoveries
-- Alguns timeouts ocasionais em waypoints de rota — robô recupera e continua, mas perde tempo
-- Calibração de `rbd_tabelas.py` — pontos de destino para `cma_moveis.world`
+- Testar código Yahboom original no Gazebo — comparar comportamento de navegação com robodog2
+- Testar código robodog2 no robot real (`rbd2_bringup` no ROSMASTER X3 físico)
 
 ### Por fazer ❌
 
-- **Activar movimento lateral mecanum no DWB** — `max_vel_y: 0.0→0.26`, `vy_samples: 0→5` para o robô poder fazer strafe em corredores apertados (evita rotações desnecessárias)
-- Calibração completa dos pontos de destino para `cma_moveis.world`
-- `rbd2_bringup` no ROSMASTER X3 real
-- Ciclo autônomo em hardware físico
+- Testar código Yahboom no robot real (X3 físico)
+- Integrar Rosmaster ↔ robodog2 — cruzar o melhor dos dois códigos
+- Calibração de `rbd_tabelas.py` para `cma_moveis.world`
+- Ciclo autónomo em hardware físico
 
 ---
 
@@ -84,37 +96,39 @@ alias rbd2_source='source ~/ros2_ws/install/setup.bash'
 
 ### Simulação Gazebo Fortress
 ```bash
-# Mundo vazio de teste
+# Mundo de teste vazio
 alias rbd2_gz_x3='ros2 launch robodog2 rbd_gz_x3_launch.py'
 alias rbd2_gz_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true'
 
-# Casa vazia (referência geométrica para pontos de destino)
-alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world'
-alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world rviz:=true'
-
 # Casa com móveis (mundo de operação)
-alias rbd2_casa_x3_moveis='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world'
-alias rbd2_casa_x3_moveis_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world rviz:=true'
+alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world'
+alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world rviz:=true'
 ```
 
 ### SLAM — gerar mapas
 ```bash
 # Casa vazia — mapa de referência geométrica
-alias rbd2_slam_x3_vazio='ros2 launch robodog2 rbd_slam_x3_launch.py'
-alias rbd2_salva_mapa_vazio='ros2 run nav2_map_server map_saver_cli -f ~/rbd_mapa_vazio'
+alias rbd2_slam_x3_vazio='ros2 launch robodog2 rbd_slam_x3_launch.py world:=cma_vazio.world'
+alias rbd2_salva_mapa_vazio='ros2 run nav2_map_server map_saver_cli -f $RBD2_MAPS_SRC/rbd_mapa_vazio \
+  && cp $RBD2_MAPS_SRC/rbd_mapa_vazio.{yaml,pgm} $(ros2 pkg prefix robodog2)/share/robodog2/maps/'
 
 # Casa com móveis — mapa de operação real
 alias rbd2_slam_x3_moveis='ros2 launch robodog2 rbd_slam_x3_launch.py world:=cma_moveis.world'
-alias rbd2_salva_mapa_moveis='ros2 run nav2_map_server map_saver_cli -f ~/rbd_mapa_moveis'
+alias rbd2_salva_mapa_moveis='ros2 run nav2_map_server map_saver_cli -f $RBD2_MAPS_SRC/rbd_mapa_moveis \
+  && cp $RBD2_MAPS_SRC/rbd_mapa_moveis.{yaml,pgm} $(ros2 pkg prefix robodog2)/share/robodog2/maps/'
 ```
+
+> `$RBD2_MAPS_SRC` aponta para `~/ros2_ws/src/robodog2/maps/`. O alias salva o mapa lá e copia para o diretório de instalação do colcon para que o launch o encontre sem rebuild.
 
 ### Simulador completo e operação
 ```bash
-# Pré-requisito: ~/rbd_mapa_vazio.yaml gerado pelo rbd2_slam_x3_vazio
+# Casa vazia — Pré-requisito: maps/rbd_mapa_vazio.yaml gerado pelo rbd2_slam_x3_vazio
 alias rbd2_simulador_x3='ros2 launch robodog2 rbd_simulador_x3_launch.py'
 
-# Casa com móveis — Pré-requisito: ~/rbd_mapa_moveis.yaml gerado pelo rbd2_slam_x3_moveis
-alias rbd2_simulador_x3_moveis='ros2 launch robodog2 rbd_simulador_x3_moveis_launch.py'
+# Casa com móveis — Pré-requisito: maps/rbd_mapa_moveis.yaml gerado pelo rbd2_slam_x3_moveis
+alias rbd2_simulador_x3_moveis='ros2 launch robodog2 rbd_simulador_x3_launch.py \
+  world:=cma_moveis.world \
+  map:=$(ros2 pkg prefix robodog2)/share/robodog2/maps/rbd_mapa_moveis.yaml'
 
 alias rbd2_teclado='ros2 run teleop_twist_keyboard teleop_twist_keyboard'
 alias rbd2_navega='ros2 run robodog2 rbd_navega'
@@ -134,7 +148,7 @@ rbd2_slam_x3_vazio          # Gazebo + slam_toolbox + RViz
 rbd2_teclado
 
 # Terminal 2 — quando o mapa estiver completo
-rbd2_salva_mapa_vazio       # → ~/rbd_mapa_vazio.yaml + ~/rbd_mapa_vazio.pgm
+rbd2_salva_mapa_vazio       # → maps/rbd_mapa_vazio.yaml + maps/rbd_mapa_vazio.pgm (no pacote)
 ```
 
 ### Gerar o mapa da casa com móveis
@@ -144,13 +158,13 @@ rbd2_slam_x3_moveis         # Gazebo + slam_toolbox + RViz
 
 # Terminal 2
 rbd2_teclado
-rbd2_salva_mapa_moveis      # → ~/rbd_mapa_moveis.yaml
+rbd2_salva_mapa_moveis      # → maps/rbd_mapa_moveis.yaml (no pacote)
 ```
 
 ### Simulação autónoma — casa vazia
 ```bash
 # Terminal 1
-rbd2_simulador_x3           # Gazebo + Nav2 + AMCL + RViz (mapa: ~/rbd_mapa_vazio.yaml)
+rbd2_simulador_x3           # Gazebo + Nav2 + AMCL + RViz (mapa: maps/rbd_mapa_vazio.yaml)
 
 # Terminal 2
 rbd2_navega                 # loop autónomo de patrulha por pesos
@@ -159,7 +173,7 @@ rbd2_navega                 # loop autónomo de patrulha por pesos
 ### Simulação autónoma — casa com móveis
 ```bash
 # Terminal 1
-rbd2_simulador_x3_moveis    # Gazebo + Nav2 + AMCL + RViz (mapa: ~/rbd_mapa_moveis.yaml)
+rbd2_simulador_x3_moveis    # Gazebo + Nav2 + AMCL + RViz (mapa: maps/rbd_mapa_moveis.yaml)
 
 # Terminal 2
 rbd2_navega                 # loop autônomo de patrulha por pesos
@@ -177,16 +191,11 @@ rbd_gz_x3_launch.py
 ├── ros_gz_sim create                 ← spawn rosmaster_x3 em (-3.0, -2.0, 0.1)
 └── ros_gz_bridge (parameter_bridge)  ← config: config/rbd_x3_bridge.yaml
 
-rbd_simulador_x3_launch.py            ← default: cma_vazio.world + ~/rbd_mapa_vazio.yaml
+rbd_simulador_x3_launch.py            ← default: cma_vazio.world + maps/rbd_mapa_vazio.yaml
 ├── rbd_gz_x3_launch.py               ← Gazebo Fortress (world configurável)
 ├── navigation_dwa_launch.py          ← Nav2: AMCL omni + DWB + BT Navigator + recoveries
 │                                        params: params/rbd_dwa_nav_params.yaml
 └── rviz2                             ← config: rviz/robodog2.rviz (Nav2 panel + costmaps)
-
-rbd_simulador_x3_moveis_launch.py     ← default: cma_moveis.world + ~/rbd_mapa_moveis.yaml
-├── rbd_gz_x3_launch.py               ← Gazebo Fortress
-├── navigation_dwa_launch.py          ← Nav2 (mesmos params)
-└── rviz2                             ← config: rviz/robodog2.rviz
 
 rbd_slam_x3_launch.py
 ├── rbd_gz_x3_launch.py               ← Gazebo Fortress (world configurável)
@@ -262,10 +271,10 @@ Os mundos foram convertidos de Gazebo Classic (SDF 1.6) para Fortress: poses dos
 
 ## Mapas gerados
 
-| Arquivo | Mundo | Resolução | Data |
-|---|---|---|---|
-| `~/rbd_mapa_vazio.yaml` | `cma_vazio.world` | 485×378 @ 0.05 m/px | 2026-06-10 |
-| `~/rbd_mapa_moveis.yaml` | `cma_moveis.world` | — | por gerar |
+| Arquivo | Mundo | Resolução |
+|---|---|---|
+| `maps/rbd_mapa_vazio.yaml` | `cma_vazio.world` | 485×378 @ 0.05 m/px |
+| `maps/rbd_mapa_moveis.yaml` | `cma_moveis.world` | 312×374 @ 0.05 m/px |
 
 ---
 
