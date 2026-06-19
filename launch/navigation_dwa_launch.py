@@ -29,16 +29,12 @@ from launch.substitutions import LaunchConfiguration
 def generate_launch_description():
     package_path = get_package_share_directory('robodog2')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
-    nav2_bt_dir = get_package_share_directory('nav2_bt_navigator')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     map_yaml_path = LaunchConfiguration(
         'map', default=os.path.join(package_path, 'maps', 'rbd_mapa_vazio.yaml'))
     nav2_param_path = LaunchConfiguration('params_file', default=os.path.join(
         package_path, 'params', 'rbd_dwa_nav_params.yaml'))
-    bt_xml_path = os.path.join(
-        nav2_bt_dir, 'behavior_trees',
-        'navigate_to_pose_w_replanning_and_recovery.xml')
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value=use_sim_time,
@@ -54,7 +50,6 @@ def generate_launch_description():
             launch_arguments={
                 'map': map_yaml_path,
                 'use_sim_time': use_sim_time,
-                'params_file': nav2_param_path,
-                'default_bt_xml_filename': bt_xml_path}.items(),
+                'params_file': nav2_param_path}.items(),
         ),
     ])
