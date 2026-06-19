@@ -30,6 +30,9 @@ setup(
             glob.glob('params/*.yaml') + glob.glob('params/*.lua')),
         # Configurações RViz
         ('share/' + package_name + '/rviz', glob.glob('rviz/*.rviz')),
+        # Mapas gerados pelo SLAM
+        ('share/' + package_name + '/maps',
+            glob.glob('maps/*.yaml') + glob.glob('maps/*.pgm')),
 
     ],
     install_requires=['setuptools'],
