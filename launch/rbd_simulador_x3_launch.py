@@ -3,8 +3,8 @@
 # Simulador completo: Gazebo Fortress + Nav2 (AMCL omni + DWB) + RViz.
 #
 # Pré-requisito: mapa da casa gerado com rbd2_slam_x3_vazio ou rbd2_slam_x3_moveis.
-#   ~/rbd_mapa_vazio.yaml   (casa vazia — gerado em 2026-06-10)
-#   ~/rbd_mapa_moveis.yaml  (casa com móveis — gerar com rbd2_slam_x3_moveis)
+#   maps/rbd_mapa_vazio.yaml   (casa vazia)
+#   maps/rbd_mapa_moveis.yaml  (casa com móveis)
 #
 # O que lança:
 #   1. rbd_gz_x3_launch.py  — Gazebo Fortress + X3 no mundo escolhido
@@ -19,11 +19,11 @@
 #
 # Uso:
 #   ros2 launch robodog2 rbd_simulador_x3_launch.py
-#   ros2 launch robodog2 rbd_simulador_x3_launch.py world:=cma_moveis.world map:=$HOME/rbd_mapa_moveis.yaml
+#   ros2 launch robodog2 rbd_simulador_x3_launch.py world:=cma_moveis.world map:=$(ros2 pkg prefix robodog2)/share/robodog2/maps/rbd_mapa_moveis.yaml
 #
 # Aliases:
 #   alias rbd2_simulador_x3='ros2 launch robodog2 rbd_simulador_x3_launch.py'
-#   alias rbd2_simulador_x3_moveis='ros2 launch robodog2 rbd_simulador_x3_launch.py world:=cma_moveis.world map:=$HOME/rbd_mapa_moveis.yaml'
+#   alias rbd2_simulador_x3_moveis='ros2 launch robodog2 rbd_simulador_x3_launch.py world:=cma_moveis.world'
 #
 # Hardware real (sem Gazebo):
 #   Terminal 1: rbd2_bringup
@@ -44,7 +44,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     pkg_robodog2 = get_package_share_directory('robodog2')
-    default_map = os.path.join(os.path.expanduser('~'), 'rbd_mapa_vazio.yaml')
+    default_map = os.path.join(pkg_robodog2, 'maps', 'rbd_mapa_vazio.yaml')
     sim_params = os.path.join(pkg_robodog2, 'params', 'rbd_dwa_nav_params.yaml')
     rviz_config = os.path.join(pkg_robodog2, 'rviz', 'robodog2.rviz')
 
@@ -57,7 +57,7 @@ def generate_launch_description():
     map_arg = DeclareLaunchArgument(
         name='map',
         default_value=default_map,
-        description='Caminho para o arquivo YAML do mapa (default: ~/rbd_mapa_vazio.yaml)'
+        description='Caminho para o arquivo YAML do mapa (default: maps/rbd_mapa_vazio.yaml dentro do pacote)'
     )
 
     sim_arg = DeclareLaunchArgument(

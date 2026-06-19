@@ -32,9 +32,9 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     map_yaml_path = LaunchConfiguration(
-        'map', default=os.path.join(package_path, 'maps', 'yahboomcar.yaml'))
+        'map', default=os.path.join(package_path, 'maps', 'rbd_mapa_vazio.yaml'))
     nav2_param_path = LaunchConfiguration('params_file', default=os.path.join(
-        package_path, 'params', 'dwa_nav_params.yaml'))
+        package_path, 'params', 'rbd_dwa_nav_params.yaml'))
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value=use_sim_time,

@@ -12,9 +12,14 @@ __pycache__/
 dist/
 *.so
 
-# Mapas gerados em runtime (guardar manualmente só os aprovados)
+# Mapas gerados em runtime — ignorados por padrão; aprovar com: git add -f maps/<nome>.pgm maps/<nome>.yaml
 maps/*.pgm
 maps/*.yaml
+# Mapas aprovados do ambiente de produção (versionados)
+!maps/rbd_mapa_vazio.yaml
+!maps/rbd_mapa_vazio.pgm
+!maps/rbd_mapa_moveis.yaml
+!maps/rbd_mapa_moveis.pgm
 
 # VS Code
 .vscode/
