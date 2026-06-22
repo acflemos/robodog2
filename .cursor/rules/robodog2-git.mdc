@@ -1,0 +1,26 @@
+---
+description: Fluxo Git do projeto robodog2 — branches, commits e PRs
+alwaysApply: true
+---
+
+# Fluxo Git — robodog2
+
+## Regras obrigatórias
+
+1. **Sempre trabalhar numa branch dedicada** — nunca fazer alterações relevantes diretamente em `main`.
+2. **Commits incrementais** — após cada alteração relevante (e testada quando aplicável), fazer commit na branch ativa com mensagem clara.
+3. **PR e merge manual** — quando o trabalho estiver testado e aprovado, preparar para PR; o merge é feito pelo utilizador no site do GitHub, nunca pelo agente.
+
+## Branch ativa (atual)
+
+- `lava_tubes_grok` — criada a partir de `main`, com tracking em `origin/lava_tubes_grok`.
+
+Ao iniciar uma nova tarefa relevante, confirmar em que branch estamos. Se for um tema novo, criar uma branch dedicada (ex.: `feat/nome`, `fix/nome`) e fazer push para `origin`.
+
+## O que o agente deve fazer
+
+- Verificar a branch atual antes de editar ficheiros.
+- Informar o utilizador da branch em uso.
+- Propor commit após passos relevantes concluídos.
+- Fazer `git push` da branch quando pedido ou quando houver commits novos a publicar.
+- **Não** fazer merge para `main` nem abrir/submeter PR sem instrução explícita do utilizador.
