@@ -104,7 +104,7 @@ alias rbd2_gz_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true'
 alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world'
 alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world rviz:=true'
 
-# Lava tube lunar (branch lava_tubes_grok)
+# Lava tube lunar (branch lava_tubes_grok) — ver docs/LAVA_TUBE.md
 alias rbd_lava_tube='ros2 launch robodog2 rbd_lava_tube_launch.py'          # v1 operacional (caixa oca)
 alias rbd_lava_tube_fuel='ros2 launch robodog2 rbd_lava_tube_fuel_launch.py' # referência visual Fuel
 ```

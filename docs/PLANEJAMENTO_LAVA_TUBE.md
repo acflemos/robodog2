@@ -1,7 +1,7 @@
 # Planejamento — Lava Tube Lunar (robodog2)
 
-> Documento de objetivos acordados para a branch `lava_tubes_grok`.
-> A documentação pedagógica do curso está sendo organizada em paralelo (Gemini).
+> Documento de objetivos técnicos para a branch `lava_tubes_grok`.
+> Para a **justificativa pedagógica** do cenário no curso de ROS2, ver [LAVA_TUBE.md](LAVA_TUBE.md).
 
 ## Visão geral
 

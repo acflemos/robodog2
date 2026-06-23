@@ -2,6 +2,8 @@
 
 Mundos Gazebo Fortress para simulação do robodog2.
 
+> **Lava tube no curso de ROS2:** por que este cenário existe — [docs/LAVA_TUBE.md](../docs/LAVA_TUBE.md)
+
 ## Arquivos
 
 | Arquivo | Descrição | Usado por |
