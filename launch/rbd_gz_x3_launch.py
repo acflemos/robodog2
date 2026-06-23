@@ -9,6 +9,7 @@
 #   ros2 launch robodog2 rbd_gz_x3_launch.py
 #   ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true
 #   ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world
+#   rbd_lava_tube  — alias para lava_tube.world (spawn na entrada do túnel)
 
 import os
 
@@ -49,6 +50,24 @@ def generate_launch_description():
         default_value='false',
         choices=['true', 'false'],
         description='Abrir RViz2'
+    )
+
+    spawn_x_arg = DeclareLaunchArgument(
+        name='spawn_x',
+        default_value='-3.0',
+        description='Posição X do spawn do robô'
+    )
+
+    spawn_y_arg = DeclareLaunchArgument(
+        name='spawn_y',
+        default_value='-2.0',
+        description='Posição Y do spawn do robô'
+    )
+
+    spawn_z_arg = DeclareLaunchArgument(
+        name='spawn_z',
+        default_value='0.1',
+        description='Posição Z do spawn do robô (lava_tube: 0.01)'
     )
 
     world_path = [
@@ -94,9 +113,9 @@ def generate_launch_description():
         arguments=[
             '-name', 'rosmaster_x3',
             '-topic', 'robot_description',
-            '-x', '-3.0',
-            '-y', '-2.0',
-            '-z', '0.1',
+            '-x', LaunchConfiguration('spawn_x'),
+            '-y', LaunchConfiguration('spawn_y'),
+            '-z', LaunchConfiguration('spawn_z'),
         ],
         output='screen'
     )
@@ -124,6 +143,9 @@ def generate_launch_description():
         set_ign_resource_path,
         world_arg,
         rviz_arg,
+        spawn_x_arg,
+        spawn_y_arg,
+        spawn_z_arg,
         gz_server,
         gz_gui,
         robot_state_publisher,
