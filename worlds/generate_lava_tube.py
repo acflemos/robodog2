@@ -105,68 +105,109 @@ def tunnel_lights():
     return lights
 
 
-def box_tunnel_segment(name, cx, cy, yaw, length, width, wall_t, radius=None):
-    """Meio-cilindro: metade do tubo enterrada (z<0), piso plano em z=0, abóbada curva acima."""
+def segment_core_dims(length, open_start=0.0, open_end=0.0):
+    """Recorta colisão/visual nas extremidades para deixar bocas abertas."""
+    left = -length / 2 + open_start
+    right = length / 2 - open_end
+    eff_len = right - left
+    center_x = (left + right) / 2
+    return eff_len, center_x
+
+
+def box_tunnel_segment(
+    name, cx, cy, yaw, length, width, wall_t, radius=None,
+    open_start=0.0, open_end=0.0,
+):
+    """Meio-cilindro: metade enterrada (z<0), piso plano em z=0, bocas abertas nas pontas."""
     if radius is None:
         radius = width / 2
+    core_len, core_x = segment_core_dims(length, open_start, open_end)
     lines = [
         f"    <model name=\"{name}\">",
         "      <static>true</static>",
         f"      <pose>{cx} {cy} 0 0 0 {yaw}</pose>",
         "      <link name=\"link\">",
-        # Metade inferior enterrada — esconde o “cano” e forma rocha sólida sob o piso
-        *box_col_vis(
-            "buried", f"{length} {width} {radius}",
-            f"0 0 {-radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-        ),
-        # Piso de circulação (superfície plana em z=0)
-        *box_col_vis(
-            "floor", f"{length} {width} {FLOOR_THICK}",
-            f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF,
-        ),
-        # Colisão do teto (invisível)
-        *box_col_vis(
-            "ceil_col", f"{length} {width} {wall_t}",
-            f"0 0 {radius - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+    ]
+    # Rocha enterrada — recortada na entrada para não bloquear o robô
+    if core_len > 0.5:
+        lines.extend(box_col_vis(
+            "buried", f"{core_len} {width} {radius}",
+            f"{core_x} 0 {-radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+        ))
+    # Piso de circulação — comprimento total (inclui boca aberta)
+    lines.extend(box_col_vis(
+        "floor", f"{length} {width} {FLOOR_THICK}",
+        f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF,
+    ))
+    if core_len > 0.5:
+        lines.extend(box_col_vis(
+            "ceil_col", f"{core_len} {width} {wall_t}",
+            f"{core_x} 0 {radius - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
             collision=True, visual=False,
-        ),
-        # Paredes laterais — colisão de z=0 até o topo do arco
-        *box_col_vis(
-            "wall_l", f"{length} {wall_t} {radius}",
-            f"0 {width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+        ))
+        lines.extend(box_col_vis(
+            "wall_l", f"{core_len} {wall_t} {radius}",
+            f"{core_x} {width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
             collision=True, visual=False,
-        ),
-        *box_col_vis(
-            "wall_r", f"{length} {wall_t} {radius}",
-            f"0 {-width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+        ))
+        lines.extend(box_col_vis(
+            "wall_r", f"{core_len} {wall_t} {radius}",
+            f"{core_x} {-width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
             collision=True, visual=False,
-        ),
-        # Revestimento interior visível (paredes curvas vistas de dentro)
-        *box_col_vis(
-            "inner_l", f"{length} 0.08 {radius}",
-            f"0 {width / 2 - 0.12} {radius / 2} 0 0 0",
+        ))
+        # Revestimento interior — só no miolo (evita caixas na boca)
+        lines.extend(box_col_vis(
+            "inner_l", f"{core_len} 0.08 {radius}",
+            f"{core_x} {width / 2 - 0.12} {radius / 2} 0 0 0",
             WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
-        ),
-        *box_col_vis(
-            "inner_r", f"{length} 0.08 {radius}",
-            f"0 {-width / 2 + 0.12} {radius / 2} 0 0 0",
+        ))
+        lines.extend(box_col_vis(
+            "inner_r", f"{core_len} 0.08 {radius}",
+            f"{core_x} {-width / 2 + 0.12} {radius / 2} 0 0 0",
             WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
-        ),
-        *box_col_vis(
-            "inner_ceil", f"{length} {width - 0.3} 0.08",
-            f"0 0 {radius - 0.1} 0 0 0",
+        ))
+        lines.extend(box_col_vis(
+            "inner_ceil", f"{core_len} {width - 0.3} 0.08",
+            f"{core_x} 0 {radius - 0.1} 0 0 0",
             WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
-        ),
-        # Cilindro exterior: metade enterrada, abóbada curva
-        *cyl_vis(
-            "vault", radius + wall_t / 2, length,
-            f"0 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF, WALL_EM,
-        ),
+        ))
+        lines.extend(cyl_vis(
+            "vault", radius + wall_t / 2, core_len,
+            f"{core_x} 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF, WALL_EM,
+        ))
+    lines += [
         "      </link>",
         "    </model>",
         "",
     ]
     return lines
+
+
+def tunnel_entrance():
+    """Rampa/platô na boca do túnel — liga o piso lunar à entrada aberta."""
+    return [
+        "    <model name=\"tunnel_entrance\">",
+        "      <static>true</static>",
+        "      <pose>-1.0 0 0 0 0 0</pose>",
+        "      <link name=\"link\">",
+        *box_col_vis(
+            "ramp_floor", "3.0 4.0 0.15",
+            "0 0 -0.075 0 0 0", FLOOR_AMB, FLOOR_DIFF,
+        ),
+        *box_col_vis(
+            "mouth_l", "0.12 0.12 1.8",
+            "1.35 1.95 0.9 0 0 0", WALL_AMB, WALL_DIFF,
+            collision=True, visual=True,
+        ),
+        *box_col_vis(
+            "mouth_r", "0.12 0.12 1.8",
+            "1.35 -1.95 0.9 0 0 0", WALL_AMB, WALL_DIFF,
+            collision=True, visual=True,
+        ),
+        "      </link>",
+        "    </model>",
+        "",
+    ]
 
 
 def rock_model(name, x, y, z, roll, pitch, yaw, sx, sy, sz, shade=2):
@@ -401,10 +442,20 @@ def main():
         "",
     ]
 
-    for i, (cx, cy, yaw) in enumerate(SEGMENTS):
-        parts.extend(box_tunnel_segment(f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, W, T))
+    parts.extend(tunnel_entrance())
 
-    parts.extend(box_tunnel_segment("alcove", 32, 8, 1.5708, 10.0, 3.0, T, radius=1.5))
+    for i, (cx, cy, yaw) in enumerate(SEGMENTS):
+        open_start = 2.5 if i == 0 else 0.8
+        open_end = 0.8 if i < len(SEGMENTS) - 1 else 1.5
+        parts.extend(box_tunnel_segment(
+            f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, W, T,
+            open_start=open_start, open_end=open_end,
+        ))
+
+    parts.extend(box_tunnel_segment(
+        "alcove", 32, 8, 1.5708, 10.0, 3.0, T, radius=1.5,
+        open_start=1.5, open_end=2.0,
+    ))
     parts.extend(chamber())
     parts.extend(sparse_rocks(rng))
     parts.extend(artifacts())
