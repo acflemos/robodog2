@@ -3,7 +3,7 @@
      Não forma túnel contínuo sozinho: tiles são painéis de parede (~25 m).
      Uso futuro: decorar o INTERIOR do lava_tube.world (v1 caixa oca).
      Tiles alinhados em grelha SubT (passo 25 m, yaw 90°).
-     Uso: rbd_lava_tube_fuel  ou  bash scripts/rbd_lava_tube_fuel.sh -->
+     Uso: rbd_lava_tube_fuel -->
 <sdf version="1.8">
   <world name="lava_tube_fuel">
 

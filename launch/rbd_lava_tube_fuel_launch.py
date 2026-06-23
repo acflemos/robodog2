@@ -1,8 +1,7 @@
 # rbd_lava_tube_fuel_launch.py — Lava tube com meshes Fuel (DARPA SubT).
 #
-# Uso:
-#   ros2 launch robodog2 rbd_lava_tube_fuel_launch.py
-#   rbd_lava_tube_fuel   # alias em ~/.bash_aliases
+# Uso (alias validado):
+#   rbd_lava_tube_fuel
 #
 # Pré-requisito: rbd2_build_pkg && rbd2_source (instala lava_tube_fuel.world)
 

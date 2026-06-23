@@ -9,8 +9,8 @@
 #   ros2 launch robodog2 rbd_gz_x3_launch.py
 #   ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true
 #   ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world
-#   rbd_lava_tube       — ros2 launch robodog2 rbd_lava_tube_launch.py
-#   rbd_lava_tube_fuel  — ros2 launch robodog2 rbd_lava_tube_fuel_launch.py
+#   rbd_lava_tube       — alias validado (v1 operacional)
+#   rbd_lava_tube_fuel  — alias validado (referência visual Fuel)
 
 import os
 

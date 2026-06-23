@@ -2,7 +2,7 @@
 <!-- lava_tube.world — Lava tube lunar, gravidade 1/6g, otimizado para VM 16GB.
      Câmara final: restos de missão antiga + pirâmide + beacon emissivo.
      Geometria 100% primitiva (box/cylinder/sphere), modelos estáticos.
-     Uso: ros2 launch robodog2 rbd_gz_x3_launch.py world:=lava_tube.world -->
+     Uso: rbd_lava_tube -->
 <sdf version="1.8">
   <world name="lava_tube">
 

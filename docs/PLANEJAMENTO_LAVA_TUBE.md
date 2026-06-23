@@ -74,4 +74,5 @@ Objetivo pedagógico: o estudante mapeia o túnel escuro e é **recompensado pel
 - Branch de trabalho: `lava_tubes_grok`
 - Simulador: Gazebo Fortress (Ignition Gazebo v6) — não Harmonic
 - Documentação do curso: em organização paralela (Gemini)
-- Lançar: `rbd_lava_tube` ou `bash ~/ros2_ws/src/robodog2/scripts/rbd_lava_tube.sh`
+- Lançar (aliases validados): `rbd_lava_tube` (operacional) e `rbd_lava_tube_fuel` (visual Fuel)
+- Pré-requisito: `rbd2_build_pkg && rbd2_source && source ~/.bash_aliases`

@@ -1,8 +1,7 @@
 # rbd_lava_tube_launch.py — Lava tube v1 aprovada (caixa oca, primitivas).
 #
-# Uso:
-#   ros2 launch robodog2 rbd_lava_tube_launch.py
-#   rbd_lava_tube   # alias em ~/.bash_aliases
+# Uso (alias validado):
+#   rbd_lava_tube
 
 import os
 

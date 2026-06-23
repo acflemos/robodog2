@@ -12,9 +12,17 @@ Mundos Gazebo Fortress para simulação do robodog2.
 | [lava_tube.world](lava_tube.world) | Lava tube lunar (1/6g), túnel em caixa oca (v1 aprovada), câmara final com enigma. Gerado por [generate_lava_tube.py](generate_lava_tube.py). | `rbd_lava_tube` |
 | [lava_tube_fuel.world](lava_tube_fuel.world) | Referência visual Fuel — interior rochoso credível (validado). Piso irregular: **não** usar para colisão/navegação com rodas. Uso futuro: paredes/teto decorativos dentro do `lava_tube.world`. | `rbd_lava_tube_fuel` |
 
-Após `git pull`: `rbd2_build_pkg && rbd2_source && source ~/.bash_aliases`
+## Lava tube — como lançar (validado)
 
-Se o alias falhar, use diretamente: `bash ~/ros2_ws/src/robodog2/scripts/rbd_lava_tube_fuel.sh`
+```bash
+rbd2_build_pkg && rbd2_source
+source ~/.bash_aliases
+
+rbd_lava_tube        # túnel operacional (v1, piso plano, navegação com rodas)
+rbd_lava_tube_fuel   # referência visual (meshes Fuel, internet na 1ª execução)
+```
+
+Aliases definidos em `~/.bash_aliases`. Requer `source ~/.bash_aliases` em terminais já abertos.
 
 ## Notas de compatibilidade
 
