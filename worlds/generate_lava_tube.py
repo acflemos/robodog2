@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Gera worlds/lava_tube.world — lava tube lunar em caixa oca (parede com espessura).
+"""Gera worlds/lava_tube.world — lava tube lunar em meio-cilindro OCO.
 
-Estratégia (como o primeiro túnel, melhorado):
-  - Corredor OCO: piso + 2 paredes + teto em caixa — espessura visível, entrada aberta
-  - Sem cilindros sólidos (evita robô/câmara “sumirem” dentro do tubo)
-  - Rocha enterrada sob o piso; luzes interiores; poucas pedras no chão
+Estratégia:
+  - Casca dupla: arco exterior + arco interior (espessura = parede, ~0,2 m)
+  - Piso plano; colisão nas faces internas (robô) e externas (mundo)
+  - 5 painéis por casca (suave, sem escada espiral); boca aberta; sem cilindro sólido
 """
 
 import math
@@ -13,8 +13,12 @@ from pathlib import Path
 
 OUT = Path(__file__).parent / "lava_tube.world"
 
-W, H, T = 4.0, 3.0, 0.2       # largura interior, altura interior, espessura da parede
-BURY_D = 1.5                   # profundidade da rocha enterrada sob o piso
+W, H, T = 4.0, 3.0, 0.2       # largura exterior ≈ 2*R_OUT, espessura da parede
+R_OUT = W / 2                  # raio exterior do meio-cilindro (2 m)
+R_IN = R_OUT - T               # raio interior (1,8 m) — corredor do robô
+N_ARCH = 5                     # painéis do arco (exterior + interior)
+BURY_D = 1.5                   # rocha enterrada sob o piso
+INNER_AMB, INNER_DIFF = "0.34 0.30 0.26 1", "0.42 0.38 0.34 1"
 SEG_LEN = 8.0
 FLOOR_THICK = 0.15
 
@@ -102,12 +106,44 @@ def segment_core_dims(length, open_start=0.0, open_end=0.0):
     return eff_len, center_x
 
 
-def hollow_tunnel_segment(
-    name, cx, cy, yaw, length, width, height, wall_t,
+def arch_shell_panels(length, r_out, r_in, t_wall, n_arch, prefix):
+    """Arco em casca dupla: painéis exteriores + interiores (meio-cilindro oco)."""
+    elems = []
+    for i in range(n_arch):
+        t1 = -math.pi / 2 + i * math.pi / n_arch
+        t2 = -math.pi / 2 + (i + 1) * math.pi / n_arch
+        tm = (t1 + t2) / 2
+        span = t2 - t1
+        yaw = tm
+
+        ro = r_out + t_wall / 2
+        arc_wo = r_out * span * 1.08 + t_wall
+        elems.extend(box_col_vis(
+            f"{prefix}_o{i}",
+            f"{length} {arc_wo:.4f} {t_wall}",
+            f"0 {ro * math.sin(tm):.4f} {ro * math.cos(tm):.4f} 0 0 {yaw:.4f}",
+            WALL_AMB, WALL_DIFF,
+        ))
+
+        ri = r_in - t_wall / 2
+        arc_wi = r_in * span * 1.05 + t_wall
+        elems.extend(box_col_vis(
+            f"{prefix}_i{i}",
+            f"{length} {arc_wi:.4f} {t_wall}",
+            f"0 {ri * math.sin(tm):.4f} {ri * math.cos(tm):.4f} 0 0 {yaw:.4f}",
+            INNER_AMB, INNER_DIFF,
+        ))
+    return elems
+
+
+def hollow_half_cylinder_segment(
+    name, cx, cy, yaw, length, r_out, r_in, t_wall, n_arch,
     buried_open_start=0.0,
 ):
-    """Caixa oca: piso + paredes + teto com espessura visível. Boca aberta nas pontas."""
+    """Meio-cilindro oco: piso + casca dupla (faces interior/exterior), boca aberta."""
     buried_len, buried_x = segment_core_dims(length, buried_open_start, 0.0)
+    inner_w = 2 * r_in
+    outer_w = 2 * r_out
     lines = [
         f"    <model name=\"{name}\">",
         "      <static>true</static>",
@@ -116,25 +152,14 @@ def hollow_tunnel_segment(
     ]
     if buried_len > 0.5:
         lines.extend(box_col_vis(
-            "buried", f"{buried_len} {width} {BURY_D}",
+            "buried", f"{buried_len} {outer_w} {BURY_D}",
             f"{buried_x} 0 {-BURY_D / 2} 0 0 0", WALL_AMB, WALL_DIFF,
         ))
     lines.extend(box_col_vis(
-        "floor", f"{length} {width} {FLOOR_THICK}",
+        "floor", f"{length} {inner_w} {FLOOR_THICK}",
         f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF,
     ))
-    lines.extend(box_col_vis(
-        "wall_l", f"{length} {wall_t} {height}",
-        f"0 {width / 2} {height / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-    ))
-    lines.extend(box_col_vis(
-        "wall_r", f"{length} {wall_t} {height}",
-        f"0 {-width / 2} {height / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-    ))
-    lines.extend(box_col_vis(
-        "ceiling", f"{length} {width} {wall_t}",
-        f"0 0 {height - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-    ))
+    lines.extend(arch_shell_panels(length, r_out, r_in, t_wall, n_arch, "arc"))
     lines += [
         "      </link>",
         "    </model>",
@@ -144,28 +169,18 @@ def hollow_tunnel_segment(
 
 
 def tunnel_entrance():
-    """Platô externo com paredes laterais contínuas até a boca do túnel."""
+    """Platô externo com meio-cilindro oco alinhado ao túnel."""
+    elen = 4.0
     return [
         "    <model name=\"tunnel_entrance\">",
         "      <static>true</static>",
         "      <pose>-2.0 0 0 0 0 0</pose>",
         "      <link name=\"link\">",
         *box_col_vis(
-            "ramp_floor", "4.0 4.0 0.15",
-            "0 0 -0.075 0 0 0", FLOOR_AMB, FLOOR_DIFF,
+            "ramp_floor", f"{elen} {2 * R_IN} {FLOOR_THICK}",
+            f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF,
         ),
-        *box_col_vis(
-            "wall_l", f"4.0 {T} {H}",
-            f"0 {W / 2} {H / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-        ),
-        *box_col_vis(
-            "wall_r", f"4.0 {T} {H}",
-            f"0 {-W / 2} {H / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-        ),
-        *box_col_vis(
-            "ceiling", f"4.0 {W} {T}",
-            f"0 0 {H - T / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-        ),
+        *arch_shell_panels(elen, R_OUT, R_IN, T, N_ARCH, "mouth"),
         "      </link>",
         "    </model>",
         "",
@@ -212,21 +227,19 @@ def sparse_rocks(rng):
 
 
 def chamber():
-    cw, cd, ch = 14.0, 12.0, 4.0
+    cw, cd = 14.0, 12.0
+    r_out, r_in = 5.5, 5.3
     return [
         "    <model name=\"chamber\">",
         "      <static>true</static>",
         "      <pose>54.0 4.0 0 0 0 0</pose>",
         "      <link name=\"link\">",
         *box_col_vis("buried", f"{cw} {cd} {BURY_D}", f"0 0 {-BURY_D / 2} 0 0 0", WALL_AMB, WALL_DIFF),
-        *box_col_vis("cf", f"{cw} {cd} {FLOOR_THICK}", f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF),
-        *box_col_vis("cc", f"{cw} {cd} {T}", f"0 0 {ch - T / 2} 0 0 0", WALL_AMB, WALL_DIFF),
-        *box_col_vis("cwl", f"{T} {cd} {ch}", f"{-cw / 2} 0 {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF),
-        *box_col_vis("cwr", f"{T} {cd} {ch}", f"{cw / 2} 0 {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF),
-        *box_col_vis("cwb", f"{cw} {T} {ch}", f"0 {-cd / 2} {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF),
-        # Skylight — abertura parcial no teto
-        *box_col_vis("csky_l", f"4 {cd} {T}", f"-5 0 {ch - T / 2} 0 0 0", WALL_AMB, WALL_DIFF),
-        *box_col_vis("csky_r", f"4 {cd} {T}", f"5 0 {ch - T / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("cf", f"{cw} {2 * r_in} {FLOOR_THICK}", f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF),
+        *arch_shell_panels(cw - 2, r_out, r_in, T, 6, "vault"),
+        *box_col_vis("cwb", f"{T} {cd} {r_out}", f"{cw / 2} 0 {r_out / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("csky_l", f"4 {cd} {T}", f"-5 0 {r_out - T / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("csky_r", f"4 {cd} {T}", f"5 0 {r_out - T / 2} 0 0 0", WALL_AMB, WALL_DIFF),
         "      </link>",
         "    </model>",
         "",
@@ -337,8 +350,8 @@ def main():
     rng = random.Random(42)
     parts = [
         '<?xml version="1.0" ?>',
-        "<!-- lava_tube.world — corredor oco em caixa (paredes com espessura), entrada aberta.",
-        "     Sem cilindros sólidos. Gerado por worlds/generate_lava_tube.py -->",
+        "<!-- lava_tube.world — meio-cilindro oco (casca dupla interior/exterior).",
+        "     Gerado por worlds/generate_lava_tube.py -->",
         '<sdf version="1.8">',
         '  <world name="lava_tube">',
         "",
@@ -395,13 +408,13 @@ def main():
 
     for i, (cx, cy, yaw) in enumerate(SEGMENTS):
         buried_start = 2.0 if i == 0 else 0.0
-        parts.extend(hollow_tunnel_segment(
-            f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, W, H, T,
+        parts.extend(hollow_half_cylinder_segment(
+            f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, R_OUT, R_IN, T, N_ARCH,
             buried_open_start=buried_start,
         ))
 
-    parts.extend(hollow_tunnel_segment(
-        "alcove", 32, 8, 1.5708, 10.0, 3.0, H, T,
+    parts.extend(hollow_half_cylinder_segment(
+        "alcove", 32, 8, 1.5708, 10.0, 1.5, 1.3, T, 4,
         buried_open_start=1.0,
     ))
     parts.extend(chamber())
