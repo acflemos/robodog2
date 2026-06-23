@@ -15,7 +15,10 @@ Criar um ambiente de simulação inspirador para um **curso de robótica com ROS
 - **Lava tube realista** em Gazebo Fortress (`worlds/lava_tube.world`)
 - **Gravidade lunar** (~1,62 m/s², ~1/6 da Terra)
 - Geometria primitiva estática — otimizada para VM 12 núcleos / 16 GB RAM
+- **Perfil Hawaii-style**: meio-cilindro (piso plano + paredes/abóbada curvas), rocha vulcânica nas laterais
+- **Sem estalactites** — formação vulcânica seca (Lua sem água no passado)
 - Túnel em curva S (~48 m) + alcova lateral + câmara final ampliada com skylight
+- Regenerável via `python3 worlds/generate_lava_tube.py`
 - **Zona do Enigma** (final do túnel): restos de uma antiga missão não-humana — lander corroído, antena tombada, painéis deteriorados, placa monolítica, **pirâmide pequena** e **beacon emissivo** ainda pulsando após eras (sugere que alguém esteve aqui há muito tempo)
 
 ### Robô
