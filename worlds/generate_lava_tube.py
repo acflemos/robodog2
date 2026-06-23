@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Gera worlds/lava_tube.world — lava tube lunar, perfil meio-cilindro suave.
 
-Estratégia visual (evita efeito 'escada espiral' de muitas caixas rotacionadas):
-  - Colisão: túnel em caixa (piso plano + paredes) — parece e funciona como túnel
-  - Visual da abóbada: um cilindro horizontal por segmento (superfície curva contínua)
-  - Decoração: poucas rochas vulcânicas discretas (sem estalactites — Lua sem água)
+Estratégia visual (meio-cilindro Hawaii-style):
+  - Cilindro horizontal centrado em z=0: metade inferior enterrada, metade superior visível
+  - Piso plano de circulação em z=0; paredes curvas ao lado (não um cano sobre o chão)
+  - Colisão em caixa; abóbada = cilindro visual contínuo (sem escada espiral de caixas)
+  - Decoração: poucas rochas vulcânicas (sem estalactites — Lua sem água)
 """
 
 import math
@@ -83,39 +84,46 @@ def cyl_vis(name, radius, length, pose, ambient, diffuse):
     ]
 
 
-def box_tunnel_segment(name, cx, cy, yaw, length, width, height, wall_t):
-    """Túnel: colisão em caixa + abóbada curva visual (cilindro horizontal)."""
+def box_tunnel_segment(name, cx, cy, yaw, length, width, wall_t, radius=None):
+    """Meio-cilindro: metade do tubo enterrada (z<0), piso plano em z=0, abóbada curva acima."""
+    if radius is None:
+        radius = width / 2
     lines = [
         f"    <model name=\"{name}\">",
         "      <static>true</static>",
         f"      <pose>{cx} {cy} 0 0 0 {yaw}</pose>",
         "      <link name=\"link\">",
-        # Piso plano
+        # Metade inferior enterrada — esconde o “cano” e forma rocha sólida sob o piso
+        *box_col_vis(
+            "buried", f"{length} {width} {radius}",
+            f"0 0 {-radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+        ),
+        # Piso de circulação (superfície plana em z=0)
         *box_col_vis(
             "floor", f"{length} {width} {FLOOR_THICK}",
             f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF,
         ),
-        # Colisão do teto (plano, invisível ao jogador)
+        # Colisão do teto (invisível)
         *box_col_vis(
             "ceil_col", f"{length} {width} {wall_t}",
-            f"0 0 {height - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+            f"0 0 {radius - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
             collision=True, visual=False,
         ),
-        # Paredes laterais — só colisão (o cilindro visual dá a curvatura)
+        # Paredes laterais — colisão de z=0 até o topo do arco
         *box_col_vis(
-            "wall_l", f"{length} {wall_t} {height}",
-            f"0 {width / 2} {height / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+            "wall_l", f"{length} {wall_t} {radius}",
+            f"0 {width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
             collision=True, visual=False,
         ),
         *box_col_vis(
-            "wall_r", f"{length} {wall_t} {height}",
-            f"0 {-width / 2} {height / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+            "wall_r", f"{length} {wall_t} {radius}",
+            f"0 {-width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
             collision=True, visual=False,
         ),
-        # Abóbada curva contínua (meio-cilindro): cilindro com eixo em X, centro em z=R
+        # Cilindro centrado em z=0: metade inferior enterrada, metade superior = abóbada
         *cyl_vis(
-            "vault", R + wall_t / 2, length,
-            f"0 0 {R} 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF,
+            "vault", radius + wall_t / 2, length,
+            f"0 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF,
         ),
         "      </link>",
         "    </model>",
@@ -177,19 +185,21 @@ def sparse_rocks(rng):
 
 def chamber():
     cw, cd, ch = 14.0, 12.0, 4.0
+    cr = 5.0
     return [
         "    <model name=\"chamber\">",
         "      <static>true</static>",
         "      <pose>54.0 4.0 0 0 0 0</pose>",
         "      <link name=\"link\">",
+        *box_col_vis("buried", f"{cw} {cd} {cr}", f"0 0 {-cr / 2} 0 0 0", WALL_AMB, WALL_DIFF),
         *box_col_vis("cf", f"{cw} {cd} {FLOOR_THICK}", f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF),
-        *box_col_vis("cc", f"{cw} {cd} {FLOOR_THICK}", f"0 0 {ch - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
-        *cyl_vis("chamber_vault", 6.5, 12.0, f"0 0 5.5 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("cc", f"{cw} {cd} {FLOOR_THICK}", f"0 0 {cr - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
+        *cyl_vis("chamber_vault", cr + T / 2, cw - 2.0, f"0 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF),
         *box_col_vis("cwl", f"{T} {cd} {ch}", f"{-cw / 2} 0 {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
         *box_col_vis("cwr", f"{T} {cd} {ch}", f"{cw / 2} 0 {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
         *box_col_vis("cwb", f"{cw} {T} {ch}", f"0 {-cd / 2} {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
-        *box_col_vis("csky_l", f"4 {cd} {FLOOR_THICK}", f"-5 0 {ch - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF),
-        *box_col_vis("csky_r", f"4 {cd} {FLOOR_THICK}", f"5 0 {ch - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("csky_l", f"4 {cd} {FLOOR_THICK}", f"-5 0 {cr - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("csky_r", f"4 {cd} {FLOOR_THICK}", f"5 0 {cr - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF),
         "      </link>",
         "    </model>",
         "",
@@ -364,9 +374,9 @@ def main():
     ]
 
     for i, (cx, cy, yaw) in enumerate(SEGMENTS):
-        parts.extend(box_tunnel_segment(f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, W, H, T))
+        parts.extend(box_tunnel_segment(f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, W, T))
 
-    parts.extend(box_tunnel_segment("alcove", 32, 8, 1.5708, 10.0, 3.0, H, T))
+    parts.extend(box_tunnel_segment("alcove", 32, 8, 1.5708, 10.0, 3.0, T, radius=1.5))
     parts.extend(chamber())
     parts.extend(sparse_rocks(rng))
     parts.extend(artifacts())
