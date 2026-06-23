@@ -35,9 +35,10 @@ ROCK_SHADES = [
     ("0.28 0.24 0.20 1", "0.34 0.29 0.25 1"),
 ]
 
-WALL_AMB, WALL_DIFF = "0.28 0.25 0.22 1", "0.32 0.28 0.25 1"
-FLOOR_AMB, FLOOR_DIFF = "0.18 0.16 0.14 1", "0.22 0.19 0.17 1"
-SPEC = "0.04 0.04 0.04 1"
+WALL_AMB, WALL_DIFF = "0.38 0.34 0.30 1", "0.48 0.42 0.38 1"
+FLOOR_AMB, FLOOR_DIFF = "0.28 0.24 0.20 1", "0.34 0.30 0.26 1"
+WALL_EM = "0.10 0.09 0.08 1"   # brilho próprio — interior visível na câmara
+SPEC = "0.06 0.06 0.06 1"
 
 
 def mat(ambient, diffuse, emissive=None):
@@ -73,15 +74,35 @@ def box_col_vis(name, size, pose, ambient, diffuse, emissive=None, collision=Tru
     return lines
 
 
-def cyl_vis(name, radius, length, pose, ambient, diffuse):
+def cyl_vis(name, radius, length, pose, ambient, diffuse, emissive=None):
     """Cilindro só visual — abóbada curva contínua (eixo ao longo de X)."""
     return [
         f"        <visual name=\"{name}_vis\">",
         f"          <pose>{pose}</pose>",
         f"          <geometry><cylinder><radius>{radius}</radius><length>{length}</length></cylinder></geometry>",
-        *mat(ambient, diffuse),
+        *mat(ambient, diffuse, emissive),
         "        </visual>",
     ]
+
+
+def tunnel_lights():
+    """Luzes pontuais ao longo do túnel — interior visível na câmara do Gazebo."""
+    lights = []
+    # Entrada + centro de cada segmento
+    spots = [(-1.0, 0.0, 1.2)] + [
+        (cx, cy, 1.3) for cx, cy, _ in SEGMENTS
+    ] + [(32.0, 8.0, 1.2), (48.0, 3.0, 1.3)]
+    for i, (x, y, z) in enumerate(spots):
+        lights += [
+            f'    <light name="tunnel_lit_{i:02d}" type="point">',
+            f"      <pose>{x} {y} {z} 0 0 0</pose>",
+            "      <diffuse>0.75 0.68 0.58 1</diffuse>",
+            "      <specular>0.15 0.14 0.12 1</specular>",
+            "      <attenuation><range>14</range><linear>0.08</linear></attenuation>",
+            "    </light>",
+            "",
+        ]
+    return lights
 
 
 def box_tunnel_segment(name, cx, cy, yaw, length, width, wall_t, radius=None):
@@ -120,10 +141,26 @@ def box_tunnel_segment(name, cx, cy, yaw, length, width, wall_t, radius=None):
             f"0 {-width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
             collision=True, visual=False,
         ),
-        # Cilindro centrado em z=0: metade inferior enterrada, metade superior = abóbada
+        # Revestimento interior visível (paredes curvas vistas de dentro)
+        *box_col_vis(
+            "inner_l", f"{length} 0.08 {radius}",
+            f"0 {width / 2 - 0.12} {radius / 2} 0 0 0",
+            WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
+        ),
+        *box_col_vis(
+            "inner_r", f"{length} 0.08 {radius}",
+            f"0 {-width / 2 + 0.12} {radius / 2} 0 0 0",
+            WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
+        ),
+        *box_col_vis(
+            "inner_ceil", f"{length} {width - 0.3} 0.08",
+            f"0 0 {radius - 0.1} 0 0 0",
+            WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
+        ),
+        # Cilindro exterior: metade enterrada, abóbada curva
         *cyl_vis(
             "vault", radius + wall_t / 2, length,
-            f"0 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF,
+            f"0 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF, WALL_EM,
         ),
         "      </link>",
         "    </model>",
@@ -331,36 +368,27 @@ def main():
         "    </physics>",
         "",
         "    <scene>",
-        "      <ambient>0.06 0.06 0.10 1</ambient>",
-        "      <background>0.02 0.02 0.05 1</background>",
+        "      <ambient>0.22 0.20 0.18 1</ambient>",
+        "      <background>0.12 0.11 0.14 1</background>",
         "      <shadows>false</shadows>",
         "    </scene>",
         "",
-        '    <light name="tunnel_a" type="point">',
-        "      <pose>12 0 2.0 0 0 0</pose>",
-        "      <diffuse>0.35 0.32 0.28 1</diffuse>",
-        "      <attenuation><range>18</range></attenuation>",
-        "    </light>",
-        '    <light name="tunnel_b" type="point">',
-        "      <pose>30 1 2.0 0 0 0</pose>",
-        "      <diffuse>0.30 0.28 0.25 1</diffuse>",
-        "      <attenuation><range>18</range></attenuation>",
-        "    </light>",
+        *tunnel_lights(),
         '    <light name="skylight" type="directional">',
         "      <pose>50 6 8 0 0.6 0</pose>",
-        "      <diffuse>0.15 0.14 0.18 1</diffuse>",
+        "      <diffuse>0.35 0.32 0.38 1</diffuse>",
         "      <direction>0.2 -0.3 -1</direction>",
         "      <cast_shadows>false</cast_shadows>",
         "    </light>",
         '    <light name="chamber_glow" type="point">',
-        "      <pose>54 4 3.2 0 0 0</pose>",
-        "      <diffuse>0.25 0.35 0.45 1</diffuse>",
-        "      <attenuation><range>22</range></attenuation>",
+        "      <pose>54 4 2.5 0 0 0</pose>",
+        "      <diffuse>0.55 0.60 0.70 1</diffuse>",
+        "      <attenuation><range>25</range></attenuation>",
         "    </light>",
         '    <light name="beacon_pulse" type="point">',
         "      <pose>56 3.5 1.2 0 0 0</pose>",
-        "      <diffuse>0.05 0.55 0.65 1</diffuse>",
-        "      <attenuation><range>6</range></attenuation>",
+        "      <diffuse>0.15 0.75 0.85 1</diffuse>",
+        "      <attenuation><range>10</range></attenuation>",
         "    </light>",
         "",
         '    <model name="lunar_surface">',
