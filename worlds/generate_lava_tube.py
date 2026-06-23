@@ -221,6 +221,33 @@ def artifacts():
     return lines
 
 
+def tunnel_lights():
+    """Luzes pontuais ao longo do túnel — interior visível na câmara do Gazebo."""
+    spots = [
+        (-1.0, 0.0, 1.8),
+        (4.0, 0.0, 1.8),
+        (12.0, 0.0, 1.8),
+        (20.0, 0.4, 1.8),
+        (28.0, 1.2, 1.8),
+        (36.0, 2.0, 1.8),
+        (44.0, 2.6, 1.8),
+        (32.0, 8.0, 1.8),
+        (48.0, 3.0, 1.8),
+    ]
+    lines = []
+    for i, (x, y, z) in enumerate(spots):
+        lines += [
+            f'    <light name="tunnel_lit_{i:02d}" type="point">',
+            f"      <pose>{x} {y} {z} 0 0 0</pose>",
+            "      <diffuse>0.75 0.68 0.58 1</diffuse>",
+            "      <specular>0.12 0.11 0.10 1</specular>",
+            "      <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>",
+            "    </light>",
+            "",
+        ]
+    return lines
+
+
 def main():
     parts = [
         '<?xml version="1.0" ?>',
@@ -247,36 +274,27 @@ def main():
         "    </physics>",
         "",
         "    <scene>",
-        "      <ambient>0.06 0.06 0.10 1</ambient>",
+        "      <ambient>0.10 0.09 0.12 1</ambient>",
         "      <background>0.02 0.02 0.05 1</background>",
         "      <shadows>false</shadows>",
         "    </scene>",
         "",
-        '    <light name="tunnel_a" type="point">',
-        "      <pose>12 0 2.5 0 0 0</pose>",
-        "      <diffuse>0.35 0.32 0.28 1</diffuse>",
-        "      <attenuation><range>18</range></attenuation>",
-        "    </light>",
-        '    <light name="tunnel_b" type="point">',
-        "      <pose>30 1 2.5 0 0 0</pose>",
-        "      <diffuse>0.30 0.28 0.25 1</diffuse>",
-        "      <attenuation><range>18</range></attenuation>",
-        "    </light>",
+        *tunnel_lights(),
         '    <light name="skylight" type="directional">',
         "      <pose>50 6 8 0 0.6 0</pose>",
-        "      <diffuse>0.15 0.14 0.18 1</diffuse>",
+        "      <diffuse>0.18 0.16 0.20 1</diffuse>",
         "      <direction>0.2 -0.3 -1</direction>",
         "      <cast_shadows>false</cast_shadows>",
         "    </light>",
         '    <light name="chamber_glow" type="point">',
-        "      <pose>54 4 3.2 0 0 0</pose>",
-        "      <diffuse>0.25 0.35 0.45 1</diffuse>",
-        "      <attenuation><range>22</range></attenuation>",
+        "      <pose>54 4 2.8 0 0 0</pose>",
+        "      <diffuse>0.40 0.50 0.60 1</diffuse>",
+        "      <attenuation><range>22</range><linear>0.05</linear><constant>0.5</constant></attenuation>",
         "    </light>",
         '    <light name="beacon_pulse" type="point">',
         "      <pose>56 3.5 1.2 0 0 0</pose>",
-        "      <diffuse>0.05 0.55 0.65 1</diffuse>",
-        "      <attenuation><range>6</range></attenuation>",
+        "      <diffuse>0.10 0.70 0.80 1</diffuse>",
+        "      <attenuation><range>8</range></attenuation>",
         "    </light>",
         "",
         '    <model name="lunar_surface">',
