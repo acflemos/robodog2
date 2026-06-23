@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Gera worlds/lava_tube.world — lava tube lunar, perfil meio-cilindro suave.
+"""Gera worlds/lava_tube.world — lava tube lunar em caixa oca (parede com espessura).
 
-Estratégia visual (meio-cilindro Hawaii-style):
-  - Cilindro horizontal centrado em z=0: metade inferior enterrada, metade superior visível
-  - Piso plano de circulação em z=0; paredes curvas ao lado (não um cano sobre o chão)
-  - Colisão em caixa; abóbada = cilindro visual contínuo (sem escada espiral de caixas)
-  - Decoração: poucas rochas vulcânicas (sem estalactites — Lua sem água)
+Estratégia (como o primeiro túnel, melhorado):
+  - Corredor OCO: piso + 2 paredes + teto em caixa — espessura visível, entrada aberta
+  - Sem cilindros sólidos (evita robô/câmara “sumirem” dentro do tubo)
+  - Rocha enterrada sob o piso; luzes interiores; poucas pedras no chão
 """
 
 import math
@@ -14,8 +13,8 @@ from pathlib import Path
 
 OUT = Path(__file__).parent / "lava_tube.world"
 
-W, H, T = 4.0, 3.0, 0.2       # largura, altura interior, espessura parede
-R = W / 2                      # raio do meio-cilindro visual
+W, H, T = 4.0, 3.0, 0.2       # largura interior, altura interior, espessura da parede
+BURY_D = 1.5                   # profundidade da rocha enterrada sob o piso
 SEG_LEN = 8.0
 FLOOR_THICK = 0.15
 
@@ -74,17 +73,6 @@ def box_col_vis(name, size, pose, ambient, diffuse, emissive=None, collision=Tru
     return lines
 
 
-def cyl_vis(name, radius, length, pose, ambient, diffuse, emissive=None):
-    """Cilindro só visual — abóbada curva contínua (eixo ao longo de X)."""
-    return [
-        f"        <visual name=\"{name}_vis\">",
-        f"          <pose>{pose}</pose>",
-        f"          <geometry><cylinder><radius>{radius}</radius><length>{length}</length></cylinder></geometry>",
-        *mat(ambient, diffuse, emissive),
-        "        </visual>",
-    ]
-
-
 def tunnel_lights():
     """Luzes pontuais ao longo do túnel — interior visível na câmara do Gazebo."""
     lights = []
@@ -114,50 +102,38 @@ def segment_core_dims(length, open_start=0.0, open_end=0.0):
     return eff_len, center_x
 
 
-def box_tunnel_segment(
-    name, cx, cy, yaw, length, width, wall_t, radius=None,
-    buried_open_start=0.0, buried_open_end=0.0,
+def hollow_tunnel_segment(
+    name, cx, cy, yaw, length, width, height, wall_t,
+    buried_open_start=0.0,
 ):
-    """Corredor com colisão contínua + cilindro visual (curva). Rocha enterrada recortada na boca."""
-    if radius is None:
-        radius = width / 2
-    buried_len, buried_x = segment_core_dims(length, buried_open_start, buried_open_end)
+    """Caixa oca: piso + paredes + teto com espessura visível. Boca aberta nas pontas."""
+    buried_len, buried_x = segment_core_dims(length, buried_open_start, 0.0)
     lines = [
         f"    <model name=\"{name}\">",
         "      <static>true</static>",
         f"      <pose>{cx} {cy} 0 0 0 {yaw}</pose>",
         "      <link name=\"link\">",
     ]
-    # Rocha enterrada — só o miolo (boca sem parede frontal sólida)
     if buried_len > 0.5:
         lines.extend(box_col_vis(
-            "buried", f"{buried_len} {width} {radius}",
-            f"{buried_x} 0 {-radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+            "buried", f"{buried_len} {width} {BURY_D}",
+            f"{buried_x} 0 {-BURY_D / 2} 0 0 0", WALL_AMB, WALL_DIFF,
         ))
-    # Piso plano — comprimento total
     lines.extend(box_col_vis(
         "floor", f"{length} {width} {FLOOR_THICK}",
         f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF,
     ))
-    # Paredes laterais — colisão + visual em TODO o comprimento (robô não atravessa)
     lines.extend(box_col_vis(
-        "wall_l", f"{length} {wall_t} {radius}",
-        f"0 {width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+        "wall_l", f"{length} {wall_t} {height}",
+        f"0 {width / 2} {height / 2} 0 0 0", WALL_AMB, WALL_DIFF,
     ))
     lines.extend(box_col_vis(
-        "wall_r", f"{length} {wall_t} {radius}",
-        f"0 {-width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+        "wall_r", f"{length} {wall_t} {height}",
+        f"0 {-width / 2} {height / 2} 0 0 0", WALL_AMB, WALL_DIFF,
     ))
-    # Teto — colisão invisível
     lines.extend(box_col_vis(
-        "ceil_col", f"{length} {width} {wall_t}",
-        f"0 0 {radius - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-        collision=True, visual=False,
-    ))
-    # Abóbada curva — só visual (exterior do túnel), comprimento total
-    lines.extend(cyl_vis(
-        "vault", radius + wall_t / 2, length,
-        f"0 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF, WALL_EM,
+        "ceiling", f"{length} {width} {wall_t}",
+        f"0 0 {height - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
     ))
     lines += [
         "      </link>",
@@ -179,12 +155,16 @@ def tunnel_entrance():
             "0 0 -0.075 0 0 0", FLOOR_AMB, FLOOR_DIFF,
         ),
         *box_col_vis(
-            "wall_l", "4.0 0.2 2.0",
-            "0 1.9 1.0 0 0 0", WALL_AMB, WALL_DIFF,
+            "wall_l", f"4.0 {T} {H}",
+            f"0 {W / 2} {H / 2} 0 0 0", WALL_AMB, WALL_DIFF,
         ),
         *box_col_vis(
-            "wall_r", "4.0 0.2 2.0",
-            "0 -1.9 1.0 0 0 0", WALL_AMB, WALL_DIFF,
+            "wall_r", f"4.0 {T} {H}",
+            f"0 {-W / 2} {H / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+        ),
+        *box_col_vis(
+            "ceiling", f"4.0 {W} {T}",
+            f"0 0 {H - T / 2} 0 0 0", WALL_AMB, WALL_DIFF,
         ),
         "      </link>",
         "    </model>",
@@ -233,21 +213,20 @@ def sparse_rocks(rng):
 
 def chamber():
     cw, cd, ch = 14.0, 12.0, 4.0
-    cr = 5.0
     return [
         "    <model name=\"chamber\">",
         "      <static>true</static>",
         "      <pose>54.0 4.0 0 0 0 0</pose>",
         "      <link name=\"link\">",
-        *box_col_vis("buried", f"{cw} {cd} {cr}", f"0 0 {-cr / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("buried", f"{cw} {cd} {BURY_D}", f"0 0 {-BURY_D / 2} 0 0 0", WALL_AMB, WALL_DIFF),
         *box_col_vis("cf", f"{cw} {cd} {FLOOR_THICK}", f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF),
-        *box_col_vis("cc", f"{cw} {cd} {FLOOR_THICK}", f"0 0 {cr - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
-        *cyl_vis("chamber_vault", cr + T / 2, cw - 2.0, f"0 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF),
-        *box_col_vis("cwl", f"{T} {cd} {ch}", f"{-cw / 2} 0 {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
-        *box_col_vis("cwr", f"{T} {cd} {ch}", f"{cw / 2} 0 {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
-        *box_col_vis("cwb", f"{cw} {T} {ch}", f"0 {-cd / 2} {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF, collision=True, visual=False),
-        *box_col_vis("csky_l", f"4 {cd} {FLOOR_THICK}", f"-5 0 {cr - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF),
-        *box_col_vis("csky_r", f"4 {cd} {FLOOR_THICK}", f"5 0 {cr - FLOOR_THICK / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("cc", f"{cw} {cd} {T}", f"0 0 {ch - T / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("cwl", f"{T} {cd} {ch}", f"{-cw / 2} 0 {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("cwr", f"{T} {cd} {ch}", f"{cw / 2} 0 {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("cwb", f"{cw} {T} {ch}", f"0 {-cd / 2} {ch / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        # Skylight — abertura parcial no teto
+        *box_col_vis("csky_l", f"4 {cd} {T}", f"-5 0 {ch - T / 2} 0 0 0", WALL_AMB, WALL_DIFF),
+        *box_col_vis("csky_r", f"4 {cd} {T}", f"5 0 {ch - T / 2} 0 0 0", WALL_AMB, WALL_DIFF),
         "      </link>",
         "    </model>",
         "",
@@ -358,8 +337,8 @@ def main():
     rng = random.Random(42)
     parts = [
         '<?xml version="1.0" ?>',
-        "<!-- lava_tube.world — meio-cilindro suave (cilindro visual) + colisão em caixa.",
-        "     Sem estalactites. Gerado por worlds/generate_lava_tube.py -->",
+        "<!-- lava_tube.world — corredor oco em caixa (paredes com espessura), entrada aberta.",
+        "     Sem cilindros sólidos. Gerado por worlds/generate_lava_tube.py -->",
         '<sdf version="1.8">',
         '  <world name="lava_tube">',
         "",
@@ -416,13 +395,13 @@ def main():
 
     for i, (cx, cy, yaw) in enumerate(SEGMENTS):
         buried_start = 2.0 if i == 0 else 0.0
-        parts.extend(box_tunnel_segment(
-            f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, W, T,
+        parts.extend(hollow_tunnel_segment(
+            f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, W, H, T,
             buried_open_start=buried_start,
         ))
 
-    parts.extend(box_tunnel_segment(
-        "alcove", 32, 8, 1.5708, 10.0, 3.0, T, radius=1.5,
+    parts.extend(hollow_tunnel_segment(
+        "alcove", 32, 8, 1.5708, 10.0, 3.0, H, T,
         buried_open_start=1.0,
     ))
     parts.extend(chamber())
