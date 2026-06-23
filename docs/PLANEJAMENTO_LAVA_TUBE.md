@@ -19,7 +19,8 @@ Criar um ambiente de simulação inspirador para um **curso de robótica com ROS
 - **Sem estalactites** — formação vulcânica seca (Lua sem água no passado)
 - Túnel em curva S (~48 m) + alcova lateral + câmara final ampliada com skylight
 - Regenerável via `python3 worlds/generate_lava_tube.py`
-- **Decoração futura (Fase 1b):** meshes Fuel `Cave Straight 02 Type B` como **interior visual** dentro da caixa oca (colisão nas primitivas; mesh só para aparência de caverna). Referência: `lava_tube_fuel.world`
+- **Decoração futura (Fase 1b):** meshes Fuel `Cave Straight 02 Type B` como **interior visual** dentro da caixa oca. Referência validada: `lava_tube_fuel.world` — zoom interno mostra túnel rochoso credível de lava tube
+- **Piso Fuel descartado para colisão:** irregular demais para robô com rodas; piso plano da v1 mantém navegação; mesh Fuel só em paredes/teto (visual-only)
 - **Zona do Enigma** (final do túnel): restos de uma antiga missão não-humana — lander corroído, antena tombada, painéis deteriorados, placa monolítica, **pirâmide pequena** e **beacon emissivo** ainda pulsando após eras (sugere que alguém esteve aqui há muito tempo)
 
 ### Robô
