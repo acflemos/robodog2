@@ -18,6 +18,7 @@ setup(
             glob.glob('urdf/*.xacro') + glob.glob('urdf/*.urdf')),
         # Mundos Gazebo
         ('share/' + package_name + '/worlds', glob.glob('worlds/*.world')),
+        ('share/' + package_name + '/scripts', glob.glob('scripts/*.sh')),
         ('share/' + package_name + '/worlds/gz', glob.glob('worlds/gz/*.world')),
         ('share/' + package_name + '/worlds/robodog1_classic', glob.glob('worlds/robodog1_classic/*.world')),
         # Malhas STL (visual Gazebo/RViz)
