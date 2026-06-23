@@ -116,65 +116,49 @@ def segment_core_dims(length, open_start=0.0, open_end=0.0):
 
 def box_tunnel_segment(
     name, cx, cy, yaw, length, width, wall_t, radius=None,
-    open_start=0.0, open_end=0.0,
+    buried_open_start=0.0, buried_open_end=0.0,
 ):
-    """Meio-cilindro: metade enterrada (z<0), piso plano em z=0, bocas abertas nas pontas."""
+    """Corredor com colisão contínua + cilindro visual (curva). Rocha enterrada recortada na boca."""
     if radius is None:
         radius = width / 2
-    core_len, core_x = segment_core_dims(length, open_start, open_end)
+    buried_len, buried_x = segment_core_dims(length, buried_open_start, buried_open_end)
     lines = [
         f"    <model name=\"{name}\">",
         "      <static>true</static>",
         f"      <pose>{cx} {cy} 0 0 0 {yaw}</pose>",
         "      <link name=\"link\">",
     ]
-    # Rocha enterrada — recortada na entrada para não bloquear o robô
-    if core_len > 0.5:
+    # Rocha enterrada — só o miolo (boca sem parede frontal sólida)
+    if buried_len > 0.5:
         lines.extend(box_col_vis(
-            "buried", f"{core_len} {width} {radius}",
-            f"{core_x} 0 {-radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+            "buried", f"{buried_len} {width} {radius}",
+            f"{buried_x} 0 {-radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
         ))
-    # Piso de circulação — comprimento total (inclui boca aberta)
+    # Piso plano — comprimento total
     lines.extend(box_col_vis(
         "floor", f"{length} {width} {FLOOR_THICK}",
         f"0 0 {-FLOOR_THICK / 2} 0 0 0", FLOOR_AMB, FLOOR_DIFF,
     ))
-    if core_len > 0.5:
-        lines.extend(box_col_vis(
-            "ceil_col", f"{core_len} {width} {wall_t}",
-            f"{core_x} 0 {radius - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-            collision=True, visual=False,
-        ))
-        lines.extend(box_col_vis(
-            "wall_l", f"{core_len} {wall_t} {radius}",
-            f"{core_x} {width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-            collision=True, visual=False,
-        ))
-        lines.extend(box_col_vis(
-            "wall_r", f"{core_len} {wall_t} {radius}",
-            f"{core_x} {-width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
-            collision=True, visual=False,
-        ))
-        # Revestimento interior — só no miolo (evita caixas na boca)
-        lines.extend(box_col_vis(
-            "inner_l", f"{core_len} 0.08 {radius}",
-            f"{core_x} {width / 2 - 0.12} {radius / 2} 0 0 0",
-            WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
-        ))
-        lines.extend(box_col_vis(
-            "inner_r", f"{core_len} 0.08 {radius}",
-            f"{core_x} {-width / 2 + 0.12} {radius / 2} 0 0 0",
-            WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
-        ))
-        lines.extend(box_col_vis(
-            "inner_ceil", f"{core_len} {width - 0.3} 0.08",
-            f"{core_x} 0 {radius - 0.1} 0 0 0",
-            WALL_AMB, WALL_DIFF, WALL_EM, collision=False, visual=True,
-        ))
-        lines.extend(cyl_vis(
-            "vault", radius + wall_t / 2, core_len,
-            f"{core_x} 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF, WALL_EM,
-        ))
+    # Paredes laterais — colisão + visual em TODO o comprimento (robô não atravessa)
+    lines.extend(box_col_vis(
+        "wall_l", f"{length} {wall_t} {radius}",
+        f"0 {width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+    ))
+    lines.extend(box_col_vis(
+        "wall_r", f"{length} {wall_t} {radius}",
+        f"0 {-width / 2} {radius / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+    ))
+    # Teto — colisão invisível
+    lines.extend(box_col_vis(
+        "ceil_col", f"{length} {width} {wall_t}",
+        f"0 0 {radius - wall_t / 2} 0 0 0", WALL_AMB, WALL_DIFF,
+        collision=True, visual=False,
+    ))
+    # Abóbada curva — só visual (exterior do túnel), comprimento total
+    lines.extend(cyl_vis(
+        "vault", radius + wall_t / 2, length,
+        f"0 0 0 0 {math.pi / 2} 0", WALL_AMB, WALL_DIFF, WALL_EM,
+    ))
     lines += [
         "      </link>",
         "    </model>",
@@ -184,25 +168,23 @@ def box_tunnel_segment(
 
 
 def tunnel_entrance():
-    """Rampa/platô na boca do túnel — liga o piso lunar à entrada aberta."""
+    """Platô externo com paredes laterais contínuas até a boca do túnel."""
     return [
         "    <model name=\"tunnel_entrance\">",
         "      <static>true</static>",
-        "      <pose>-1.0 0 0 0 0 0</pose>",
+        "      <pose>-2.0 0 0 0 0 0</pose>",
         "      <link name=\"link\">",
         *box_col_vis(
-            "ramp_floor", "3.0 4.0 0.15",
+            "ramp_floor", "4.0 4.0 0.15",
             "0 0 -0.075 0 0 0", FLOOR_AMB, FLOOR_DIFF,
         ),
         *box_col_vis(
-            "mouth_l", "0.12 0.12 1.8",
-            "1.35 1.95 0.9 0 0 0", WALL_AMB, WALL_DIFF,
-            collision=True, visual=True,
+            "wall_l", "4.0 0.2 2.0",
+            "0 1.9 1.0 0 0 0", WALL_AMB, WALL_DIFF,
         ),
         *box_col_vis(
-            "mouth_r", "0.12 0.12 1.8",
-            "1.35 -1.95 0.9 0 0 0", WALL_AMB, WALL_DIFF,
-            collision=True, visual=True,
+            "wall_r", "4.0 0.2 2.0",
+            "0 -1.9 1.0 0 0 0", WALL_AMB, WALL_DIFF,
         ),
         "      </link>",
         "    </model>",
@@ -225,25 +207,13 @@ def rock_model(name, x, y, z, roll, pitch, yaw, sx, sy, sz, shade=2):
 
 
 def sparse_rocks(rng):
-    """Poucas rochas — textura vulcânica sem poluir o túnel."""
+    """Poucas rochas no chão — todas apoiadas em z=0."""
     rocks = []
-    # 1 saliente por segmento, alternando lado
-    for i, (cx, cy, yaw) in enumerate(SEGMENTS):
-        along = rng.uniform(-2.0, 2.0)
-        side = 1.6 if i % 2 == 0 else -1.6
-        wx = cx + along * math.cos(yaw) - side * math.sin(yaw) * 0.1
-        wy = cy + along * math.sin(yaw) + side * math.cos(yaw) * 0.1
-        rocks.extend(rock_model(
-            f"wall_rock_{i}", wx, wy, rng.uniform(0.3, 1.2),
-            0, 0, yaw + rng.uniform(-0.2, 0.2),
-            rng.uniform(0.3, 0.55), rng.uniform(0.2, 0.35), rng.uniform(0.2, 0.4),
-            shade=i % 4,
-        ))
     # Pedras esparsas no chão
     for i, (x, y, yaw, sx, sy, sz) in enumerate([
-        (10, 0.4, 0.1, 0.4, 0.3, 0.15),
-        (24, -0.6, -0.2, 0.5, 0.35, 0.18),
-        (40, 0.5, 0.3, 0.35, 0.28, 0.12),
+        (15, 1.3, 0.2, 0.35, 0.28, 0.12),
+        (28, -1.4, -0.1, 0.4, 0.3, 0.14),
+        (42, 1.2, 0.4, 0.3, 0.25, 0.11),
     ]):
         rocks.extend(rock_model(f"floor_rock_{i}", x, y, 0, 0, 0, yaw, sx, sy, sz, i))
     # Alcova
@@ -445,16 +415,15 @@ def main():
     parts.extend(tunnel_entrance())
 
     for i, (cx, cy, yaw) in enumerate(SEGMENTS):
-        open_start = 2.5 if i == 0 else 0.8
-        open_end = 0.8 if i < len(SEGMENTS) - 1 else 1.5
+        buried_start = 2.0 if i == 0 else 0.0
         parts.extend(box_tunnel_segment(
             f"tube_seg_{i:02d}", cx, cy, yaw, SEG_LEN, W, T,
-            open_start=open_start, open_end=open_end,
+            buried_open_start=buried_start,
         ))
 
     parts.extend(box_tunnel_segment(
         "alcove", 32, 8, 1.5708, 10.0, 3.0, T, radius=1.5,
-        open_start=1.5, open_end=2.0,
+        buried_open_start=1.0,
     ))
     parts.extend(chamber())
     parts.extend(sparse_rocks(rng))

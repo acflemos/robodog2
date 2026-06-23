@@ -127,41 +127,41 @@
 
     <model name="tunnel_entrance">
       <static>true</static>
-      <pose>-1.0 0 0 0 0 0</pose>
+      <pose>-2.0 0 0 0 0 0</pose>
       <link name="link">
         <collision name="ramp_floor_col">
           <pose>0 0 -0.075 0 0 0</pose>
-          <geometry><box><size>3.0 4.0 0.15</size></box></geometry>
+          <geometry><box><size>4.0 4.0 0.15</size></box></geometry>
         </collision>
         <visual name="ramp_floor_vis">
           <pose>0 0 -0.075 0 0 0</pose>
-          <geometry><box><size>3.0 4.0 0.15</size></box></geometry>
+          <geometry><box><size>4.0 4.0 0.15</size></box></geometry>
           <material>
             <ambient>0.28 0.24 0.20 1</ambient>
             <diffuse>0.34 0.30 0.26 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="mouth_l_col">
-          <pose>1.35 1.95 0.9 0 0 0</pose>
-          <geometry><box><size>0.12 0.12 1.8</size></box></geometry>
+        <collision name="wall_l_col">
+          <pose>0 1.9 1.0 0 0 0</pose>
+          <geometry><box><size>4.0 0.2 2.0</size></box></geometry>
         </collision>
-        <visual name="mouth_l_vis">
-          <pose>1.35 1.95 0.9 0 0 0</pose>
-          <geometry><box><size>0.12 0.12 1.8</size></box></geometry>
+        <visual name="wall_l_vis">
+          <pose>0 1.9 1.0 0 0 0</pose>
+          <geometry><box><size>4.0 0.2 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="mouth_r_col">
-          <pose>1.35 -1.95 0.9 0 0 0</pose>
-          <geometry><box><size>0.12 0.12 1.8</size></box></geometry>
+        <collision name="wall_r_col">
+          <pose>0 -1.9 1.0 0 0 0</pose>
+          <geometry><box><size>4.0 0.2 2.0</size></box></geometry>
         </collision>
-        <visual name="mouth_r_vis">
-          <pose>1.35 -1.95 0.9 0 0 0</pose>
-          <geometry><box><size>0.12 0.12 1.8</size></box></geometry>
+        <visual name="wall_r_vis">
+          <pose>0 -1.9 1.0 0 0 0</pose>
+          <geometry><box><size>4.0 0.2 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -176,12 +176,12 @@
       <pose>4.0 0.0 0 0 0 0.0</pose>
       <link name="link">
         <collision name="buried_col">
-          <pose>0.8500000000000001 0 -1.0 0 0 0</pose>
-          <geometry><box><size>4.7 4.0 2.0</size></box></geometry>
+          <pose>1.0 0 -1.0 0 0 0</pose>
+          <geometry><box><size>6.0 4.0 2.0</size></box></geometry>
         </collision>
         <visual name="buried_vis">
-          <pose>0.8500000000000001 0 -1.0 0 0 0</pose>
-          <geometry><box><size>4.7 4.0 2.0</size></box></geometry>
+          <pose>1.0 0 -1.0 0 0 0</pose>
+          <geometry><box><size>6.0 4.0 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -201,51 +201,39 @@
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="ceil_col_col">
-          <pose>0.8500000000000001 0 1.9 0 0 0</pose>
-          <geometry><box><size>4.7 4.0 0.2</size></box></geometry>
-        </collision>
         <collision name="wall_l_col">
-          <pose>0.8500000000000001 2.0 1.0 0 0 0</pose>
-          <geometry><box><size>4.7 0.2 2.0</size></box></geometry>
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
+        <visual name="wall_l_vis">
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
+          <material>
+            <ambient>0.38 0.34 0.30 1</ambient>
+            <diffuse>0.48 0.42 0.38 1</diffuse>
+            <specular>0.06 0.06 0.06 1</specular>
+          </material>
+        </visual>
         <collision name="wall_r_col">
-          <pose>0.8500000000000001 -2.0 1.0 0 0 0</pose>
-          <geometry><box><size>4.7 0.2 2.0</size></box></geometry>
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
-        <visual name="inner_l_vis">
-          <pose>0.8500000000000001 1.88 1.0 0 0 0</pose>
-          <geometry><box><size>4.7 0.08 2.0</size></box></geometry>
+        <visual name="wall_r_vis">
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
           </material>
         </visual>
-        <visual name="inner_r_vis">
-          <pose>0.8500000000000001 -1.88 1.0 0 0 0</pose>
-          <geometry><box><size>4.7 0.08 2.0</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
-        <visual name="inner_ceil_vis">
-          <pose>0.8500000000000001 0 1.9 0 0 0</pose>
-          <geometry><box><size>4.7 3.7 0.08</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
+        <collision name="ceil_col_col">
+          <pose>0 0 1.9 0 0 0</pose>
+          <geometry><box><size>8.0 4.0 0.2</size></box></geometry>
+        </collision>
         <visual name="vault_vis">
-          <pose>0.8500000000000001 0 0 0 1.5707963267948966 0</pose>
-          <geometry><cylinder><radius>2.1</radius><length>4.7</length></cylinder></geometry>
+          <pose>0 0 0 0 1.5707963267948966 0</pose>
+          <geometry><cylinder><radius>2.1</radius><length>8.0</length></cylinder></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -262,11 +250,11 @@
       <link name="link">
         <collision name="buried_col">
           <pose>0.0 0 -1.0 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 2.0</size></box></geometry>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
         </collision>
         <visual name="buried_vis">
           <pose>0.0 0 -1.0 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 2.0</size></box></geometry>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -286,51 +274,39 @@
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="ceil_col_col">
-          <pose>0.0 0 1.9 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 0.2</size></box></geometry>
-        </collision>
         <collision name="wall_l_col">
-          <pose>0.0 2.0 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.2 2.0</size></box></geometry>
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
+        <visual name="wall_l_vis">
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
+          <material>
+            <ambient>0.38 0.34 0.30 1</ambient>
+            <diffuse>0.48 0.42 0.38 1</diffuse>
+            <specular>0.06 0.06 0.06 1</specular>
+          </material>
+        </visual>
         <collision name="wall_r_col">
-          <pose>0.0 -2.0 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.2 2.0</size></box></geometry>
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
-        <visual name="inner_l_vis">
-          <pose>0.0 1.88 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.08 2.0</size></box></geometry>
+        <visual name="wall_r_vis">
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
           </material>
         </visual>
-        <visual name="inner_r_vis">
-          <pose>0.0 -1.88 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.08 2.0</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
-        <visual name="inner_ceil_vis">
-          <pose>0.0 0 1.9 0 0 0</pose>
-          <geometry><box><size>6.4 3.7 0.08</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
+        <collision name="ceil_col_col">
+          <pose>0 0 1.9 0 0 0</pose>
+          <geometry><box><size>8.0 4.0 0.2</size></box></geometry>
+        </collision>
         <visual name="vault_vis">
-          <pose>0.0 0 0 0 1.5707963267948966 0</pose>
-          <geometry><cylinder><radius>2.1</radius><length>6.4</length></cylinder></geometry>
+          <pose>0 0 0 0 1.5707963267948966 0</pose>
+          <geometry><cylinder><radius>2.1</radius><length>8.0</length></cylinder></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -347,11 +323,11 @@
       <link name="link">
         <collision name="buried_col">
           <pose>0.0 0 -1.0 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 2.0</size></box></geometry>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
         </collision>
         <visual name="buried_vis">
           <pose>0.0 0 -1.0 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 2.0</size></box></geometry>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -371,51 +347,39 @@
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="ceil_col_col">
-          <pose>0.0 0 1.9 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 0.2</size></box></geometry>
-        </collision>
         <collision name="wall_l_col">
-          <pose>0.0 2.0 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.2 2.0</size></box></geometry>
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
+        <visual name="wall_l_vis">
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
+          <material>
+            <ambient>0.38 0.34 0.30 1</ambient>
+            <diffuse>0.48 0.42 0.38 1</diffuse>
+            <specular>0.06 0.06 0.06 1</specular>
+          </material>
+        </visual>
         <collision name="wall_r_col">
-          <pose>0.0 -2.0 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.2 2.0</size></box></geometry>
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
-        <visual name="inner_l_vis">
-          <pose>0.0 1.88 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.08 2.0</size></box></geometry>
+        <visual name="wall_r_vis">
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
           </material>
         </visual>
-        <visual name="inner_r_vis">
-          <pose>0.0 -1.88 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.08 2.0</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
-        <visual name="inner_ceil_vis">
-          <pose>0.0 0 1.9 0 0 0</pose>
-          <geometry><box><size>6.4 3.7 0.08</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
+        <collision name="ceil_col_col">
+          <pose>0 0 1.9 0 0 0</pose>
+          <geometry><box><size>8.0 4.0 0.2</size></box></geometry>
+        </collision>
         <visual name="vault_vis">
-          <pose>0.0 0 0 0 1.5707963267948966 0</pose>
-          <geometry><cylinder><radius>2.1</radius><length>6.4</length></cylinder></geometry>
+          <pose>0 0 0 0 1.5707963267948966 0</pose>
+          <geometry><cylinder><radius>2.1</radius><length>8.0</length></cylinder></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -432,11 +396,11 @@
       <link name="link">
         <collision name="buried_col">
           <pose>0.0 0 -1.0 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 2.0</size></box></geometry>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
         </collision>
         <visual name="buried_vis">
           <pose>0.0 0 -1.0 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 2.0</size></box></geometry>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -456,51 +420,39 @@
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="ceil_col_col">
-          <pose>0.0 0 1.9 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 0.2</size></box></geometry>
-        </collision>
         <collision name="wall_l_col">
-          <pose>0.0 2.0 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.2 2.0</size></box></geometry>
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
+        <visual name="wall_l_vis">
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
+          <material>
+            <ambient>0.38 0.34 0.30 1</ambient>
+            <diffuse>0.48 0.42 0.38 1</diffuse>
+            <specular>0.06 0.06 0.06 1</specular>
+          </material>
+        </visual>
         <collision name="wall_r_col">
-          <pose>0.0 -2.0 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.2 2.0</size></box></geometry>
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
-        <visual name="inner_l_vis">
-          <pose>0.0 1.88 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.08 2.0</size></box></geometry>
+        <visual name="wall_r_vis">
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
           </material>
         </visual>
-        <visual name="inner_r_vis">
-          <pose>0.0 -1.88 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.08 2.0</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
-        <visual name="inner_ceil_vis">
-          <pose>0.0 0 1.9 0 0 0</pose>
-          <geometry><box><size>6.4 3.7 0.08</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
+        <collision name="ceil_col_col">
+          <pose>0 0 1.9 0 0 0</pose>
+          <geometry><box><size>8.0 4.0 0.2</size></box></geometry>
+        </collision>
         <visual name="vault_vis">
-          <pose>0.0 0 0 0 1.5707963267948966 0</pose>
-          <geometry><cylinder><radius>2.1</radius><length>6.4</length></cylinder></geometry>
+          <pose>0 0 0 0 1.5707963267948966 0</pose>
+          <geometry><cylinder><radius>2.1</radius><length>8.0</length></cylinder></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -517,11 +469,11 @@
       <link name="link">
         <collision name="buried_col">
           <pose>0.0 0 -1.0 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 2.0</size></box></geometry>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
         </collision>
         <visual name="buried_vis">
           <pose>0.0 0 -1.0 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 2.0</size></box></geometry>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -541,51 +493,39 @@
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="ceil_col_col">
-          <pose>0.0 0 1.9 0 0 0</pose>
-          <geometry><box><size>6.4 4.0 0.2</size></box></geometry>
-        </collision>
         <collision name="wall_l_col">
-          <pose>0.0 2.0 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.2 2.0</size></box></geometry>
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
+        <visual name="wall_l_vis">
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
+          <material>
+            <ambient>0.38 0.34 0.30 1</ambient>
+            <diffuse>0.48 0.42 0.38 1</diffuse>
+            <specular>0.06 0.06 0.06 1</specular>
+          </material>
+        </visual>
         <collision name="wall_r_col">
-          <pose>0.0 -2.0 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.2 2.0</size></box></geometry>
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
-        <visual name="inner_l_vis">
-          <pose>0.0 1.88 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.08 2.0</size></box></geometry>
+        <visual name="wall_r_vis">
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
           </material>
         </visual>
-        <visual name="inner_r_vis">
-          <pose>0.0 -1.88 1.0 0 0 0</pose>
-          <geometry><box><size>6.4 0.08 2.0</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
-        <visual name="inner_ceil_vis">
-          <pose>0.0 0 1.9 0 0 0</pose>
-          <geometry><box><size>6.4 3.7 0.08</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
+        <collision name="ceil_col_col">
+          <pose>0 0 1.9 0 0 0</pose>
+          <geometry><box><size>8.0 4.0 0.2</size></box></geometry>
+        </collision>
         <visual name="vault_vis">
-          <pose>0.0 0 0 0 1.5707963267948966 0</pose>
-          <geometry><cylinder><radius>2.1</radius><length>6.4</length></cylinder></geometry>
+          <pose>0 0 0 0 1.5707963267948966 0</pose>
+          <geometry><cylinder><radius>2.1</radius><length>8.0</length></cylinder></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -601,12 +541,12 @@
       <pose>44.0 2.6 0 0 0 0.05</pose>
       <link name="link">
         <collision name="buried_col">
-          <pose>-0.3500000000000001 0 -1.0 0 0 0</pose>
-          <geometry><box><size>5.7 4.0 2.0</size></box></geometry>
+          <pose>0.0 0 -1.0 0 0 0</pose>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
         </collision>
         <visual name="buried_vis">
-          <pose>-0.3500000000000001 0 -1.0 0 0 0</pose>
-          <geometry><box><size>5.7 4.0 2.0</size></box></geometry>
+          <pose>0.0 0 -1.0 0 0 0</pose>
+          <geometry><box><size>8.0 4.0 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -626,51 +566,39 @@
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="ceil_col_col">
-          <pose>-0.3500000000000001 0 1.9 0 0 0</pose>
-          <geometry><box><size>5.7 4.0 0.2</size></box></geometry>
-        </collision>
         <collision name="wall_l_col">
-          <pose>-0.3500000000000001 2.0 1.0 0 0 0</pose>
-          <geometry><box><size>5.7 0.2 2.0</size></box></geometry>
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
+        <visual name="wall_l_vis">
+          <pose>0 2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
+          <material>
+            <ambient>0.38 0.34 0.30 1</ambient>
+            <diffuse>0.48 0.42 0.38 1</diffuse>
+            <specular>0.06 0.06 0.06 1</specular>
+          </material>
+        </visual>
         <collision name="wall_r_col">
-          <pose>-0.3500000000000001 -2.0 1.0 0 0 0</pose>
-          <geometry><box><size>5.7 0.2 2.0</size></box></geometry>
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
         </collision>
-        <visual name="inner_l_vis">
-          <pose>-0.3500000000000001 1.88 1.0 0 0 0</pose>
-          <geometry><box><size>5.7 0.08 2.0</size></box></geometry>
+        <visual name="wall_r_vis">
+          <pose>0 -2.0 1.0 0 0 0</pose>
+          <geometry><box><size>8.0 0.2 2.0</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
           </material>
         </visual>
-        <visual name="inner_r_vis">
-          <pose>-0.3500000000000001 -1.88 1.0 0 0 0</pose>
-          <geometry><box><size>5.7 0.08 2.0</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
-        <visual name="inner_ceil_vis">
-          <pose>-0.3500000000000001 0 1.9 0 0 0</pose>
-          <geometry><box><size>5.7 3.7 0.08</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
+        <collision name="ceil_col_col">
+          <pose>0 0 1.9 0 0 0</pose>
+          <geometry><box><size>8.0 4.0 0.2</size></box></geometry>
+        </collision>
         <visual name="vault_vis">
-          <pose>-0.3500000000000001 0 0 0 1.5707963267948966 0</pose>
-          <geometry><cylinder><radius>2.1</radius><length>5.7</length></cylinder></geometry>
+          <pose>0 0 0 0 1.5707963267948966 0</pose>
+          <geometry><cylinder><radius>2.1</radius><length>8.0</length></cylinder></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -686,12 +614,12 @@
       <pose>32 8 0 0 0 1.5708</pose>
       <link name="link">
         <collision name="buried_col">
-          <pose>-0.25 0 -0.75 0 0 0</pose>
-          <geometry><box><size>6.5 3.0 1.5</size></box></geometry>
+          <pose>0.5 0 -0.75 0 0 0</pose>
+          <geometry><box><size>9.0 3.0 1.5</size></box></geometry>
         </collision>
         <visual name="buried_vis">
-          <pose>-0.25 0 -0.75 0 0 0</pose>
-          <geometry><box><size>6.5 3.0 1.5</size></box></geometry>
+          <pose>0.5 0 -0.75 0 0 0</pose>
+          <geometry><box><size>9.0 3.0 1.5</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -711,51 +639,39 @@
             <specular>0.06 0.06 0.06 1</specular>
           </material>
         </visual>
-        <collision name="ceil_col_col">
-          <pose>-0.25 0 1.4 0 0 0</pose>
-          <geometry><box><size>6.5 3.0 0.2</size></box></geometry>
-        </collision>
         <collision name="wall_l_col">
-          <pose>-0.25 1.5 0.75 0 0 0</pose>
-          <geometry><box><size>6.5 0.2 1.5</size></box></geometry>
+          <pose>0 1.5 0.75 0 0 0</pose>
+          <geometry><box><size>10.0 0.2 1.5</size></box></geometry>
         </collision>
+        <visual name="wall_l_vis">
+          <pose>0 1.5 0.75 0 0 0</pose>
+          <geometry><box><size>10.0 0.2 1.5</size></box></geometry>
+          <material>
+            <ambient>0.38 0.34 0.30 1</ambient>
+            <diffuse>0.48 0.42 0.38 1</diffuse>
+            <specular>0.06 0.06 0.06 1</specular>
+          </material>
+        </visual>
         <collision name="wall_r_col">
-          <pose>-0.25 -1.5 0.75 0 0 0</pose>
-          <geometry><box><size>6.5 0.2 1.5</size></box></geometry>
+          <pose>0 -1.5 0.75 0 0 0</pose>
+          <geometry><box><size>10.0 0.2 1.5</size></box></geometry>
         </collision>
-        <visual name="inner_l_vis">
-          <pose>-0.25 1.38 0.75 0 0 0</pose>
-          <geometry><box><size>6.5 0.08 1.5</size></box></geometry>
+        <visual name="wall_r_vis">
+          <pose>0 -1.5 0.75 0 0 0</pose>
+          <geometry><box><size>10.0 0.2 1.5</size></box></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
             <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
           </material>
         </visual>
-        <visual name="inner_r_vis">
-          <pose>-0.25 -1.38 0.75 0 0 0</pose>
-          <geometry><box><size>6.5 0.08 1.5</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
-        <visual name="inner_ceil_vis">
-          <pose>-0.25 0 1.4 0 0 0</pose>
-          <geometry><box><size>6.5 2.7 0.08</size></box></geometry>
-          <material>
-            <ambient>0.38 0.34 0.30 1</ambient>
-            <diffuse>0.48 0.42 0.38 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-            <emissive>0.10 0.09 0.08 1</emissive>
-          </material>
-        </visual>
+        <collision name="ceil_col_col">
+          <pose>0 0 1.4 0 0 0</pose>
+          <geometry><box><size>10.0 3.0 0.2</size></box></geometry>
+        </collision>
         <visual name="vault_vis">
-          <pose>-0.25 0 0 0 1.5707963267948966 0</pose>
-          <geometry><cylinder><radius>1.6</radius><length>6.5</length></cylinder></geometry>
+          <pose>0 0 0 0 1.5707963267948966 0</pose>
+          <geometry><cylinder><radius>1.6</radius><length>10.0</length></cylinder></geometry>
           <material>
             <ambient>0.38 0.34 0.30 1</ambient>
             <diffuse>0.48 0.42 0.38 1</diffuse>
@@ -850,137 +766,17 @@
       </link>
     </model>
 
-    <model name="wall_rock_0">
-      <static>true</static>
-      <pose>4.5577071938315346 0.16000000000000003 0.32250967970040023 0 0 -0.0899882726523523</pose>
-      <link name="link">
-        <collision name="rock_col">
-          <pose>0 0 0.16766994874229113 0 0 0</pose>
-          <geometry><box><size>0.3558026845372057 0.3104706821246018 0.33533989748458226</size></box></geometry>
-        </collision>
-        <visual name="rock_vis">
-          <pose>0 0 0.16766994874229113 0 0 0</pose>
-          <geometry><box><size>0.3558026845372057 0.3104706821246018 0.33533989748458226</size></box></geometry>
-          <material>
-            <ambient>0.16 0.13 0.11 1</ambient>
-            <diffuse>0.20 0.16 0.14 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="wall_rock_1">
-      <static>true</static>
-      <pose>13.568718270819382 -0.16000000000000003 0.3782449493664745 0 0 -0.03123127212589183</pose>
-      <link name="link">
-        <collision name="rock_col">
-          <pose>0 0 0.15053552881033624 0 0 0</pose>
-          <geometry><box><size>0.3074493048595176 0.2327956962205405 0.3010710576206725</size></box></geometry>
-        </collision>
-        <visual name="rock_vis">
-          <pose>0 0 0.15053552881033624 0 0 0</pose>
-          <geometry><box><size>0.3074493048595176 0.2327956962205405 0.3010710576206725</size></box></geometry>
-          <material>
-            <ambient>0.20 0.17 0.14 1</ambient>
-            <diffuse>0.25 0.21 0.18 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="wall_rock_2">
-      <static>true</static>
-      <pose>18.099414635796773 0.40814134065591856 0.4789538856179836 0 0 0.1399537751118093</pose>
-      <link name="link">
-        <collision name="rock_col">
-          <pose>0 0 0.1589265683875909 0 0 0</pose>
-          <geometry><box><size>0.43623537015080416 0.2330660933061045 0.3178531367751818</size></box></geometry>
-        </collision>
-        <visual name="rock_vis">
-          <pose>0 0 0.1589265683875909 0 0 0</pose>
-          <geometry><box><size>0.43623537015080416 0.2330660933061045 0.3178531367751818</size></box></geometry>
-          <material>
-            <ambient>0.24 0.21 0.18 1</ambient>
-            <diffuse>0.30 0.26 0.22 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="wall_rock_3">
-      <static>true</static>
-      <pose>29.247403669617203 1.2392352563788536 0.3058488837102549 0 0 0.2823277007331232</pose>
-      <link name="link">
-        <collision name="rock_col">
-          <pose>0 0 0.11554794998117816 0 0 0</pose>
-          <geometry><box><size>0.47453484874705676 0.2510375774776988 0.23109589996235633</size></box></geometry>
-        </collision>
-        <visual name="rock_vis">
-          <pose>0 0 0.11554794998117816 0 0 0</pose>
-          <geometry><box><size>0.47453484874705676 0.2510375774776988 0.23109589996235633</size></box></geometry>
-          <material>
-            <ambient>0.28 0.24 0.20 1</ambient>
-            <diffuse>0.34 0.29 0.25 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="wall_rock_4">
-      <static>true</static>
-      <pose>37.796546392882455 2.377785326037506 0.602935090601364 0 0 -0.04290166264794085</pose>
-      <link name="link">
-        <collision name="rock_col">
-          <pose>0 0 0.1603726031366891 0 0 0</pose>
-          <geometry><box><size>0.324179094208366 0.32712415495211894 0.3207452062733782</size></box></geometry>
-        </collision>
-        <visual name="rock_vis">
-          <pose>0 0 0.1603726031366891 0 0 0</pose>
-          <geometry><box><size>0.324179094208366 0.32712415495211894 0.3207452062733782</size></box></geometry>
-          <material>
-            <ambient>0.16 0.13 0.11 1</ambient>
-            <diffuse>0.20 0.16 0.14 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="wall_rock_5">
-      <static>true</static>
-      <pose>45.23497443871309 2.5016000221679713 0.9567586080244361 0 0 0.06449123658188029</pose>
-      <link name="link">
-        <collision name="rock_col">
-          <pose>0 0 0.1552040631273227 0 0 0</pose>
-          <geometry><box><size>0.5432789409948426 0.256780156581253 0.3104081262546454</size></box></geometry>
-        </collision>
-        <visual name="rock_vis">
-          <pose>0 0 0.1552040631273227 0 0 0</pose>
-          <geometry><box><size>0.5432789409948426 0.256780156581253 0.3104081262546454</size></box></geometry>
-          <material>
-            <ambient>0.20 0.17 0.14 1</ambient>
-            <diffuse>0.25 0.21 0.18 1</diffuse>
-            <specular>0.06 0.06 0.06 1</specular>
-          </material>
-        </visual>
-      </link>
-    </model>
-
     <model name="floor_rock_0">
       <static>true</static>
-      <pose>10 0.4 0 0 0 0.1</pose>
+      <pose>15 1.3 0 0 0 0.2</pose>
       <link name="link">
         <collision name="rock_col">
-          <pose>0 0 0.075 0 0 0</pose>
-          <geometry><box><size>0.4 0.3 0.15</size></box></geometry>
+          <pose>0 0 0.06 0 0 0</pose>
+          <geometry><box><size>0.35 0.28 0.12</size></box></geometry>
         </collision>
         <visual name="rock_vis">
-          <pose>0 0 0.075 0 0 0</pose>
-          <geometry><box><size>0.4 0.3 0.15</size></box></geometry>
+          <pose>0 0 0.06 0 0 0</pose>
+          <geometry><box><size>0.35 0.28 0.12</size></box></geometry>
           <material>
             <ambient>0.16 0.13 0.11 1</ambient>
             <diffuse>0.20 0.16 0.14 1</diffuse>
@@ -992,15 +788,15 @@
 
     <model name="floor_rock_1">
       <static>true</static>
-      <pose>24 -0.6 0 0 0 -0.2</pose>
+      <pose>28 -1.4 0 0 0 -0.1</pose>
       <link name="link">
         <collision name="rock_col">
-          <pose>0 0 0.09 0 0 0</pose>
-          <geometry><box><size>0.5 0.35 0.18</size></box></geometry>
+          <pose>0 0 0.07 0 0 0</pose>
+          <geometry><box><size>0.4 0.3 0.14</size></box></geometry>
         </collision>
         <visual name="rock_vis">
-          <pose>0 0 0.09 0 0 0</pose>
-          <geometry><box><size>0.5 0.35 0.18</size></box></geometry>
+          <pose>0 0 0.07 0 0 0</pose>
+          <geometry><box><size>0.4 0.3 0.14</size></box></geometry>
           <material>
             <ambient>0.20 0.17 0.14 1</ambient>
             <diffuse>0.25 0.21 0.18 1</diffuse>
@@ -1012,15 +808,15 @@
 
     <model name="floor_rock_2">
       <static>true</static>
-      <pose>40 0.5 0 0 0 0.3</pose>
+      <pose>42 1.2 0 0 0 0.4</pose>
       <link name="link">
         <collision name="rock_col">
-          <pose>0 0 0.06 0 0 0</pose>
-          <geometry><box><size>0.35 0.28 0.12</size></box></geometry>
+          <pose>0 0 0.055 0 0 0</pose>
+          <geometry><box><size>0.3 0.25 0.11</size></box></geometry>
         </collision>
         <visual name="rock_vis">
-          <pose>0 0 0.06 0 0 0</pose>
-          <geometry><box><size>0.35 0.28 0.12</size></box></geometry>
+          <pose>0 0 0.055 0 0 0</pose>
+          <geometry><box><size>0.3 0.25 0.11</size></box></geometry>
           <material>
             <ambient>0.24 0.21 0.18 1</ambient>
             <diffuse>0.30 0.26 0.22 1</diffuse>
@@ -1032,7 +828,7 @@
 
     <model name="alcove_rock_0">
       <static>true</static>
-      <pose>32.329404664253 13.0 0 0 0 0.6185197523642461</pose>
+      <pose>32.13942679845788 13.0 0 0 0 0.025010755222666936</pose>
       <link name="link">
         <collision name="rock_col">
           <pose>0 0 0.1 0 0 0</pose>
@@ -1052,7 +848,7 @@
 
     <model name="alcove_rock_1">
       <static>true</static>
-      <pose>32.36170690031078 13.4 0 0 0 0.577352145256762</pose>
+      <pose>31.775029318369118 13.4 0 0 0 0.22321073814882275</pose>
       <link name="link">
         <collision name="rock_col">
           <pose>0 0 0.1 0 0 0</pose>
@@ -1072,7 +868,7 @@
 
     <model name="alcove_rock_2">
       <static>true</static>
-      <pose>32.204571836214924 13.8 0 0 0 0.045824383655662215</pose>
+      <pose>32.23647121416401 13.8 0 0 0 0.6766994874229113</pose>
       <link name="link">
         <collision name="rock_col">
           <pose>0 0 0.1 0 0 0</pose>
@@ -1092,7 +888,7 @@
 
     <model name="chamber_rock_0">
       <static>true</static>
-      <pose>51 6 0 0 0 0.4557965513030937</pose>
+      <pose>51 6 0 0 0 1.7843591354096908</pose>
       <link name="link">
         <collision name="rock_col">
           <pose>0 0 0.1 0 0 0</pose>
@@ -1112,7 +908,7 @@
 
     <model name="chamber_rock_1">
       <static>true</static>
-      <pose>56 1 0 0 0 0.5787759272042143</pose>
+      <pose>56 1 0 0 0 0.1738776652588323</pose>
       <link name="link">
         <collision name="rock_col">
           <pose>0 0 0.1 0 0 0</pose>
@@ -1132,7 +928,7 @@
 
     <model name="chamber_rock_2">
       <static>true</static>
-      <pose>58 7 0 0 0 0.159583953847255</pose>
+      <pose>58 7 0 0 0 0.8438436393705409</pose>
       <link name="link">
         <collision name="rock_col">
           <pose>0 0 0.1 0 0 0</pose>
@@ -1152,7 +948,7 @@
 
     <model name="chamber_rock_3">
       <static>true</static>
-      <pose>52 0 0 0 0 0.46558177272206036</pose>
+      <pose>52 0 0 0 0 0.05959443887614069</pose>
       <link name="link">
         <collision name="rock_col">
           <pose>0 0 0.1 0 0 0</pose>

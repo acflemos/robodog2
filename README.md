@@ -105,7 +105,7 @@ alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.w
 alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world rviz:=true'
 
 # Lava tube lunar (branch lava_tubes_grok)
-alias rbd_lava_tube='ros2 launch robodog2 rbd_gz_x3_launch.py world:=lava_tube.world spawn_x:=-1.5 spawn_y:=0.0 spawn_z:=0.01'
+alias rbd_lava_tube='ros2 launch robodog2 rbd_gz_x3_launch.py world:=lava_tube.world spawn_x:=3.0 spawn_y:=0.0 spawn_z:=0.01'
 ```
 
 ### SLAM — gerar mapas
