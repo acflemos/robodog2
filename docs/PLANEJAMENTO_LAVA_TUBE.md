@@ -12,14 +12,14 @@ Criar um ambiente de simulação inspirador para um **curso de robótica com ROS
 ## Fase 1 — Ambiente + robodog lunar (atual)
 
 ### Mundo
-- **Lava tube realista** em Gazebo Fortress (`worlds/lava_tube.world`)
+- **Lava tube realista** em Gazebo Fortress (`worlds/lava_tube.world`) — **v1 aprovada**
 - **Gravidade lunar** (~1,62 m/s², ~1/6 da Terra)
 - Geometria primitiva estática — otimizada para VM 12 núcleos / 16 GB RAM
-- **Meio-cilindro oco** — casca dupla (arco exterior + interior, espessura ~0,2 m)
-- Colisão nas faces internas e externas; entrada aberta; sem cilindro sólido
+- **Túnel em caixa oca** — piso + paredes + teto com espessura visível (colisão confiável)
 - **Sem estalactites** — formação vulcânica seca (Lua sem água no passado)
 - Túnel em curva S (~48 m) + alcova lateral + câmara final ampliada com skylight
 - Regenerável via `python3 worlds/generate_lava_tube.py`
+- **Decoração futura (Fase 1b):** meshes Fuel `Cave Straight 02 Type B` como **interior visual** dentro da caixa oca (colisão nas primitivas; mesh só para aparência de caverna). Referência: `lava_tube_fuel.world`
 - **Zona do Enigma** (final do túnel): restos de uma antiga missão não-humana — lander corroído, antena tombada, painéis deteriorados, placa monolítica, **pirâmide pequena** e **beacon emissivo** ainda pulsando após eras (sugere que alguém esteve aqui há muito tempo)
 
 ### Robô
@@ -73,4 +73,4 @@ Objetivo pedagógico: o estudante mapeia o túnel escuro e é **recompensado pel
 - Branch de trabalho: `lava_tubes_grok`
 - Simulador: Gazebo Fortress (Ignition Gazebo v6) — não Harmonic
 - Documentação do curso: em organização paralela (Gemini)
-- Lançar: `ros2 launch robodog2 rbd_gz_x3_launch.py world:=lava_tube.world`
+- Lançar: `rbd_lava_tube` ou `bash ~/ros2_ws/src/robodog2/scripts/rbd_lava_tube.sh`

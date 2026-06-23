@@ -1,10 +1,9 @@
 <?xml version="1.0" ?>
-<!-- lava_tube_fuel.world — Protótipo com meshes Fuel (DARPA SubT / OpenRobotics).
-     Modelos leves (~500 KB cada): Cave Straight 02 Type B + Cave Cap Type B.
-     Descarregados automaticamente do Fuel na primeira execução.
-     Poses podem precisar de ajuste fino após inspeção visual.
-     Uso: ros2 launch robodog2 rbd_gz_x3_launch.py world:=lava_tube_fuel.world
-          spawn_x:=0.0 spawn_y:=0.0 spawn_z:=0.01 -->
+<!-- lava_tube_fuel.world — REFERÊNCIA VISUAL de meshes Fuel (DARPA SubT).
+     Não forma túnel contínuo sozinho: tiles são painéis de parede (~25 m).
+     Uso futuro: decorar o INTERIOR do lava_tube.world (v1 caixa oca).
+     Tiles alinhados em grelha SubT (passo 25 m, yaw 90°).
+     Uso: rbd_lava_tube_fuel  ou  bash scripts/rbd_lava_tube_fuel.sh -->
 <sdf version="1.8">
   <world name="lava_tube_fuel">
 
@@ -63,37 +62,37 @@
       </link>
     </model>
 
-    <!-- Túnel Fuel: 3 segmentos retos + câmara final (CC0 / CC BY 4.0, OpenRobotics) -->
+    <!-- Tiles SubT: comprimento ~25 m cada; yaw=1.5708 alinha eixo do túnel em +X -->
     <include>
       <name>cave_seg_00</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Straight%2002%20Type%20B</uri>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0 0 0 0 0 1.5708</pose>
     </include>
     <include>
       <name>cave_seg_01</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Straight%2002%20Type%20B</uri>
-      <pose>10 0 0 0 0 0</pose>
+      <pose>25 0 0 0 0 1.5708</pose>
     </include>
     <include>
       <name>cave_seg_02</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Straight%2002%20Type%20B</uri>
-      <pose>20 0 0 0 0 0</pose>
+      <pose>50 0 0 0 0 1.5708</pose>
     </include>
     <include>
       <name>cave_seg_03</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Straight%2002%20Type%20B</uri>
-      <pose>30 0 0 0 0 0</pose>
+      <pose>75 0 0 0 0 1.5708</pose>
     </include>
     <include>
       <name>cave_chamber</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Cap%20Type%20B</uri>
-      <pose>45 0 0 0 0 0</pose>
+      <pose>100 0 0 0 0 1.5708</pose>
     </include>
 
     <!-- Zona do enigma (primitivas — igual à v1 aprovada, deslocada para o fim do túnel Fuel) -->
     <model name="ancient_beacon">
       <static>true</static>
-      <pose>48 2 0 0 0 0</pose>
+      <pose>103 2 0 0 0 0</pose>
       <link name="link">
         <collision name="pedestal_col"><pose>0 0 0.3 0 0 0</pose>
           <geometry><cylinder><radius>0.25</radius><length>0.6</length></cylinder></geometry></collision>
@@ -115,7 +114,7 @@
 
     <model name="mystery_pyramid">
       <static>true</static>
-      <pose>50 4 0 0 0 0.785</pose>
+      <pose>105 4 0 0 0 0.785</pose>
       <link name="link">
         <collision name="t0_col"><pose>0 0 0.15 0 0 0</pose>
           <geometry><box><size>2.0 2.0 0.3</size></box></geometry></collision>
