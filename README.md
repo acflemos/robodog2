@@ -104,8 +104,10 @@ alias rbd2_gz_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true'
 alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world'
 alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world rviz:=true'
 
-# Lava tube lunar (branch lava_tubes_grok)
-alias rbd_lava_tube='ros2 launch robodog2 rbd_gz_x3_launch.py world:=lava_tube.world spawn_x:=3.0 spawn_y:=0.0 spawn_z:=0.01'
+# Lava tube lunar (branch lava_tubes_grok) — v1 aprovada, caixa oca
+alias rbd_lava_tube='ros2 launch robodog2 rbd_gz_x3_launch.py world:=lava_tube.world spawn_x:=-2.0 spawn_y:=0.0 spawn_z:=0.01'
+# Lava tube Fuel — meshes DARPA SubT (teste visual, requer internet na 1ª vez)
+alias rbd_lava_tube_fuel='ros2 launch robodog2 rbd_gz_x3_launch.py world:=lava_tube_fuel.world spawn_x:=0.0 spawn_y:=0.0 spawn_z:=0.01'
 ```
 
 ### SLAM — gerar mapas

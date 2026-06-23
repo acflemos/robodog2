@@ -9,7 +9,8 @@
 #   ros2 launch robodog2 rbd_gz_x3_launch.py
 #   ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true
 #   ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_vazio.world
-#   rbd_lava_tube  — alias para lava_tube.world (spawn na entrada do túnel)
+#   rbd_lava_tube       — alias para lava_tube.world (v1 aprovada, spawn na entrada)
+#   rbd_lava_tube_fuel  — alias para lava_tube_fuel.world (meshes Fuel DARPA SubT)
 
 import os
 
