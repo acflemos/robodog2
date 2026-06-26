@@ -1,8 +1,26 @@
 # robodog2
 
-Robô de vigilância doméstica com comportamento autônomo inspirado em cachorro.
+Robô de vigilância doméstica com comportamento autônomo inspirado em cachorro — e cenário de **exploração espacial** em lava tube lunar para aprender ROS2, IA e robótica de forma interativa, com hardware acessível e uso em casa.
 
 Migração do [robodog1](https://github.com/acflemos/robodog1) (ROS1 Noetic) para **ROS2 Humble** com hardware **ROSMASTER X3** da Yahboom.
+
+---
+
+## 🤖 Monitor de IA e Guia de Aprendizado (NotebookLM)
+
+Para auxiliar no seu percurso de aprendizado, este projeto conta com um **Guia de Aprendizado Interativo** (Google NotebookLM). Através dele, você pode conversar com uma IA treinada na documentação do robodog2.
+
+**Aceder ao guia:** [NotebookLM — robodog2](https://notebooklm.google.com/notebook/a48b8880-a5c9-4580-a2ab-3e82a9d156b8)
+
+Com o guia, você pode:
+
+- **Esclarecer dúvidas técnicas** sobre a integração do hardware ROSMASTER X3 com o ROS 2 Humble
+- **Explorar a simulação** no Gazebo Fortress, incluindo detalhes sobre os plugins de odometria e os mundos de lava tubes
+- **Estudar com materiais dinâmicos** — quizzes, flashcards, guias de referência e áudios explicativos sobre os "instintos" do robô
+
+O contexto da IA é **limitado ao âmbito do projeto** e temas relacionados (ROS2, lava tube, Raspberry Pi, Jetson Nano, LiDAR, navegação autónoma, etc.). Serve como parceiro de estudos complementar a este repositório, não como substituto da documentação oficial do ROS2.
+
+**Nota de segurança e privacidade:** ao acessar o link, você entra numa sessão de leitura individual. Suas perguntas e interações são privadas, não são visíveis para outros utilizadores e não alteram o conteúdo original do notebook. Use-o livremente como seu parceiro de estudos!
 
 ---
 
@@ -30,6 +48,45 @@ O fabricante Yahboom **não fornece suporte a Gazebo** para o ROSMASTER X3. O ro
 - **SLAM funcional** com `slam_toolbox` — mapas gerados e versionados dentro do pacote
 - **Nav2 + DWB + AMCL omni** em simulação, com tuning para ambiente doméstico
 - **Navegação autónoma** com patrulha por pesos (`rbd2_navega`) — validada em simulação
+
+---
+
+## Lava tube lunar
+
+Segundo ambiente do projeto: um **lava tube lunar** simulado em Gazebo Fortress (gravidade 1/6g), pensado para o mesmo stack ROS2 da casa simulada — SLAM, teleop, lidar, Nav2 — mas com narrativa de **exploração espacial** e habitats humanos sustentáveis na Lua e em Marte.
+
+| | Casa simulada (`cma_moveis`) | Lava tube (`lava_tube`) |
+|---|---|---|
+| Onde corre | Gazebo + robô real em casa | Gazebo (gravidade lunar) |
+| Papel | Aprender e replicar em casa | Mesmo conhecimento ROS2 com ambição espacial |
+| Robô Fase 1 | ROSMASTER X3 (rodas) | ROSMASTER X3 — **zona navegável parcial** do túnel |
+| Robô Fase 2 | — | **robodog3** (futuro: 4 pernas com rodas nas pontas) — exploração completa |
+
+### Por que este cenário?
+
+Lava tubes são túneis naturais candidatos a habitats lunares e marcianos (proteção contra radiação, temperatura estável, escala para instalações humanas). Antes de humanos entrarem, robôs autónomos mapeiam e inspecionam o interior — exactamente o que o curso ensina. Ver [docs/LAVA_TUBE.md](docs/LAVA_TUBE.md).
+
+### O que o aluno faz (Fase 1 — robodog2)
+
+1. Entra na boca do túnel (semi-enterrada na superfície lunar) com o X3.
+2. Teleopera, usa o lidar e inicia os primeiros mapas na **porção navegável**.
+3. Avança até o limite natural das rodas (subida do piso do túnel).
+4. Avista ao longe a **zona do Enigma** — beacon emissivo, lander antigo, artefatos — e fica a pergunta: *quem esteve aqui antes?*
+5. Para explorar o túnel completo (curva S, alcova, câmara), será preciso o **robodog3**.
+
+Decisão técnica **v1.1** (documentada, implementação pendente): entrada semi-enterrada + rampa + subida progressiva do piso — ver [docs/PLANEJAMENTO_LAVA_TUBE.md](docs/PLANEJAMENTO_LAVA_TUBE.md).
+
+### Como lançar
+
+```bash
+rbd2_build_pkg && rbd2_source
+source ~/.bash_aliases
+
+rbd_lava_tube        # túnel operacional (v1.1, zona navegável parcial)
+rbd_lava_tube_fuel   # referência visual do interior rochoso (meshes Fuel DARPA SubT)
+```
+
+Branch de trabalho: `lava_tubes_grok`. Mundo gerado por `worlds/generate_lava_tube.py`.
 
 ---
 
@@ -72,6 +129,7 @@ O fabricante Yahboom **não fornece suporte a Gazebo** para o ROSMASTER X3. O ro
 
 ### Em progresso 🎯
 
+- **Lava tube v1.1** — validar em Gazebo teleop + lidar na zona navegável parcial (`rbd_lava_tube`)
 - Testar código Yahboom original no Gazebo — comparar comportamento de navegação com robodog2
 - Testar código robodog2 no robot real (`rbd2_bringup` no ROSMASTER X3 físico)
 
@@ -104,7 +162,7 @@ alias rbd2_gz_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py rviz:=true'
 alias rbd2_casa_x3='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world'
 alias rbd2_casa_x3_rviz='ros2 launch robodog2 rbd_gz_x3_launch.py world:=cma_moveis.world rviz:=true'
 
-# Lava tube lunar (branch lava_tubes_grok)
+# Lava tube lunar (branch lava_tubes_grok) — ver docs/LAVA_TUBE.md
 alias rbd_lava_tube='ros2 launch robodog2 rbd_lava_tube_launch.py'          # v1 operacional (caixa oca)
 alias rbd_lava_tube_fuel='ros2 launch robodog2 rbd_lava_tube_fuel_launch.py' # referência visual Fuel
 ```
@@ -181,6 +239,16 @@ rbd2_simulador_x3_moveis    # Gazebo + Nav2 + AMCL + RViz (mapa: maps/rbd_mapa_m
 
 # Terminal 2
 rbd2_navega                 # loop autônomo de patrulha por pesos
+```
+
+### Exploração inicial — lava tube lunar
+```bash
+# Terminal 1
+rbd_lava_tube               # Gazebo + robô na superfície lunar (branch lava_tubes_grok)
+
+# Terminal 2 — teleop e primeiros mapas na zona navegável
+rbd2_teclado
+# SLAM: adaptar rbd_slam_x3_launch.py com world:=lava_tube.world quando validado
 ```
 
 ---
@@ -268,8 +336,10 @@ sudo apt install -y \
 | `worlds/cma_vazio.world` | Casa sem móveis — 15 cômodos | ✅ Fortress |
 | `worlds/cma_moveis.world` | Casa com móveis — 79 modelos | ✅ Fortress |
 | `worlds/rbd_gz_empty.world` | Mundo vazio para testes | ✅ Fortress |
+| `worlds/lava_tube.world` | Lava tube lunar (1/6g), v1.1 — entrada semi-enterrada, rampa, zona navegável parcial; gerado por `generate_lava_tube.py` | 🎯 validar (`lava_tubes_grok`) |
+| `worlds/lava_tube_fuel.world` | Referência visual Fuel — interior rochoso; piso irregular, sem colisão para rodas | ✅ referência |
 
-Os mundos foram convertidos de Gazebo Classic (SDF 1.6) para Fortress: poses dos modelos atualizadas a partir do bloco `<state>` do arquivo original.
+Os mundos `cma_*` foram convertidos de Gazebo Classic (SDF 1.6) para Fortress: poses dos modelos atualizadas a partir do bloco `<state>` do arquivo original. Detalhes do lava tube: [worlds/README.md](worlds/README.md).
 
 ---
 
@@ -284,6 +354,8 @@ Os mundos foram convertidos de Gazebo Classic (SDF 1.6) para Fortress: poses dos
 
 ## Referências
 
+- [docs/LAVA_TUBE.md](docs/LAVA_TUBE.md) — proposta pedagógica do lava tube
+- [docs/PLANEJAMENTO_LAVA_TUBE.md](docs/PLANEJAMENTO_LAVA_TUBE.md) — fases técnicas, Enigma, decisão v1.1
 - [robodog1](https://github.com/acflemos/robodog1) — versão ROS1 (congelada)
 - [ROSMASTER X3 — Yahboom](https://github.com/YahboomTechnology/ROSMASTERX3)
 - [Nav2](https://navigation.ros.org/)

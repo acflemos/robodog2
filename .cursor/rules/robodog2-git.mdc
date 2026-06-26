@@ -8,12 +8,22 @@ alwaysApply: true
 ## Regras obrigatórias
 
 1. **Sempre trabalhar numa branch dedicada** — nunca fazer alterações relevantes diretamente em `main`.
-2. **Commits incrementais** — após cada alteração relevante (e testada quando aplicável), fazer commit na branch ativa com mensagem clara.
-3. **PR e merge manual** — quando o trabalho estiver testado e aprovado, preparar para PR; o merge é feito pelo utilizador no site do GitHub, nunca pelo agente.
+2. **Commits incrementais** — após cada alteração relevante, fazer commit na branch ativa com mensagem clara.
+3. **PR só após revisão e testes do utilizador** — criar PR **apenas** quando o utilizador tiver revisto o último commit, testado e confirmado que está tudo OK. Nunca abrir PR por iniciativa própria.
+4. **Merge exclusivo do utilizador** — após o PR criado, **apenas o utilizador** faz merge via interface web do GitHub. O agente nunca faz merge para `main`.
+
+## Fluxo de PR (ordem obrigatória)
+
+1. Agente trabalha na branch dedicada → commits → `git push` quando pedido ou ao concluir passos relevantes.
+2. Utilizador **revisa o último commit** (diff, ficheiros alterados).
+3. Utilizador **executa testes** e confirma que tudo funciona.
+4. Utilizador **pede explicitamente** a criação do PR (ou autoriza nesse momento).
+5. Agente cria o PR com descrição clara; utilizador pode comentar e pedir ajustes no GitHub.
+6. Utilizador faz **merge manual** no site quando satisfeito.
 
 ## Branch ativa (atual)
 
-- `lava_tubes_grok` — criada a partir de `main`, com tracking em `origin/lava_tubes_grok`.
+- `lava_tubes_grok` — lava tube lunar; tracking em `origin/lava_tubes_grok`.
 
 Ao iniciar uma nova tarefa relevante, confirmar em que branch estamos. Se for um tema novo, criar uma branch dedicada (ex.: `feat/nome`, `fix/nome`) e fazer push para `origin`.
 
@@ -23,4 +33,5 @@ Ao iniciar uma nova tarefa relevante, confirmar em que branch estamos. Se for um
 - Informar o utilizador da branch em uso.
 - Propor commit após passos relevantes concluídos.
 - Fazer `git push` da branch quando pedido ou quando houver commits novos a publicar.
-- **Não** fazer merge para `main` nem abrir/submeter PR sem instrução explícita do utilizador.
+- **Não** criar PR sem o utilizador ter revisto o último commit, testado e pedido/autorizado.
+- **Não** fazer merge para `main` nem submeter/mergear PR — isso é sempre do utilizador na interface web do GitHub.

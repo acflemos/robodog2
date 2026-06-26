@@ -1,8 +1,9 @@
-# rbd_lava_tube_fuel_launch.py — Lava tube com meshes Fuel (DARPA SubT).
+# rbd_lava_tube_fuel_launch.py — Lava tube Fuel puro (DARPA SubT).
 #
 # Uso (alias validado):
 #   rbd_lava_tube_fuel
 #
+# Spawn sobre walking_plate, fora da boca do túnel (topo da placa em z=3.5 m).
 # Pré-requisito: rbd2_build_pkg && rbd2_source (instala lava_tube_fuel.world)
 
 import os
@@ -22,9 +23,9 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(base),
             launch_arguments={
                 'world': 'lava_tube_fuel.world',
-                'spawn_x': '0.0',
+                'spawn_x': '-5.0',
                 'spawn_y': '0.0',
-                'spawn_z': '0.01',
+                'spawn_z': '3.51',
             }.items(),
         ),
     ])

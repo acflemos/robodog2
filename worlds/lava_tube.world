@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
-<!-- lava_tube.world — Lava tube lunar, gravidade 1/6g, otimizado para VM 16GB.
-     Câmara final: restos de missão antiga + pirâmide + beacon emissivo.
-     Geometria 100% primitiva (box/cylinder/sphere), modelos estáticos.
-     Uso: rbd_lava_tube -->
+<!-- lava_tube.world — Lava tube lunar v1.1, gravidade 1/6g, zona navegável parcial.
+     Entrada semi-enterrada + rampa + subida progressiva (robodog2 / X3).
+     Câmara final: Enigma acima do regolito (robodog3).
+     Gerado por worlds/generate_lava_tube.py -->
 <sdf version="1.8">
   <world name="lava_tube">
 
@@ -27,61 +27,69 @@
       <shadows>false</shadows>
     </scene>
 
-    <!-- Iluminação interna — pontos ao longo do túnel e câmara final -->
     <light name="tunnel_lit_00" type="point">
-      <pose>-1 0 1.8 0 0 0</pose>
-      <diffuse>0.80 0.72 0.62 1</diffuse>
+      <pose>-1.0 0.0 0.7142857142857142 0 0 0</pose>
+      <diffuse>0.75 0.68 0.58 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
     </light>
+
     <light name="tunnel_lit_01" type="point">
-      <pose>4 0 1.8 0 0 0</pose>
+      <pose>4.0 0.0 0.575 0 0 0</pose>
       <diffuse>0.75 0.68 0.58 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
     </light>
+
     <light name="tunnel_lit_02" type="point">
-      <pose>12 0 1.8 0 0 0</pose>
+      <pose>12.0 0.0 0.7749999999999999 0 0 0</pose>
       <diffuse>0.75 0.68 0.58 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
     </light>
+
     <light name="tunnel_lit_03" type="point">
-      <pose>20 0.4 1.8 0 0 0</pose>
+      <pose>20.0 0.4 1.075 0 0 0</pose>
       <diffuse>0.75 0.68 0.58 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
     </light>
+
     <light name="tunnel_lit_04" type="point">
-      <pose>28 1.2 1.8 0 0 0</pose>
+      <pose>28.0 1.2 1.5 0 0 0</pose>
       <diffuse>0.75 0.68 0.58 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
     </light>
+
     <light name="tunnel_lit_05" type="point">
-      <pose>36 2.0 1.8 0 0 0</pose>
+      <pose>36.0 2.0 2.0 0 0 0</pose>
       <diffuse>0.75 0.68 0.58 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
     </light>
+
     <light name="tunnel_lit_06" type="point">
-      <pose>44 2.6 1.8 0 0 0</pose>
+      <pose>44.0 2.6 2.425 0 0 0</pose>
       <diffuse>0.75 0.68 0.58 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
     </light>
+
     <light name="tunnel_lit_07" type="point">
-      <pose>32 8 1.8 0 0 0</pose>
-      <diffuse>0.70 0.64 0.55 1</diffuse>
-      <specular>0.12 0.11 0.10 1</specular>
-      <attenuation><range>12</range><linear>0.08</linear><constant>0.4</constant></attenuation>
-    </light>
-    <light name="tunnel_lit_08" type="point">
-      <pose>48 3 1.8 0 0 0</pose>
-      <diffuse>0.70 0.64 0.55 1</diffuse>
+      <pose>32.0 8.0 1.7966899187698782 0 0 0</pose>
+      <diffuse>0.75 0.68 0.58 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
     </light>
+
+    <light name="tunnel_lit_08" type="point">
+      <pose>48.0 3.0 2.6 0 0 0</pose>
+      <diffuse>0.75 0.68 0.58 1</diffuse>
+      <specular>0.12 0.11 0.10 1</specular>
+      <attenuation><range>14</range><linear>0.08</linear><constant>0.4</constant></attenuation>
+    </light>
+
     <light name="skylight" type="directional">
       <pose>50 6 8 0 0.6 0</pose>
       <diffuse>0.18 0.16 0.20 1</diffuse>
@@ -89,17 +97,16 @@
       <cast_shadows>false</cast_shadows>
     </light>
     <light name="chamber_glow" type="point">
-      <pose>54 4 2.8 0 0 0</pose>
+      <pose>54 4 3.4 0 0 0</pose>
       <diffuse>0.40 0.50 0.60 1</diffuse>
       <attenuation><range>22</range><linear>0.05</linear><constant>0.5</constant></attenuation>
     </light>
     <light name="beacon_pulse" type="point">
-      <pose>56 3.5 1.2 0 0 0</pose>
+      <pose>56 3.5 1.7999999999999998 0 0 0</pose>
       <diffuse>0.10 0.70 0.80 1</diffuse>
       <attenuation><range>8</range></attenuation>
     </light>
 
-    <!-- Chão externo (fora do túnel, evita queda infinita) -->
     <model name="lunar_surface">
       <static>true</static>
       <pose>-8 0 -0.1 0 0 0</pose>
@@ -120,9 +127,89 @@
       </link>
     </model>
 
+    <model name="entrance_ramp">
+      <static>true</static>
+      <pose>-3.5 0 -0.75 0 -0.21109333322274654 0</pose>
+      <link name="link">
+        <collision name="ramp_col">
+          <pose>0 0 -0.075 0 0 0</pose>
+          <geometry><box><size>7.0 4.0 0.15</size></box></geometry>
+        </collision>
+        <visual name="ramp_vis">
+          <pose>0 0 -0.075 0 0 0</pose>
+          <geometry><box><size>7.0 4.0 0.15</size></box></geometry>
+          <material>
+            <ambient>0.18 0.16 0.14 1</ambient>
+            <diffuse>0.22 0.19 0.17 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="berm_l">
+      <static>true</static>
+      <pose>0.5 2.6 0.9 0 0 0</pose>
+      <link name="link">
+        <collision name="b_col">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry><box><size>3.0 1.2 1.8</size></box></geometry>
+        </collision>
+        <visual name="b_vis">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry><box><size>3.0 1.2 1.8</size></box></geometry>
+          <material>
+            <ambient>0.20 0.18 0.16 1</ambient>
+            <diffuse>0.25 0.22 0.20 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="berm_r">
+      <static>true</static>
+      <pose>0.5 -2.6 0.9 0 0 0</pose>
+      <link name="link">
+        <collision name="b_col">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry><box><size>3.0 1.2 1.8</size></box></geometry>
+        </collision>
+        <visual name="b_vis">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry><box><size>3.0 1.2 1.8</size></box></geometry>
+          <material>
+            <ambient>0.20 0.18 0.16 1</ambient>
+            <diffuse>0.25 0.22 0.20 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="berm_top">
+      <static>true</static>
+      <pose>2.5 0.0 1.35 0 0 0</pose>
+      <link name="link">
+        <collision name="b_col">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry><box><size>5.0 4.5 0.7</size></box></geometry>
+        </collision>
+        <visual name="b_vis">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry><box><size>5.0 4.5 0.7</size></box></geometry>
+          <material>
+            <ambient>0.20 0.18 0.16 1</ambient>
+            <diffuse>0.25 0.22 0.20 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
     <model name="tube_seg_00">
       <static>true</static>
-      <pose>4.0 0.0 0 0 0 0.0</pose>
+      <pose>4.0 0.0 -1.5 0 0 0.0</pose>
       <link name="link">
         <collision name="floor_col">
           <pose>0 0 -0.075 0 0 0</pose>
@@ -181,7 +268,7 @@
 
     <model name="tube_seg_01">
       <static>true</static>
-      <pose>12.0 0.0 0 0 0 0.0</pose>
+      <pose>12.0 0.0 -1.35 0 0 0.0</pose>
       <link name="link">
         <collision name="floor_col">
           <pose>0 0 -0.075 0 0 0</pose>
@@ -240,7 +327,7 @@
 
     <model name="tube_seg_02">
       <static>true</static>
-      <pose>20.0 0.4 0 0 0 0.08</pose>
+      <pose>20.0 0.4 -1.1 0 0 0.08</pose>
       <link name="link">
         <collision name="floor_col">
           <pose>0 0 -0.075 0 0 0</pose>
@@ -299,7 +386,7 @@
 
     <model name="tube_seg_03">
       <static>true</static>
-      <pose>28.0 1.2 0 0 0 0.16</pose>
+      <pose>28.0 1.2 -0.75 0 0 0.16</pose>
       <link name="link">
         <collision name="floor_col">
           <pose>0 0 -0.075 0 0 0</pose>
@@ -358,7 +445,7 @@
 
     <model name="tube_seg_04">
       <static>true</static>
-      <pose>36.0 2.0 0 0 0 0.12</pose>
+      <pose>36.0 2.0 -0.25 0 0 0.12</pose>
       <link name="link">
         <collision name="floor_col">
           <pose>0 0 -0.075 0 0 0</pose>
@@ -417,7 +504,7 @@
 
     <model name="tube_seg_05">
       <static>true</static>
-      <pose>44.0 2.6 0 0 0 0.05</pose>
+      <pose>44.0 2.6 0.25 0 0 0.05</pose>
       <link name="link">
         <collision name="floor_col">
           <pose>0 0 -0.075 0 0 0</pose>
@@ -474,41 +561,61 @@
       </link>
     </model>
 
+    <model name="wheel_barrier">
+      <static>true</static>
+      <pose>27.0 1.0 -0.5 0 0 0.16</pose>
+      <link name="link">
+        <collision name="lip_col">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry><box><size>0.35 3.6 0.5</size></box></geometry>
+        </collision>
+        <visual name="lip_vis">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry><box><size>0.35 3.6 0.5</size></box></geometry>
+          <material>
+            <ambient>0.32 0.28 0.24 1</ambient>
+            <diffuse>0.36 0.32 0.28 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
     <model name="alcove">
       <static>true</static>
-      <pose>32 8 0 0 0 1.5708</pose>
+      <pose>32 8 -0.25 0 0 1.5708</pose>
       <link name="link">
-        <collision name="af_col">
+        <collision name="floor_col">
           <pose>0 0 -0.075 0 0 0</pose>
-          <geometry><box><size>10.0 3 0.15</size></box></geometry>
+          <geometry><box><size>10.0 3.0 0.15</size></box></geometry>
         </collision>
-        <visual name="af_vis">
+        <visual name="floor_vis">
           <pose>0 0 -0.075 0 0 0</pose>
-          <geometry><box><size>10.0 3 0.15</size></box></geometry>
+          <geometry><box><size>10.0 3.0 0.15</size></box></geometry>
           <material>
             <ambient>0.18 0.16 0.14 1</ambient>
             <diffuse>0.22 0.19 0.17 1</diffuse>
             <specular>0.05 0.05 0.05 1</specular>
           </material>
         </visual>
-        <collision name="ac_col">
+        <collision name="ceiling_col">
           <pose>0 0 2.925 0 0 0</pose>
-          <geometry><box><size>10.0 3 0.15</size></box></geometry>
+          <geometry><box><size>10.0 3.0 0.15</size></box></geometry>
         </collision>
-        <visual name="ac_vis">
+        <visual name="ceiling_vis">
           <pose>0 0 2.925 0 0 0</pose>
-          <geometry><box><size>10.0 3 0.15</size></box></geometry>
+          <geometry><box><size>10.0 3.0 0.15</size></box></geometry>
           <material>
             <ambient>0.28 0.25 0.22 1</ambient>
             <diffuse>0.32 0.28 0.25 1</diffuse>
             <specular>0.05 0.05 0.05 1</specular>
           </material>
         </visual>
-        <collision name="awl_col">
+        <collision name="wall_l_col">
           <pose>0 1.5 1.5 0 0 0</pose>
           <geometry><box><size>10.0 0.2 3.0</size></box></geometry>
         </collision>
-        <visual name="awl_vis">
+        <visual name="wall_l_vis">
           <pose>0 1.5 1.5 0 0 0</pose>
           <geometry><box><size>10.0 0.2 3.0</size></box></geometry>
           <material>
@@ -517,11 +624,11 @@
             <specular>0.05 0.05 0.05 1</specular>
           </material>
         </visual>
-        <collision name="awr_col">
+        <collision name="wall_r_col">
           <pose>0 -1.5 1.5 0 0 0</pose>
           <geometry><box><size>10.0 0.2 3.0</size></box></geometry>
         </collision>
-        <visual name="awr_vis">
+        <visual name="wall_r_vis">
           <pose>0 -1.5 1.5 0 0 0</pose>
           <geometry><box><size>10.0 0.2 3.0</size></box></geometry>
           <material>
@@ -532,11 +639,11 @@
         </visual>
         <collision name="aend_col">
           <pose>5.0 0 1.5 0 0 0</pose>
-          <geometry><box><size>0.2 3 3.0</size></box></geometry>
+          <geometry><box><size>0.2 3.0 3.0</size></box></geometry>
         </collision>
         <visual name="aend_vis">
           <pose>5.0 0 1.5 0 0 0</pose>
-          <geometry><box><size>0.2 3 3.0</size></box></geometry>
+          <geometry><box><size>0.2 3.0 3.0</size></box></geometry>
           <material>
             <ambient>0.30 0.27 0.24 1</ambient>
             <diffuse>0.34 0.30 0.27 1</diffuse>
@@ -548,7 +655,7 @@
 
     <model name="chamber">
       <static>true</static>
-      <pose>54.0 4.0 0 0 0 0</pose>
+      <pose>54.0 4.0 0.6 0 0 0</pose>
       <link name="link">
         <collision name="cf_col">
           <pose>0 0 -0.075 0 0 0</pose>
@@ -571,8 +678,8 @@
           <pose>0 0 3.925 0 0 0</pose>
           <geometry><box><size>14.0 12.0 0.15</size></box></geometry>
           <material>
-            <ambient>0.26 0.23 0.20 1</ambient>
-            <diffuse>0.30 0.26 0.23 1</diffuse>
+            <ambient>0.28 0.25 0.22 1</ambient>
+            <diffuse>0.32 0.28 0.25 1</diffuse>
             <specular>0.05 0.05 0.05 1</specular>
           </material>
         </visual>
@@ -646,7 +753,7 @@
 
     <model name="rubble_0">
       <static>true</static>
-      <pose>49 7 0.2 0 0 0.0</pose>
+      <pose>49 7 0.6 0 0 0.0</pose>
       <link name="link">
         <collision name="r_col">
           <pose>0 0 0.2 0 0 0</pose>
@@ -666,7 +773,7 @@
 
     <model name="rubble_1">
       <static>true</static>
-      <pose>51 6 0.15 0 0 0.3</pose>
+      <pose>51 6 0.6 0 0 0.15</pose>
       <link name="link">
         <collision name="r_col">
           <pose>0 0 0.175 0 0 0</pose>
@@ -686,7 +793,7 @@
 
     <model name="rubble_2">
       <static>true</static>
-      <pose>50 8 0.25 0 0 0.6</pose>
+      <pose>50 8 0.6 0 0 0.25</pose>
       <link name="link">
         <collision name="r_col">
           <pose>0 0 0.25 0 0 0</pose>
@@ -706,7 +813,7 @@
 
     <model name="rubble_3">
       <static>true</static>
-      <pose>52 7.5 0.1 0 0 0.8999999999999999</pose>
+      <pose>52 7.5 0.6 0 0 0.1</pose>
       <link name="link">
         <collision name="r_col">
           <pose>0 0 0.15 0 0 0</pose>
@@ -726,7 +833,7 @@
 
     <model name="ancient_lander">
       <static>true</static>
-      <pose>55 2 0 0 0 0.4</pose>
+      <pose>55 2 0.6 0 0 0.4</pose>
       <link name="link">
         <collision name="body_col">
           <pose>0 0 0.35 0 0 0</pose>
@@ -798,30 +905,26 @@
 
     <model name="ancient_dish">
       <static>true</static>
-      <pose>53.5 0.5 0 0 0.5 0.8</pose>
+      <pose>53.5 0.5 0.6 0 0.5 0.8</pose>
       <link name="link">
-        <collision name="mast_col">
-          <pose>0 0 1.1 0 0 0</pose>
-          <geometry><cylinder><radius>0.06</radius><length>2.2</length></cylinder></geometry>
-        </collision>
-        <visual name="mast_vis">
-          <pose>0 0 1.1 0 0 0</pose>
+        <collision name="mast_col"><pose>0 0 1.1 0 0 0</pose>
+          <geometry><cylinder><radius>0.06</radius><length>2.2</length></cylinder></geometry></collision>
+        <visual name="mast_vis"><pose>0 0 1.1 0 0 0</pose>
           <geometry><cylinder><radius>0.06</radius><length>2.2</length></cylinder></geometry>
           <material>
             <ambient>0.20 0.24 0.22 1</ambient>
             <diffuse>0.26 0.30 0.28 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
           </material>
         </visual>
-        <collision name="dish_col">
-          <pose>0.3 0 2.0 1.2 0 0</pose>
-          <geometry><cylinder><radius>1.1</radius><length>0.06</length></cylinder></geometry>
-        </collision>
-        <visual name="dish_vis">
-          <pose>0.3 0 2.0 1.2 0 0</pose>
+        <collision name="dish_col"><pose>0.3 0 2.0 1.2 0 0</pose>
+          <geometry><cylinder><radius>1.1</radius><length>0.06</length></cylinder></geometry></collision>
+        <visual name="dish_vis"><pose>0.3 0 2.0 1.2 0 0</pose>
           <geometry><cylinder><radius>1.1</radius><length>0.06</length></cylinder></geometry>
           <material>
             <ambient>0.24 0.28 0.30 1</ambient>
             <diffuse>0.30 0.34 0.36 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
           </material>
         </visual>
       </link>
@@ -829,7 +932,7 @@
 
     <model name="solar_debris_0">
       <static>true</static>
-      <pose>56.5 1.5 0 0 0.3 0.6</pose>
+      <pose>56.5 1.5 0.6 0 0.3 0.6</pose>
       <link name="link">
         <collision name="panel_col">
           <pose>0 0 0.15 0 0 0</pose>
@@ -849,7 +952,7 @@
 
     <model name="solar_debris_1">
       <static>true</static>
-      <pose>54 -0.5 0 0 0.3 -0.4</pose>
+      <pose>54 -0.5 0.6 0 0.3 -0.4</pose>
       <link name="link">
         <collision name="panel_col">
           <pose>0 0 0.15 0 0 0</pose>
@@ -869,30 +972,26 @@
 
     <model name="ancient_beacon">
       <static>true</static>
-      <pose>56 3.5 0 0 0 0</pose>
+      <pose>56 3.5 0.6 0 0 0</pose>
       <link name="link">
-        <collision name="pedestal_col">
-          <pose>0 0 0.3 0 0 0</pose>
-          <geometry><cylinder><radius>0.25</radius><length>0.6</length></cylinder></geometry>
-        </collision>
-        <visual name="pedestal_vis">
-          <pose>0 0 0.3 0 0 0</pose>
+        <collision name="pedestal_col"><pose>0 0 0.3 0 0 0</pose>
+          <geometry><cylinder><radius>0.25</radius><length>0.6</length></cylinder></geometry></collision>
+        <visual name="pedestal_vis"><pose>0 0 0.3 0 0 0</pose>
           <geometry><cylinder><radius>0.25</radius><length>0.6</length></cylinder></geometry>
           <material>
             <ambient>0.30 0.32 0.28 1</ambient>
             <diffuse>0.36 0.38 0.34 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
           </material>
         </visual>
-        <collision name="orb_col">
-          <pose>0 0 0.75 0 0 0</pose>
-          <geometry><sphere><radius>0.18</radius></sphere></geometry>
-        </collision>
-        <visual name="orb_vis">
-          <pose>0 0 0.75 0 0 0</pose>
+        <collision name="orb_col"><pose>0 0 0.75 0 0 0</pose>
+          <geometry><sphere><radius>0.18</radius></sphere></geometry></collision>
+        <visual name="orb_vis"><pose>0 0 0.75 0 0 0</pose>
           <geometry><sphere><radius>0.18</radius></sphere></geometry>
           <material>
             <ambient>0.0 0.3 0.4 1</ambient>
             <diffuse>0.0 0.5 0.6 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
             <emissive>0.0 0.8 1.0 1</emissive>
           </material>
         </visual>
@@ -901,7 +1000,7 @@
 
     <model name="ancient_plaque">
       <static>true</static>
-      <pose>57.2 5 0 0 0 -0.3</pose>
+      <pose>57.2 5 0.6 0 0 -0.3</pose>
       <link name="link">
         <collision name="slab_col">
           <pose>0 0 0.7 0 0 0</pose>
@@ -922,7 +1021,7 @@
 
     <model name="mystery_pyramid">
       <static>true</static>
-      <pose>58 6 0 0 0 0.785</pose>
+      <pose>58 6 0.6 0 0 0.785</pose>
       <link name="link">
         <collision name="t0_col">
           <pose>0 0 0.15 0 0 0</pose>
