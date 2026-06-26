@@ -142,13 +142,13 @@
     <!-- Porta da sala Enigma — duas placas verticais, vão de 1 m (eixo Y) -->
     <model name="enigma_door_left">
       <static>true</static>
-      <pose>66 -1.5 5.5 0 0 0</pose>
+      <pose>66 -4.5 11.5 0 0 0</pose>
       <link name="link">
         <collision name="jamb_col">
-          <geometry><box><size>0.25 2.0 4.0</size></box></geometry>
+          <geometry><box><size>0.25 8.0 16.0</size></box></geometry>
         </collision>
         <visual name="jamb_vis">
-          <geometry><box><size>0.25 2.0 4.0</size></box></geometry>
+          <geometry><box><size>0.25 8.0 16.0</size></box></geometry>
           <material>
             <ambient>0.22 0.20 0.18 1</ambient>
             <diffuse>0.28 0.25 0.22 1</diffuse>
@@ -159,13 +159,13 @@
     </model>
     <model name="enigma_door_right">
       <static>true</static>
-      <pose>66 1.5 5.5 0 0 0</pose>
+      <pose>66 4.5 11.5 0 0 0</pose>
       <link name="link">
         <collision name="jamb_col">
-          <geometry><box><size>0.25 2.0 4.0</size></box></geometry>
+          <geometry><box><size>0.25 8.0 16.0</size></box></geometry>
         </collision>
         <visual name="jamb_vis">
-          <geometry><box><size>0.25 2.0 4.0</size></box></geometry>
+          <geometry><box><size>0.25 8.0 16.0</size></box></geometry>
           <material>
             <ambient>0.22 0.20 0.18 1</ambient>
             <diffuse>0.28 0.25 0.22 1</diffuse>
