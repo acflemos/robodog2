@@ -3,7 +3,7 @@
 # Uso (alias validado):
 #   rbd_lava_tube_fuel
 #
-# Spawn sobre walking_plate, fora da boca do túnel (topo da placa em z=1.5 m).
+# Spawn sobre walking_plate, fora da boca do túnel (topo da placa em z=3.5 m).
 # Pré-requisito: rbd2_build_pkg && rbd2_source (instala lava_tube_fuel.world)
 
 import os
@@ -25,7 +25,7 @@ def generate_launch_description():
                 'world': 'lava_tube_fuel.world',
                 'spawn_x': '-5.0',
                 'spawn_y': '0.0',
-                'spawn_z': '1.51',
+                'spawn_z': '3.51',
             }.items(),
         ),
     ])
