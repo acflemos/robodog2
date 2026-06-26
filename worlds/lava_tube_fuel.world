@@ -1,8 +1,9 @@
 <?xml version="1.0" ?>
-<!-- lava_tube_fuel.world — REFERÊNCIA VISUAL de meshes Fuel (DARPA SubT).
-     Não forma túnel contínuo sozinho: tiles são painéis de parede (~25 m).
-     Uso futuro: decorar o INTERIOR do lava_tube.world (v1 caixa oca).
-     Tiles alinhados em grelha SubT (passo 25 m, yaw 90°).
+<!-- lava_tube_fuel.world — Lava tube Fuel puro (DARPA SubT / Gazebo Fuel).
+     Tiles Cave Straight 02 Type B + Cave Cap Type B (passo 25 m, yaw 90°).
+     FLOOR_LIFT=1.5 m — túnel elevado; regolito lunar inalterado em z=0.
+     walking_plate: 50 m (metade do túnel), apoiada no regolito, topo em z=1.5 m
+     (metade da altura do túnel) — piso de navegação do X3 até à entrada.
      Uso: rbd_lava_tube_fuel -->
 <sdf version="1.8">
   <world name="lava_tube_fuel">
@@ -30,66 +31,66 @@
 
     <!-- Iluminação interna — um ponto a cada ~12 m ao longo do túnel (+X) -->
     <light name="tunnel_lit_00" type="point">
-      <pose>2 0 2.8 0 0 0</pose>
+      <pose>2 0 4.3 0 0 0</pose>
       <diffuse>0.82 0.74 0.62 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="tunnel_lit_01" type="point">
-      <pose>14 0 2.8 0 0 0</pose>
+      <pose>14 0 4.3 0 0 0</pose>
       <diffuse>0.78 0.70 0.60 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="tunnel_lit_02" type="point">
-      <pose>26 0 2.8 0 0 0</pose>
+      <pose>26 0 4.3 0 0 0</pose>
       <diffuse>0.78 0.70 0.60 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="tunnel_lit_03" type="point">
-      <pose>38 0 2.8 0 0 0</pose>
+      <pose>38 0 4.3 0 0 0</pose>
       <diffuse>0.78 0.70 0.60 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="tunnel_lit_04" type="point">
-      <pose>50 0 2.8 0 0 0</pose>
+      <pose>50 0 4.3 0 0 0</pose>
       <diffuse>0.78 0.70 0.60 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="tunnel_lit_05" type="point">
-      <pose>62 0 2.8 0 0 0</pose>
+      <pose>62 0 4.3 0 0 0</pose>
       <diffuse>0.78 0.70 0.60 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="tunnel_lit_06" type="point">
-      <pose>74 0 2.8 0 0 0</pose>
+      <pose>74 0 4.3 0 0 0</pose>
       <diffuse>0.78 0.70 0.60 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="tunnel_lit_07" type="point">
-      <pose>86 0 2.8 0 0 0</pose>
+      <pose>86 0 4.3 0 0 0</pose>
       <diffuse>0.78 0.70 0.60 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="tunnel_lit_08" type="point">
-      <pose>98 0 2.8 0 0 0</pose>
+      <pose>98 0 4.3 0 0 0</pose>
       <diffuse>0.78 0.70 0.60 1</diffuse>
       <specular>0.12 0.11 0.10 1</specular>
       <attenuation><range>22</range><linear>0.06</linear><constant>0.4</constant></attenuation>
     </light>
     <light name="chamber_glow" type="point">
-      <pose>103 0 3.2 0 0 0</pose>
+      <pose>103 0 4.7 0 0 0</pose>
       <diffuse>0.45 0.55 0.65 1</diffuse>
       <attenuation><range>28</range><linear>0.05</linear><constant>0.5</constant></attenuation>
     </light>
     <light name="beacon_pulse" type="point">
-      <pose>103 2 1.5 0 0 0</pose>
+      <pose>103 2 3.0 0 0 0</pose>
       <diffuse>0.10 0.70 0.80 1</diffuse>
       <attenuation><range>10</range></attenuation>
     </light>
@@ -112,37 +113,56 @@
       </link>
     </model>
 
+    <!-- Placa de navegação: metade do comprimento do túnel (~50 m), topo alinhado à boca -->
+    <model name="walking_plate">
+      <static>true</static>
+      <pose>15 0 0.75 0 0 0</pose>
+      <link name="link">
+        <collision name="plate_col">
+          <geometry><box><size>50 4 1.5</size></box></geometry>
+        </collision>
+        <visual name="plate_vis">
+          <geometry><box><size>50 4 1.5</size></box></geometry>
+          <material>
+            <ambient>0.18 0.16 0.14 1</ambient>
+            <diffuse>0.22 0.19 0.17 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
     <!-- Tiles SubT: comprimento ~25 m cada; yaw=1.5708 alinha eixo do túnel em +X -->
     <include>
       <name>cave_seg_00</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Straight%2002%20Type%20B</uri>
-      <pose>0 0 0 0 0 1.5708</pose>
+      <pose>0 0 1.5 0 0 1.5708</pose>
     </include>
     <include>
       <name>cave_seg_01</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Straight%2002%20Type%20B</uri>
-      <pose>25 0 0 0 0 1.5708</pose>
+      <pose>25 0 1.5 0 0 1.5708</pose>
     </include>
     <include>
       <name>cave_seg_02</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Straight%2002%20Type%20B</uri>
-      <pose>50 0 0 0 0 1.5708</pose>
+      <pose>50 0 1.5 0 0 1.5708</pose>
     </include>
     <include>
       <name>cave_seg_03</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Straight%2002%20Type%20B</uri>
-      <pose>75 0 0 0 0 1.5708</pose>
+      <pose>75 0 1.5 0 0 1.5708</pose>
     </include>
     <include>
       <name>cave_chamber</name>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Cave%20Cap%20Type%20B</uri>
-      <pose>100 0 0 0 0 1.5708</pose>
+      <pose>100 0 1.5 0 0 1.5708</pose>
     </include>
 
     <!-- Zona do enigma (primitivas — igual à v1 aprovada, deslocada para o fim do túnel Fuel) -->
     <model name="ancient_beacon">
       <static>true</static>
-      <pose>103 2 0 0 0 0</pose>
+      <pose>103 2 1.5 0 0 0</pose>
       <link name="link">
         <collision name="pedestal_col"><pose>0 0 0.3 0 0 0</pose>
           <geometry><cylinder><radius>0.25</radius><length>0.6</length></cylinder></geometry></collision>
@@ -164,7 +184,7 @@
 
     <model name="mystery_pyramid">
       <static>true</static>
-      <pose>105 4 0 0 0 0.785</pose>
+      <pose>105 4 1.5 0 0 0.785</pose>
       <link name="link">
         <collision name="t0_col"><pose>0 0 0.15 0 0 0</pose>
           <geometry><box><size>2.0 2.0 0.3</size></box></geometry></collision>
