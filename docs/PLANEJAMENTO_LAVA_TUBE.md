@@ -101,6 +101,36 @@ Na **Fase 1 (robodog2)**, a recompensa é um **vislumbre ao longe** — o aluno 
 
 ---
 
+## Próximos passos — simulação `lava_tube_fuel`
+
+> **Validado em 2026-06-26** com `rbd_lava_tube_fuel` (teleop + colisão na mesh Fuel).
+
+### Comportamento confirmado
+
+- **Teleop** — o X3 responde ao teclado.
+- **Colisão com rocha** — para nas paredes de rocha como esperado.
+- **Inclinação suave** — sobe parcialmente na rocha até a inclinação tornar-se parede para as rodas; comportamento físico credível.
+- **Retorno à placa** — pode dar ré e voltar à `walking_plate` (piso plano de navegação).
+
+### Bug conhecido — plano de contacto após subir/descer rocha
+
+Após o robô **subir e descer** uma parede de rocha irregular (mesh Fuel), o simulador passa a tratar o **piso plano como estando mais alto** do que a `walking_plate` real — erro de estado de contacto / referência de altura.
+
+**Sintoma:** o X3 avança normalmente mas **flutua** sobre a placa plana, sem assentar no piso.
+
+**Comportamento esperado:** a gravidade lunar deve puxar o robô para baixo; ele deve **assentar** na placa (colisão com o topo em `z=3,5 m`) e, conforme a queda, poder **capotar** ou recuperar estabilidade — não permanecer suspenso.
+
+**Hipóteses a investigar (Fase 1b):**
+
+1. Acúmulo de erro no solver ODE após múltiplos contactos com mesh irregular.
+2. Referência de “chão” do modelo do robô ou do plugin de física desalinhada após sair de superfície inclinada.
+3. Interação mesh Fuel (visual + colisão irregular) vs. `walking_plate` (box plana) — ordem/prioridade de contactos.
+4. Parâmetros de fricção, `max_contacts` ou `snap` entre corpos estáticos e o X3.
+
+**Critério de correção:** após explorar rocha inclinada e regressar à placa, o robô assenta no piso plano com gravidade activa, sem flutuar; queda abrupta pode capotar (aceitável).
+
+---
+
 ## Notas
 
 - Branch de trabalho: `lava_tubes_grok`
