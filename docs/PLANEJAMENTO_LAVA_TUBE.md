@@ -9,10 +9,37 @@ Criar um ambiente de simulação inspirador para um **curso de robótica com ROS
 
 ---
 
+## Decisão v1.1 — Zona navegável parcial (robodog2)
+
+> **Aprovada em 2026-06-26** na branch `lava_tubes_grok`.
+
+O robodog2 (ROSmaster X3, rodas) **não precisa percorrer o lava tube inteiro**. Basta uma **porção inicial navegável** para o aluno experimentar o cenário lunar, ver o retorno do lidar e iniciar os primeiros mapas. O restante do túnel fica como **promessa de missão** — visível ao longe, inacessível com o hardware atual.
+
+### Estratégia geométrica (a implementar)
+
+1. **Entrada semi-enterrada** — abaixar o túnel na simulação de forma que ~metade da seção da boca fique acima do piso plano virtual (`lunar_surface` em `z=0`), como um lava tube real emergindo do regolito.
+2. **Acesso por rampa** — ligar o piso externo ao piso interno nos primeiros metros, para o X3 entrar sem degrau na boca.
+3. **Subida progressiva** — ao longo dos segmentos, o piso interno sobe gradualmente em relação ao nível externo; o robô avança, tenta subir e **fica preso** num limite natural para rodas (comportamento esperado, não falha).
+4. **Vislumbre do Enigma** — antes do bloqueio físico, sensores e câmera captam ao longe a câmara final e artefatos (`ancient_beacon`, silhuetas do lander, etc.), despertando curiosidade.
+5. **Continuação no robodog3** — exploração completa do túnel (curva S, alcova, câmara) fica para o **robodog3** (futuro: possivelmente **4 pernas** com **rodas na ponta das pernas**).
+
+### Critérios de sucesso (Fase 1)
+
+- Aluno entra no túnel, teleopera e mapeia a **zona acessível** com stack ROS2 existente (SLAM, Nav2, teleop).
+- Lidar e mapa mostram o corredor escuro e, no limite, indícios da zona do Enigma.
+- A limitação das rodas motiva explicitamente o estudo do robodog3 — mesma missão, nova arquitetura de mobilidade.
+
+### Implementação pendente
+
+- Ajustar `worlds/generate_lava_tube.py`: offset vertical do túnel, rampa na superfície lunar, elevação progressiva por segmento, spawn do robô na zona externa.
+- Regenerar `worlds/lava_tube.world` e validar com `rbd_lava_tube`.
+
+---
+
 ## Fase 1 — Ambiente + robodog lunar (atual)
 
 ### Mundo
-- **Lava tube realista** em Gazebo Fortress (`worlds/lava_tube.world`) — **v1 aprovada**
+- **Lava tube realista** em Gazebo Fortress (`worlds/lava_tube.world`) — **v1 aprovada** (geometria base); **v1.1** aplica a decisão de zona navegável parcial acima
 - **Gravidade lunar** (~1,62 m/s², ~1/6 da Terra)
 - Geometria primitiva estática — otimizada para VM 12 núcleos / 16 GB RAM
 - **Túnel em caixa oca** — piso + paredes + teto com espessura visível (colisão confiável)
@@ -24,24 +51,27 @@ Criar um ambiente de simulação inspirador para um **curso de robótica com ROS
 - **Zona do Enigma** (final do túnel): restos de uma antiga missão não-humana — lander corroído, antena tombada, painéis deteriorados, placa monolítica, **pirâmide pequena** e **beacon emissivo** ainda pulsando após eras (sugere que alguém esteve aqui há muito tempo)
 
 ### Robô
-- Versão **maior** do robodog, com **aparência de veículo lunar**
-- Primeiro protagonista do cenário — acessível pedagogicamente, serve de **inspiração** para estudantes
-- Explora o lava tube com stack ROS2 existente (SLAM, Nav2, teleop)
+- **ROSmaster X3** (robodog2 atual) — rodas, hardware acessível, uso em casa
+- Primeiro protagonista do cenário — explora apenas a **zona navegável parcial** do lava tube
+- Stack ROS2 existente (SLAM, Nav2, teleop) aplicado ao cenário lunar
 
 ### Propósito pedagógico
-- Demonstrar que robótica com ROS2 pode ser **interessante e motivadora**
-- Servir de **referência visual e narrativa** para o material do curso
+- Demonstrar que robótica com ROS2 pode ser **interessante e motivadora** com hardware real e acessível
+- Iniciar mapeamento e exploração num ambiente inspirador, sem exigir locomoção que o X3 não tem
+- **Gancho narrativo:** vislumbre do Enigma + limite físico das rodas → motivação para o robodog3
 
 ---
 
-## Fase 2 — Robodog híbrido pernas + rodas (posterior)
+## Fase 2 — robodog3 (posterior)
 
 ### Robô
-- Novo robodog com **pernas e rodas** — arquitetura mais adequada ao terreno irregular do lava tube
-- Explora o **mesmo mundo** da Fase 1, com **mais elegância** na locomoção
+- **robodog3** (a desenvolver) — arquitetura híbrida, possivelmente **4 pernas** com **rodas na ponta das pernas**
+- Projetado para terreno irregular, degraus e subida no interior do lava tube
+- Explora o **mesmo mundo** da Fase 1 até a câmara final e a zona do Enigma
 
 ### Propósito pedagógico
-- Contraste didático: mesma missão, **duas abordagens de mobilidade**
+- **Continuação da missão** iniciada no robodog2 — não um cenário separado
+- Contraste didático: mesma missão, **duas abordagens de mobilidade** (rodas vs. pernas+rodas)
 - Motivar estudantes a pensar em **arquitetura de robô** além de software
 
 ---
@@ -66,6 +96,8 @@ No final do lava tube, o robô descobre uma **câmara ampliada** iluminada por u
 | `mystery_pyramid` | Pirâmide em degraus — símbolo que desperta curiosidade |
 
 Objetivo pedagógico: o estudante mapeia o túnel escuro e é **recompensado pela exploração** com uma revelação que motiva perguntas (Quem esteve aqui? Por quê? O beacon ainda funciona?).
+
+Na **Fase 1 (robodog2)**, a recompensa é um **vislumbre ao longe** — o aluno vê o beacon e silhuetas antes do limite das rodas. Na **Fase 2 (robodog3)**, a recompensa é a **chegada física** à câmara e inspeção dos artefatos.
 
 ---
 

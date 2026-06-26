@@ -35,15 +35,17 @@ A missão simulada do robodog no lava tube não é ficção distante: espelha pr
 
 ## O que o aluno vive na simulação
 
-1. **Entrada no túnel** — gravidade lunar, escuridão, necessidade de mapear o desconhecido.
-2. **Exploração** — teleoperação, SLAM, construção de mapa ao longo de um corredor em curva com alcova lateral.
-3. **Recompensa narrativa** — na **zona do Enigma**, no final do túnel: restos de uma missão antiga, beacon ainda emissivo, símbolos que convidam a perguntar *quem esteve aqui antes*.
+1. **Entrada no túnel** — gravidade lunar, boca do lava tube semi-enterrada na superfície, escuridão interior; o robodog2 (X3 com rodas) entra pela zona inicial navegável.
+2. **Exploração parcial** — teleoperação, SLAM, primeiros mapas ao longo do corredor acessível; lidar revela paredes, curva e o que está mais à frente.
+3. **Limite das rodas** — o piso do túnel sobe; o X3 avança até um ponto em que não consegue seguir (subida/degrau natural). Isto não é falha — é o **fim da missão do robodog2**.
+4. **Vislumbre do Enigma** — antes de ficar preso, o aluno avista ao longe a câmara final: o **beacon ciano**, silhuetas do lander e outros artefatos. A pergunta fica no ar: *quem esteve aqui antes?*
+5. **Continuação (robodog3)** — para chegar à zona do Enigma e explorar o túnel completo (curva S, alcova, câmara), será preciso um robô com mobilidade superior (possivelmente **4 pernas** com **rodas na ponta das pernas**).
 
-A progressão técnica do curso pode evoluir em paralelo:
+A progressão técnica do curso evolui em paralelo:
 
-- **Fase 1** — robô com rodas no túnel (acessível, pedagógico).
-- **Fase 2** — robô híbrido pernas + rodas no **mesmo** mundo (mobilidade para terreno irregular).
-- **Decoração visual** — interior rochoso credível (referência validada com meshes DARPA SubT), mantendo piso plano para navegação.
+- **Fase 1 (robodog2)** — X3 com rodas na **porção navegável** do túnel (acessível, em casa, pedagógico).
+- **Fase 2 (robodog3)** — mesmo mundo, exploração **completa** com 4 pernas e rodas nas pontas para terreno irregular.
+- **Decoração visual** — interior rochoso credível (referência validada com meshes DARPA SubT), mantendo piso plano na zona navegável do robodog2.
 
 O aluno percebe que ROS2 não é só para aspiradores: é a camada de software que pode unir sensores, decisão e acção em ambientes onde nenhum humano ainda pisou.
 
