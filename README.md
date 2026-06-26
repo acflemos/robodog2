@@ -82,7 +82,7 @@ Decisão técnica **v1.1** (documentada, implementação pendente): entrada semi
 rbd2_build_pkg && rbd2_source
 source ~/.bash_aliases
 
-rbd_lava_tube        # túnel operacional (v1, piso plano; v1.1 em desenvolvimento)
+rbd_lava_tube        # túnel operacional (v1.1, zona navegável parcial)
 rbd_lava_tube_fuel   # referência visual do interior rochoso (meshes Fuel DARPA SubT)
 ```
 
@@ -129,7 +129,7 @@ Branch de trabalho: `lava_tubes_grok`. Mundo gerado por `worlds/generate_lava_tu
 
 ### Em progresso 🎯
 
-- **Lava tube v1.1** — geometria de zona navegável parcial (entrada semi-enterrada, rampa, subida progressiva) em `generate_lava_tube.py`
+- **Lava tube v1.1** — validar em Gazebo teleop + lidar na zona navegável parcial (`rbd_lava_tube`)
 - Testar código Yahboom original no Gazebo — comparar comportamento de navegação com robodog2
 - Testar código robodog2 no robot real (`rbd2_bringup` no ROSMASTER X3 físico)
 
@@ -336,7 +336,7 @@ sudo apt install -y \
 | `worlds/cma_vazio.world` | Casa sem móveis — 15 cômodos | ✅ Fortress |
 | `worlds/cma_moveis.world` | Casa com móveis — 79 modelos | ✅ Fortress |
 | `worlds/rbd_gz_empty.world` | Mundo vazio para testes | ✅ Fortress |
-| `worlds/lava_tube.world` | Lava tube lunar (1/6g), túnel + câmara do Enigma; gerado por `generate_lava_tube.py` | 🎯 v1.1 em progresso (`lava_tubes_grok`) |
+| `worlds/lava_tube.world` | Lava tube lunar (1/6g), v1.1 — entrada semi-enterrada, rampa, zona navegável parcial; gerado por `generate_lava_tube.py` | 🎯 validar (`lava_tubes_grok`) |
 | `worlds/lava_tube_fuel.world` | Referência visual Fuel — interior rochoso; piso irregular, sem colisão para rodas | ✅ referência |
 
 Os mundos `cma_*` foram convertidos de Gazebo Classic (SDF 1.6) para Fortress: poses dos modelos atualizadas a partir do bloco `<state>` do arquivo original. Detalhes do lava tube: [worlds/README.md](worlds/README.md).

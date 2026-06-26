@@ -15,7 +15,7 @@ Criar um ambiente de simulação inspirador para um **curso de robótica com ROS
 
 O robodog2 (ROSmaster X3, rodas) **não precisa percorrer o lava tube inteiro**. Basta uma **porção inicial navegável** para o aluno experimentar o cenário lunar, ver o retorno do lidar e iniciar os primeiros mapas. O restante do túnel fica como **promessa de missão** — visível ao longe, inacessível com o hardware atual.
 
-### Estratégia geométrica (a implementar)
+### Estratégia geométrica (implementada em v1.1)
 
 1. **Entrada semi-enterrada** — abaixar o túnel na simulação de forma que ~metade da seção da boca fique acima do piso plano virtual (`lunar_surface` em `z=0`), como um lava tube real emergindo do regolito.
 2. **Acesso por rampa** — ligar o piso externo ao piso interno nos primeiros metros, para o X3 entrar sem degrau na boca.
@@ -29,10 +29,10 @@ O robodog2 (ROSmaster X3, rodas) **não precisa percorrer o lava tube inteiro**.
 - Lidar e mapa mostram o corredor escuro e, no limite, indícios da zona do Enigma.
 - A limitação das rodas motiva explicitamente o estudo do robodog3 — mesma missão, nova arquitetura de mobilidade.
 
-### Implementação pendente
+### Implementação v1.1
 
-- Ajustar `worlds/generate_lava_tube.py`: offset vertical do túnel, rampa na superfície lunar, elevação progressiva por segmento, spawn do robô na zona externa.
-- Regenerar `worlds/lava_tube.world` e validar com `rbd_lava_tube`.
+- `worlds/generate_lava_tube.py`: `TUBE_BURY=1.5 m`, rampa `entrance_ramp`, berms `entrance_berms`, `SEG_FLOOR_Z` progressivo, `wheel_barrier` em x≈27, spawn em (-6, 0, 0.1).
+- `worlds/lava_tube.world` regenerado; validar com `rbd_lava_tube` (teleop + lidar na zona acessível).
 
 ---
 

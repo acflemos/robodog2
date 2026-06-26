@@ -1,4 +1,4 @@
-# rbd_lava_tube_launch.py — Lava tube v1 aprovada (caixa oca, primitivas).
+# rbd_lava_tube_launch.py — Lava tube v1.1 (zona navegável parcial, primitivas).
 #
 # Uso (alias validado):
 #   rbd_lava_tube
@@ -20,9 +20,9 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(base),
             launch_arguments={
                 'world': 'lava_tube.world',
-                'spawn_x': '-2.0',
+                'spawn_x': '-6.0',
                 'spawn_y': '0.0',
-                'spawn_z': '0.01',
+                'spawn_z': '0.1',
             }.items(),
         ),
     ])
