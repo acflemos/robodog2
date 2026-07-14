@@ -191,7 +191,52 @@ rbd2_navega           # Terminal 3: patrulha autónoma (opcional)
 - Validar Nav2 real: localização AMCL + DWB com RPLIDAR A1 e odometria EKF
 
 ### Por fazer ❌
+- SLAM da casa real → gerar mapa físico (ver estratégia de pose inicial abaixo)
 - Calibrar `rbd_tabelas.py` para a casa real (waypoints do robô físico)
 - Testar ciclo autónomo completo (`rbd2_navega`) no hardware físico
 - Lava tube: SLAM + Nav2 na zona navegável
 - Imagem Docker do robodog2 para distribuição do curso
+
+---
+
+## Estratégia de pose inicial — simulação ↔ mundo real
+
+**Objectivo:** o robô físico começa sempre no mesmo ponto da casa, e o Nav2 sabe automaticamente onde está — sem intervenção manual no RViz. Reproduz no mundo real o que foi previsto na simulação.
+
+**Na simulação:** o X3 spawna em `(-3.0, -2.0, 0.1)` no `cma_vazio.world`. O Nav2 usa `set_initial_pose: true` com essas coordenadas.
+
+**No robô real — plano em 3 passos:**
+
+1. **Marcar o ponto de partida físico** — colocar fita adesiva no chão da casa no local onde o robô vai sempre começar (ex: canto da sala de estar). Este ponto deve ser sempre o mesmo.
+
+2. **Gerar o mapa real** — com o robô nesse ponto marcado, fazer SLAM da casa:
+   ```bash
+   # Adaptar rbd_slam_x3_launch.py para hardware (sem Gazebo, use_sim_time=false)
+   # Teleop por todos os cômodos → salvar mapa
+   ```
+   O ponto marcado ficará com coordenadas próximas de (0, 0) no mapa gerado (origem do SLAM).
+
+3. **Activar pose inicial automática** — após identificar as coordenadas do ponto marcado no mapa, actualizar `params/rbd_dwa_nav_params_real.yaml`:
+   ```yaml
+   set_initial_pose: true
+   initial_pose:
+     x: <x_do_ponto_marcado>   # a preencher após SLAM real
+     y: <y_do_ponto_marcado>   # a preencher após SLAM real
+     z: 0.0
+     yaw: 0.0                  # robô orientado sempre na mesma direcção
+   ```
+
+**Resultado:** `rbd2_bringup` lança e o Nav2 localiza o robô automaticamente. Sem "2D Pose Estimate" no RViz — plug and play.
+
+---
+
+## Próximos passos (sessão 2026-07-15)
+
+```
+1. Pi host: instalar Claude Code (npm install -g @anthropic-ai/claude-code)
+2. Container: git clone robodog2 + colcon build + configurar git (user + token)
+3. Testar rbd2_robo_hardware → verificar /scan e /odom publicados
+4. Testar rbd2_bringup_rviz → Nav2 no ar (mapa provisório da simulação)
+5. SLAM da casa real → mapa físico → activar pose inicial automática
+6. Calibrar waypoints rbd_tabelas.py → ciclo autónomo no robô físico
+```
