@@ -93,11 +93,12 @@ Branch de trabalho: `lava_tubes_grok`. Mundo gerado por `worlds/generate_lava_tu
 ## Hardware
 
 **ROSMASTER X3 — Yahboom**
-- Raspberry Pi 4B (4 GB)
-- LiDAR 360° (YDLIDAR X4 / LDROBOT LD14)
+- Raspberry Pi 4B (8 GB RAM)
+- LiDAR 360° RPLIDAR A1 (driver: `sllidar_ros2`, publica `/scan`)
 - Câmera RGB
-- IMU (hardware real — não usado em simulação)
+- IMU (MPU6050 — fusão Madgwick + EKF no bringup)
 - Rodas mecanum (omnidirecionais)
+- ROS2 Humble em container Docker
 
 ---
 
@@ -194,7 +195,13 @@ alias rbd2_simulador_x3_moveis='ros2 launch robodog2 rbd_simulador_x3_launch.py 
 
 alias rbd2_teclado='ros2 run teleop_twist_keyboard teleop_twist_keyboard'
 alias rbd2_navega='ros2 run robodog2 rbd_navega'
-alias rbd2_bringup='ros2 launch robodog2 rbd_bringup.launch.py'
+
+# Robô real — camada de hardware (correr NO robô, dentro do container)
+alias rbd2_robo_hardware='ros2 launch robodog2 rbd_robo_hardware_launch.py'
+
+# Robô real — Nav2 + RViz (pode correr no PC remoto via rede ROS2)
+alias rbd2_bringup='ros2 launch robodog2 rbd_bringup.launch.py map:=$(ros2 pkg prefix robodog2)/share/robodog2/maps/rbd_mapa_vazio.yaml'
+alias rbd2_bringup_rviz='ros2 launch robodog2 rbd_bringup.launch.py rviz:=true map:=$(ros2 pkg prefix robodog2)/share/robodog2/maps/rbd_mapa_vazio.yaml'
 ```
 
 ---
@@ -241,6 +248,25 @@ rbd2_simulador_x3_moveis    # Gazebo + Nav2 + AMCL + RViz (mapa: maps/rbd_mapa_m
 rbd2_navega                 # loop autônomo de patrulha por pesos
 ```
 
+### Robô real — hardware real, sem Gazebo
+```bash
+# Pré-requisito: robodog2 compilado e instalado no container do X3
+#   colcon build --packages-select robodog2 && source install/setup.bash
+
+# Terminal 1 — NO ROBÔ (container ROS2)
+rbd2_robo_hardware          # drivers Yahboom + RPLIDAR A1 (publica /scan, /odom, TF)
+
+# Terminal 2 — NO PC ou NO ROBÔ (rede ROS2 com mesmo ROS_DOMAIN_ID)
+rbd2_bringup                # Nav2 (AMCL + DWB) com mapa da casa vazia
+# ou com RViz2 visível no PC:
+rbd2_bringup_rviz
+
+# Após lançar: usar "2D Pose Estimate" no RViz2 para definir a pose inicial no mapa
+
+# Terminal 3 — patrulha autónoma (opcional)
+rbd2_navega
+```
+
 ### Exploração inicial — lava tube lunar
 ```bash
 # Terminal 1
@@ -273,6 +299,25 @@ rbd_slam_x3_launch.py
 ├── rbd_gz_x3_launch.py               ← Gazebo Fortress (world configurável)
 ├── async_slam_toolbox_node           ← params: params/rbd_slam_toolbox_params.yaml
 └── rviz2                             ← config: rviz/map.rviz
+```
+
+**Arquitetura do robô real (sem Gazebo):**
+```
+rbd_robo_hardware_launch.py           ← corre NO ROBÔ (container)
+├── yahboomcar_bringup_X3_launch.py   ← driver Arduino (Mcnamu_driver_X3)
+│   ├── Mcnamu_driver_X3              → publica /imu/data_raw, /vel_raw, /joint_states
+│   ├── base_node_X3                  → calcula /odom a partir de /vel_raw
+│   ├── imu_filter_madgwick           → fusão IMU → /imu/data
+│   ├── ekf (robot_localization)      → /odom melhorado + TF odom→base_footprint
+│   └── robot_state_publisher         ← URDF: yahboomcar_X3.urdf
+└── sllidar_launch.py (sllidar_ros2)  → publica /scan (RPLIDAR A1, /dev/ttyUSB0)
+
+rbd_bringup.launch.py                 ← pode correr no PC via rede ROS2
+├── navigation_dwa_launch.py          ← Nav2: AMCL + DWB + BT Navigator + recoveries
+│                                        use_sim_time=false
+│                                        params: params/rbd_dwa_nav_params_real.yaml
+├── rviz2 (opcional, rviz:=true)      ← config: rviz/robodog2.rviz
+└── rbd_navega (opcional, navega:=true) ← patrulha autónoma por pesos
 ```
 
 **Plugins URDF ativos (Fortress v6):**
