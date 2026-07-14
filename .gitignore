@@ -25,6 +25,10 @@ maps/*.yaml
 .vscode/
 *.code-workspace
 
+# Claude Code — settings.local.json é máquina-específico, não vai ao git
+# CLAUDE.md e .claude/settings.json SÃO versionados (contexto partilhado entre máquinas)
+.claude/settings.local.json
+
 # Sistema
 .DS_Store
 Thumbs.db
