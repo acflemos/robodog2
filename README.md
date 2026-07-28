@@ -102,6 +102,55 @@ Branch de trabalho: `lava_tubes_grok`. Mundo gerado por `worlds/generate_lava_tu
 
 ---
 
+## Containers Docker no ROSMASTER X3 físico
+
+O robô físico roda ROS2 dentro de um container Docker no Raspberry Pi. Existem dois containers relevantes:
+
+| | Container original (Yahboom) | `robodog2_humble` (novo, em construção) |
+|---|---|---|
+| Imagem base | `yahboomtechnology/ros-foxy:4.0.5` | `ros:humble` |
+| ROS | ROS2 Foxy | ROS2 Humble |
+| Workspace | pacotes `yahboomcar_*` já "assados" na imagem, em `/root/yahboomcar_ros2_ws/yahboomcar_ws/src/` | `robodog2` + `yahboomcar_*` em `/home/rbd/ros2_ws/src/`, clonados via git |
+| Gazebo / RViz | ❌ não tem — imagem de fábrica sem suporte a simulação | ✅ Gazebo Fortress (Ignition 6.18) + RViz2 instalados — permite rodar simulação e ferramentas gráficas dentro do próprio container do robô |
+| Acesso a dispositivos USB | `--device` individual por dispositivo (`/dev/myserial`, `/dev/rplidar`, câmeras Astra, `/dev/video0`, `/dev/input`) | bind mount de **todo `/dev`** + `--privileged` — mais simples, cobre qualquer device automaticamente |
+| `Rosmaster_Lib` (driver Python do Arduino) | já vem instalado (pacote proprietário Yahboom, instalado via `.egg`) | precisou ser instalado manualmente — **não existe no PyPI**; o código-fonte foi copiado do container original (`/root/yahboomcar_ros2_ws/software/py_install_V3.3.1/`) e instalado com `pip3 install pyserial .` |
+| Uso pretendido | operação de fábrica Yahboom (app remoto, SLAM/nav próprios da Yahboom) | desenvolvimento e testes do robodog2 (Nav2, SLAM, patrulha autônoma) |
+
+### Ligação física dos motores e do lidar (host → container)
+
+O host (Raspberry Pi) tem regras `udev` em `/etc/udev/rules.d/usb.rules` que criam nomes fixos para os dispositivos USB seriais, independente de qual container é usado:
+
+```
+idVendor=1a86 idProduct=7523 (chip CH340, Arduino)  → symlink /dev/myserial → /dev/ttyUSB0
+idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
+```
+
+`Rosmaster_Lib` abre `/dev/myserial` a 115200 baud por padrão — é essa a única via de comunicação com o Arduino que controla os motores mecanum.
+
+**Atenção — conflito conhecido:** existe (ou existia) um programa de autostart no Pi (`Rosmaster/rosmaster/start_app.sh` → `rosmaster_main.py`, no container original) que escuta sinais do controle remoto. Pelo manual da Yahboom, esse programa **precisa ser fechado** (`kill_rosmaster.sh`) antes de subir qualquer container — ele também abre `/dev/myserial`, e só um processo pode manter essa porta serial aberta por vez. Se esse programa ainda estiver rodando em segundo plano, o `Rosmaster()` dentro do container vai falhar ou ter comportamento errático ao tentar abrir a porta.
+
+### Passos para testar o robodog2 no hardware físico
+
+1. **Confirmar que nada mais está segurando a porta serial** — checar se o programa de autostart do controle remoto não está rodando em segundo plano (`ps aux | grep -i rosmaster`, `lsof /dev/ttyUSB0`); encerrar se necessário.
+2. **Ligar a placa expansora do X3** (alimenta o Arduino e o RPLIDAR).
+3. **Subir o `robodog2_humble`** com bind mount de `/dev` + `--privileged` (garante acesso a `/dev/myserial` e `/dev/rplidar` automaticamente).
+4. **Verificar os dispositivos dentro do container**: `ls -la /dev/myserial /dev/rplidar`.
+5. **Testar a comunicação serial básica** antes de subir o ROS2:
+   ```python
+   from Rosmaster_Lib import Rosmaster
+   car = Rosmaster()
+   car.create_receive_threading()
+   print(car.get_version(), car.get_battery_voltage())
+   ```
+6. **Compilar o workspace**: `colcon build --packages-select robodog2 && source install/setup.bash`
+7. **Aplicar o fix de `frame_id` do RPLIDAR** em `launch/rbd_robo_hardware_launch.py` (o `sllidar_ros2` publica `/scan` com `frame_id="laser"` por padrão; o URDF real usa `laser_link` — sem o fix, o TF não bate e o Nav2 não monta o costmap a partir do laser).
+8. **Terminal 1 (no robô)**: `rbd2_robo_hardware` — sobe driver Arduino + RPLIDAR; confirmar que `/scan`, `/odom` e a TF estão consistentes (sem frames ausentes).
+9. **Terminal 2 (no robô ou no PC, mesma `ROS_DOMAIN_ID`)**: `rbd2_bringup_rviz` — sobe Nav2 + RViz2 com o mapa provisório (da simulação, até haver SLAM real da casa).
+10. **Definir a pose inicial** no RViz2 com "2D Pose Estimate" (no robô real `set_initial_pose: false` — sem isso o Nav2 não sabe onde o robô está).
+11. **Terminal 3 (opcional)**: `rbd2_navega` — inicia a patrulha autónoma.
+
+---
+
 ## Ambiente de desenvolvimento
 
 - Ubuntu 22.04, ROS2 Humble
