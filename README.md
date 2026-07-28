@@ -131,23 +131,26 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
 
 ### Passos para testar o robodog2 no hardware físico
 
-1. **Confirmar que nada mais está segurando a porta serial** — checar se o programa de autostart do controle remoto não está rodando em segundo plano (`ps aux | grep -i rosmaster`, `lsof /dev/ttyUSB0`); encerrar se necessário.
-2. **Ligar a placa expansora do X3** (alimenta o Arduino e o RPLIDAR).
-3. **Subir o `robodog2_humble`** com bind mount de `/dev` + `--privileged` (garante acesso a `/dev/myserial` e `/dev/rplidar` automaticamente).
-4. **Verificar os dispositivos dentro do container**: `ls -la /dev/myserial /dev/rplidar`.
-5. **Testar a comunicação serial básica** antes de subir o ROS2:
+1. ✅ **Confirmar que nada mais está segurando a porta serial** — checar se o programa de autostart do controle remoto não está rodando em segundo plano (`ps aux | grep -i rosmaster`, `lsof /dev/ttyUSB0`); encerrar com `kill_rosmaster.sh` se necessário.
+2. ✅ **Ligar a placa expansora do X3** (alimenta o Arduino e o RPLIDAR).
+3. ✅ **Subir o `robodog2_humble`** com bind mount de `/dev` + `--privileged` (garante acesso a `/dev/myserial` e `/dev/rplidar` automaticamente). Entre sessões o container fica parado — usar `docker start robodog2_humble`.
+4. ✅ **Verificar os dispositivos dentro do container**: `ls -la /dev/myserial /dev/rplidar`.
+5. ✅ **Testar a comunicação serial básica** antes de subir o ROS2:
    ```python
    from Rosmaster_Lib import Rosmaster
    car = Rosmaster()
    car.create_receive_threading()
    print(car.get_version(), car.get_battery_voltage())
    ```
+   Validado em 2026-07-28: `Version: 3.3`, bateria em 11.5V.
 6. **Compilar o workspace**: `colcon build --packages-select robodog2 && source install/setup.bash`
 7. **Aplicar o fix de `frame_id` do RPLIDAR** em `launch/rbd_robo_hardware_launch.py` (o `sllidar_ros2` publica `/scan` com `frame_id="laser"` por padrão; o URDF real usa `laser_link` — sem o fix, o TF não bate e o Nav2 não monta o costmap a partir do laser).
 8. **Terminal 1 (no robô)**: `rbd2_robo_hardware` — sobe driver Arduino + RPLIDAR; confirmar que `/scan`, `/odom` e a TF estão consistentes (sem frames ausentes).
 9. **Terminal 2 (no robô ou no PC, mesma `ROS_DOMAIN_ID`)**: `rbd2_bringup_rviz` — sobe Nav2 + RViz2 com o mapa provisório (da simulação, até haver SLAM real da casa).
 10. **Definir a pose inicial** no RViz2 com "2D Pose Estimate" (no robô real `set_initial_pose: false` — sem isso o Nav2 não sabe onde o robô está).
 11. **Terminal 3 (opcional)**: `rbd2_navega` — inicia a patrulha autónoma.
+
+**Nota:** o programa de autostart do controle remoto (`rosmaster_main.py`) funciona normalmente com a placa expansora ligada, mas consome mais energia (mantém RPLIDAR e serial ativos) e ocupa `/dev/myserial` — por isso o passo 1 é sempre necessário antes de trabalhar com ROS2.
 
 ---
 
@@ -182,6 +185,7 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
 - **Lava tube v1.1** — validar em Gazebo teleop + lidar na zona navegável parcial (`rbd_lava_tube`)
 - Testar código Yahboom original no Gazebo — comparar comportamento de navegação com robodog2
 - Testar código robodog2 no robot real (`rbd2_bringup` no ROSMASTER X3 físico)
+- **Depuração do container `robodog2_humble`** — comunicação com o Arduino via `Rosmaster_Lib` validada (2026-07-28); faltam o fix de `frame_id` do RPLIDAR e o teste de `rbd2_robo_hardware` (ver seção "Containers Docker no ROSMASTER X3 físico")
 
 ### Por fazer ❌
 
