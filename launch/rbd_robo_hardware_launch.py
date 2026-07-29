@@ -47,6 +47,9 @@ def generate_launch_description():
     # Driver do RPLIDAR A1 — publica /scan
     # Pacote: sllidar_ros2 (instalar com: sudo apt install ros-humble-sllidar-ros2)
     # Por defeito: porta /dev/ttyUSB0, baudrate 115200
+    # frame_id sobrescrito para "laser_link" — o default do sllidar_ros2 é "laser",
+    # mas o URDF real (yahboomcar_description/urdf/yahboomcar_X3.urdf) usa "laser_link".
+    # Sem isso, o TF do LiDAR não bate com o resto da árvore.
     rplidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
@@ -54,7 +57,10 @@ def generate_launch_description():
                 'launch',
                 'sllidar_launch.py'
             )
-        )
+        ),
+        launch_arguments={
+            'frame_id': 'laser_link',
+        }.items()
     )
 
     return LaunchDescription([
