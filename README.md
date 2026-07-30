@@ -143,14 +143,25 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
    print(car.get_version(), car.get_battery_voltage())
    ```
    Validado em 2026-07-28: `Version: 3.3`, bateria em 11.5V.
-6. **Compilar o workspace**: `colcon build --packages-select robodog2 && source install/setup.bash`
-7. **Aplicar o fix de `frame_id` do RPLIDAR** em `launch/rbd_robo_hardware_launch.py` (o `sllidar_ros2` publica `/scan` com `frame_id="laser"` por padrão; o URDF real usa `laser_link` — sem o fix, o TF não bate e o Nav2 não monta o costmap a partir do laser).
-8. **Terminal 1 (no robô)**: `rbd2_robo_hardware` — sobe driver Arduino + RPLIDAR; confirmar que `/scan`, `/odom` e a TF estão consistentes (sem frames ausentes).
-9. **Terminal 2 (no robô ou no PC, mesma `ROS_DOMAIN_ID`)**: `rbd2_bringup_rviz` — sobe Nav2 + RViz2 com o mapa provisório (da simulação, até haver SLAM real da casa).
+6. ✅ **Compilar o workspace**: `colcon build --packages-select robodog2 && source install/setup.bash`
+7. ✅ **Aplicar o fix de `frame_id` do RPLIDAR** em `launch/rbd_robo_hardware_launch.py` (o `sllidar_ros2` publica `/scan` com `frame_id="laser"` por padrão; o URDF real usa `laser_link` — sem o fix, o TF não bate e o Nav2 não monta o costmap a partir do laser). Aplicado junto com a troca para `sllidar_a1_launch.py` (launch por modelo, na versão atual do `sllidar_ros2`) e `serial_port:='/dev/rplidar'`.
+8. ✅ **Terminal 1 (no robô)**: `rbd2_robo_hardware` — sobe driver Arduino + RPLIDAR; `/scan`, `/odom` e a TF confirmados consistentes (sem frames ausentes). **Rodas mecanum testadas com `rbd2_teclado` (teleop direto em `/cmd_vel`, sem precisar do `rbd2_bringup`) — motores respondendo corretamente (2026-07-30).**
+9. 🎯 **Próximo passo — Terminal 2 (no robô ou no PC, mesma `ROS_DOMAIN_ID`)**: `rbd2_bringup_rviz` — sobe Nav2 + RViz2 com o mapa provisório (da simulação, até haver SLAM real da casa). Objetivo: confirmar no RViz que os sinais reais do robô (scan, TF, costmaps) aparecem corretamente antes de avançar para SLAM real da casa.
 10. **Definir a pose inicial** no RViz2 com "2D Pose Estimate" (no robô real `set_initial_pose: false` — sem isso o Nav2 não sabe onde o robô está).
 11. **Terminal 3 (opcional)**: `rbd2_navega` — inicia a patrulha autónoma.
 
 **Nota:** o programa de autostart do controle remoto (`rosmaster_main.py`) funciona normalmente com a placa expansora ligada, mas consome mais energia (mantém RPLIDAR e serial ativos) e ocupa `/dev/myserial` — por isso o passo 1 é sempre necessário antes de trabalhar com ROS2.
+
+### Aliases `rbd2_*` dentro do `robodog2_humble`
+
+O container já tem `/root/.bash_aliases` com todos os aliases da seção [Aliases](#aliases-bash_aliases) abaixo, incluindo o `source` automático do ambiente ROS2 (`/opt/ros/humble/setup.bash` + `install/setup.bash`). Como `docker exec` entra como `root` (`$HOME=/root`) mas o workspace vive em `/home/rbd/ros2_ws`, os aliases usam `$RBD2_WS` explicitamente em vez de `~/ros2_ws`. **Terminais abertos antes dessa configuração precisam rodar `source ~/.bash_aliases` manualmente uma vez** para carregar o ambiente.
+
+### Manutenção — espaço em disco do container
+
+Cada `docker commit` do `robodog2_humble` gera uma imagem de ~4.6GB. Snapshots antigos acumulam rápido e podem lotar o disco da Pi (já aconteceu em 2026-07-30 — partição raiz foi a 0 disponível). Boas práticas:
+- Manter só o snapshot mais recente confirmado bom (`docker images robodog2_humble_snapshot` + `docker rmi` dos antigos).
+- **Sempre pedir confirmação antes de rodar `docker commit`** — a operação pausa o container (todos os processos congelam) e demora, então evitar rodar no meio de um teste com motores em movimento.
+- `docker system df` mostra rapidamente quanto espaço é reciclável.
 
 ---
 
@@ -162,7 +173,7 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
 
 ---
 
-## Status atual (2026-06-19)
+## Status atual (2026-07-30)
 
 ### Validado ✅
 
@@ -179,20 +190,23 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
 - **`rbd2_navega` funcional em `cma_moveis.world`** — navegação autónoma validada com tuning Nav2
 - **Tuning Nav2 para `cma_moveis.world`** — `inflation_radius`, `cost_scaling_factor`, `sim_time`, `acc_lim_theta` e partículas AMCL ajustados
 - Fix GLSL RViz em VM: `OGRE_RTT_MODE=Copy` em `~/.bash_aliases`
+- **`robodog2_humble` operacional no ROSMASTER X3 físico**: `rbd2_robo_hardware` sobe driver Arduino + RPLIDAR sem erro, `/scan`/`/odom`/TF consistentes, fix de `frame_id` do RPLIDAR aplicado
+- **Rodas mecanum reais testadas** via `rbd2_teclado` (teleop direto em `/cmd_vel`) — motores respondendo corretamente (2026-07-30)
+- **Aliases `rbd2_*` ativos dentro do `robodog2_humble`** — ver seção "Containers Docker no ROSMASTER X3 físico"
 
 ### Em progresso 🎯
 
 - **Lava tube v1.1** — validar em Gazebo teleop + lidar na zona navegável parcial (`rbd_lava_tube`)
 - Testar código Yahboom original no Gazebo — comparar comportamento de navegação com robodog2
-- Testar código robodog2 no robot real (`rbd2_bringup` no ROSMASTER X3 físico)
-- **Depuração do container `robodog2_humble`** — comunicação com o Arduino via `Rosmaster_Lib` validada (2026-07-28); faltam o fix de `frame_id` do RPLIDAR e o teste de `rbd2_robo_hardware` (ver seção "Containers Docker no ROSMASTER X3 físico")
+- **Próximo passo imediato:** `rbd2_bringup_rviz` no robô físico — confirmar que o RViz mostra corretamente os sinais reais do robô (scan, TF, costmaps) com o mapa provisório da simulação, antes de partir para o SLAM real da casa
 
 ### Por fazer ❌
 
 - Testar código Yahboom no robot real (X3 físico)
 - Integrar Rosmaster ↔ robodog2 — cruzar o melhor dos dois códigos
-- Calibração de `rbd_tabelas.py` para `cma_moveis.world`
-- Ciclo autónomo em hardware físico
+- SLAM real da casa física → gerar mapa físico (ver "Estratégia de pose inicial" no `CLAUDE.md`)
+- Calibração de `rbd_tabelas.py` para a casa real (waypoints do robô físico)
+- Ciclo autónomo completo (`rbd2_navega`) em hardware físico
 
 ---
 
