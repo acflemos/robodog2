@@ -70,6 +70,9 @@ def generate_launch_description():
     )
 
     # Nav2: AMCL (localização no mapa) + DWB (planeamento local) + BT Navigator
+    # use_composition=False: no robô real (Pi 4B), a composição padrão do
+    # nav2_bringup pode sofrer timeout ao carregar o AMCL sob carga — ver
+    # comentário em navigation_dwa_launch.py.
     nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_robodog2, 'launch', 'navigation_dwa_launch.py')
@@ -78,6 +81,7 @@ def generate_launch_description():
             'use_sim_time': 'false',
             'map': LaunchConfiguration('map'),
             'params_file': real_params,
+            'use_composition': 'False',
         }.items()
     )
 
