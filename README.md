@@ -246,6 +246,15 @@ Novo teste do robô físico reconfirmou a inversão já registrada acima: `/scan
 
 **Próximo passo:** retestar pose inicial + inversão do lidar (incluindo no simulador Gazebo, no PC dev) antes de abrir o PR; depois resolver a inversão do lidar (`robodog2_description`) e rodar o teste de regressão da simulação no PC.
 
+### ✅ Reteste 2026-07-31 (continuação) — pose inicial confirmada de novo, lidar continua invertido
+
+Retestado no robô físico, do zero (Terminal 1 + Terminal 2 relançados):
+
+- **Pose inicial:** "2D Pose Estimate" no RViz2 aceito pelo AMCL (log `Setting pose (...)`), TF `map→odom` confirmada fluindo via `tf2_echo` depois da aceitação. **Achado à parte:** ao lançar o RViz2 do container em background via `docker exec` (rodando como `root`), a primeira tentativa falhou (`qt.qpa.xcb: could not connect to display`) porque o `xhost` do host só autorizava o usuário `pi`, não `root`. Corrigido com `xhost +local:root` no host antes de relançar. Também observado: sob carga alta da Pi (load 12+, mesmo padrão já documentado), comandos `ros2` de introspecção (`ros2 node list`, `tf2_echo`) podem falhar transitoriamente ("frame does not exist") mesmo com tudo funcionando — repetir o comando depois de alguns segundos resolve.
+- **Lidar:** reconfirmado invertido 180° pelo usuário no teste físico (obstáculo colocado na frente do robô aparece atrás no `/scan`). Ainda não corrigido — fix continua sendo o pacote `robodog2_description` com `laser_joint` ajustado (ver acima), a implementar numa próxima sessão.
+
+**Decisão final:** os dois pontos pendentes (pose inicial + lidar) foram retestados com sucesso/reconfirmados nesta sessão — a pose inicial está validada de ponta a ponta, e a inversão do lidar é um problema conhecido e documentado, não um bloqueio para abrir o PR. **PR desta sessão (branch `debug_container_humble`) segue agora**, com o fix do lidar adiado para uma sessão futura. Teste de regressão da simulação Gazebo fica para o PC de desenvolvimento, depois do merge, antes de continuar evoluindo o código.
+
 ### Aliases `rbd2_*` dentro do `robodog2_humble`
 
 O container já tem `/root/.bash_aliases` com todos os aliases da seção [Aliases](#aliases-bash_aliases) abaixo, incluindo o `source` automático do ambiente ROS2 (`/opt/ros/humble/setup.bash` + `install/setup.bash`). Como `docker exec` entra como `root` (`$HOME=/root`) mas o workspace vive em `/home/rbd/ros2_ws`, os aliases usam `$RBD2_WS` explicitamente em vez de `~/ros2_ws`. **Terminais abertos antes dessa configuração precisam rodar `source ~/.bash_aliases` manualmente uma vez** para carregar o ambiente.
@@ -289,14 +298,14 @@ Cada `docker commit` do `robodog2_humble` gera uma imagem de ~4.6GB. Snapshots a
 - **Nav2 real com AMCL validado (2026-07-31)** — bug de composição do `nav2_bringup` corrigido (`use_composition:=False` no robô real evita timeout de carregamento do AMCL na Pi 4B); `rbd2_bringup_rviz` sobe com AMCL, map_server e RViz2 recebendo sinais reais
 - **Rodas mecanum reais testadas** via `rbd2_teclado` (teleop direto em `/cmd_vel`) — motores respondendo corretamente (2026-07-30)
 - **Aliases `rbd2_*` ativos dentro do `robodog2_humble`** — ver seção "Containers Docker no ROSMASTER X3 físico"
-- **Pose inicial real confirmada (2026-07-31)** — "2D Pose Estimate" no RViz2 aceito pelo AMCL, TF `map→odom` consistente (passo 10 do fluxo de hardware concluído)
+- **Pose inicial real confirmada (2026-07-31)** — "2D Pose Estimate" no RViz2 aceito pelo AMCL, TF `map→odom` consistente (passo 10 do fluxo de hardware concluído); reconfirmada num reteste do zero na mesma sessão
 
 ### Em progresso 🎯
 
 - **Lava tube v1.1** — validar em Gazebo teleop + lidar na zona navegável parcial (`rbd_lava_tube`)
 - Testar código Yahboom original no Gazebo — comparar comportamento de navegação com robodog2
-- **Inversão do lidar real (frente/trás)** — reconfirmada em 2026-07-31; ainda falta testar no simulador Gazebo para confirmar se o comportamento se repete lá
-- **Próximo passo imediato:** retestar pose inicial + inversão do lidar (incluindo no simulador, no PC dev) antes de abrir o PR desta sessão — sessão anterior foi interrompida por travamento do Claude Code sob carga alta da Pi
+- **Inversão do lidar real (frente/trás)** — reconfirmada em 2026-07-31 (duas vezes); ainda falta testar no simulador Gazebo para confirmar se o comportamento se repete lá. Não bloqueia o PR desta sessão — fix adiado (pacote `robodog2_description`)
+- **Próximo passo imediato:** abrir o PR desta sessão (branch `debug_container_humble`); depois, no PC de desenvolvimento, confirmar a simulação Gazebo (regressão) e continuar evoluindo o código — provavelmente controlando o robô remotamente, monitorando o RViz2 no PC com os sinais reais do robô físico
 
 ### Por fazer ❌
 
@@ -307,6 +316,7 @@ Cada `docker commit` do `robodog2_humble` gera uma imagem de ~4.6GB. Snapshots a
 - Ciclo autónomo completo (`rbd2_navega`) em hardware físico
 - Corrigir inversão do lidar real (pacote `robodog2_description` com `laser_joint` ajustado)
 - Testar `rbd2_navega` no robô físico com o mapa provisório
+- Confirmar regressão da simulação Gazebo no PC de desenvolvimento (fora da Pi, que não aguenta Gazebo+Nav2 juntos)
 
 ---
 
