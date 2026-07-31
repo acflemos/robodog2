@@ -131,23 +131,140 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
 
 ### Passos para testar o robodog2 no hardware físico
 
-1. **Confirmar que nada mais está segurando a porta serial** — checar se o programa de autostart do controle remoto não está rodando em segundo plano (`ps aux | grep -i rosmaster`, `lsof /dev/ttyUSB0`); encerrar se necessário.
-2. **Ligar a placa expansora do X3** (alimenta o Arduino e o RPLIDAR).
-3. **Subir o `robodog2_humble`** com bind mount de `/dev` + `--privileged` (garante acesso a `/dev/myserial` e `/dev/rplidar` automaticamente).
-4. **Verificar os dispositivos dentro do container**: `ls -la /dev/myserial /dev/rplidar`.
-5. **Testar a comunicação serial básica** antes de subir o ROS2:
+1. ✅ **Confirmar que nada mais está segurando a porta serial** — checar se o programa de autostart do controle remoto não está rodando em segundo plano (`ps aux | grep -i rosmaster`, `lsof /dev/ttyUSB0`); encerrar com `kill_rosmaster.sh` se necessário.
+2. ✅ **Ligar a placa expansora do X3** (alimenta o Arduino e o RPLIDAR).
+3. ✅ **Subir o `robodog2_humble`** com bind mount de `/dev` + `--privileged` (garante acesso a `/dev/myserial` e `/dev/rplidar` automaticamente). Entre sessões o container fica parado — usar `docker start robodog2_humble`.
+4. ✅ **Verificar os dispositivos dentro do container**: `ls -la /dev/myserial /dev/rplidar`.
+5. ✅ **Testar a comunicação serial básica** antes de subir o ROS2:
    ```python
    from Rosmaster_Lib import Rosmaster
    car = Rosmaster()
    car.create_receive_threading()
    print(car.get_version(), car.get_battery_voltage())
    ```
-6. **Compilar o workspace**: `colcon build --packages-select robodog2 && source install/setup.bash`
-7. **Aplicar o fix de `frame_id` do RPLIDAR** em `launch/rbd_robo_hardware_launch.py` (o `sllidar_ros2` publica `/scan` com `frame_id="laser"` por padrão; o URDF real usa `laser_link` — sem o fix, o TF não bate e o Nav2 não monta o costmap a partir do laser).
-8. **Terminal 1 (no robô)**: `rbd2_robo_hardware` — sobe driver Arduino + RPLIDAR; confirmar que `/scan`, `/odom` e a TF estão consistentes (sem frames ausentes).
-9. **Terminal 2 (no robô ou no PC, mesma `ROS_DOMAIN_ID`)**: `rbd2_bringup_rviz` — sobe Nav2 + RViz2 com o mapa provisório (da simulação, até haver SLAM real da casa).
-10. **Definir a pose inicial** no RViz2 com "2D Pose Estimate" (no robô real `set_initial_pose: false` — sem isso o Nav2 não sabe onde o robô está).
-11. **Terminal 3 (opcional)**: `rbd2_navega` — inicia a patrulha autónoma.
+   Validado em 2026-07-28: `Version: 3.3`, bateria em 11.5V.
+6. ✅ **Compilar o workspace**: `colcon build --packages-select robodog2 && source install/setup.bash`
+7. ✅ **Aplicar o fix de `frame_id` do RPLIDAR** em `launch/rbd_robo_hardware_launch.py` (o `sllidar_ros2` publica `/scan` com `frame_id="laser"` por padrão; o URDF real usa `laser_link` — sem o fix, o TF não bate e o Nav2 não monta o costmap a partir do laser). Aplicado junto com a troca para `sllidar_a1_launch.py` (launch por modelo, na versão atual do `sllidar_ros2`) e `serial_port:='/dev/rplidar'`.
+8. ✅ **Terminal 1 (no robô)**: `rbd2_robo_hardware` — sobe driver Arduino + RPLIDAR; `/scan`, `/odom`, `/imu` e a TF confirmados consistentes (sem frames ausentes). **Rodas mecanum testadas com `rbd2_teclado` (teleop direto em `/cmd_vel`, sem precisar do `rbd2_bringup`) — motores respondendo corretamente (2026-07-30). IMU corrigida (bug de udev com CH340 duplicado, ver seção de depuração abaixo) e validada com dados reais (2026-07-31).**
+9. ✅ **Terminal 2 (no robô ou no PC, mesma `ROS_DOMAIN_ID`)**: `rbd2_bringup_rviz` — Nav2 + RViz2 com o mapa provisório. Confirmado: AMCL, map_server e ambos os lifecycle managers ativos, `/map` publicado, RViz2 recebendo scan/TF/costmaps reais (fix do bug de composição do Nav2 na Pi — ver depuração abaixo).
+10. ✅ **Definir a pose inicial** no RViz2 com "2D Pose Estimate" (no robô real `set_initial_pose: false` — sem isso o Nav2 não sabe onde o robô está). Confirmado manualmente na sessão de 2026-07-31: clique no RViz2 aceito pelo AMCL, TF `map→odom` passou a fluir.
+11. 🎯 **Próximo passo — Terminal 3 (opcional)**: `rbd2_navega` — inicia a patrulha autónoma.
+
+**Nota:** o programa de autostart do controle remoto (`rosmaster_main.py`) funciona normalmente com a placa expansora ligada, mas consome mais energia (mantém RPLIDAR e serial ativos) e ocupa `/dev/myserial` — por isso o passo 1 é sempre necessário antes de trabalhar com ROS2.
+
+### 🐛 Depuração 2026-07-31 — IMU sem dados (accel/gyro/mag zerados)
+
+Ao subir `rbd2_robo_hardware` limpo, `/odom` e `/scan` (com `frame_id: laser_link` correto) publicaram normalmente e a TF (`odom→base_footprint`, `base_link→laser_link`) ficou consistente — confirmando os passos 7 e 8 acima. Mas o `imu_filter_madgwick` ficou em warning constante (`The IMU seems to be in free fall`), e `/imu/data_raw` mostrou aceleração sempre `(0, 0, 0)`.
+
+**Investigação:**
+1. Comparado `Mcnamu_driver_X3.py` e `Rosmaster_Lib.py` entre o container original (`yahboomtechnology/ros-foxy:4.0.5`) e o `robodog2_humble` → **idênticos** (só diferem comentários pedagógicos). Pacotes ausentes no novo container (`yahboomcar_slam`, `yahboomcar_multi`, `yahboomcar_point`, `yahboomcar_KCFTracker`, `robot_pose_publisher_ros2`) não são usados no bringup — descartada diferença de compilação como causa.
+2. Teste isolado com `Rosmaster_Lib` (fora do ROS2) mostrou `get_version()` retornando `-1` e bateria `0.0` — não é só o IMU, é a porta inteira sem resposta.
+3. Teste com `pyserial` puro (sem `Rosmaster_Lib`), em escuta passiva por 4s: **0 bytes recebidos**. TX (Pi → Arduino) funciona; RX (Arduino → Pi) está mudo.
+4. `dmesg` confirmou que após o power-cycle da placa expansora o CH340 (Arduino) reconectou corretamente como `ttyUSB2`, e `/dev/myserial` aponta pra ele certo — mapeamento de porta e udev **não são a causa**.
+
+**Erro cometido durante a depuração (lição para não repetir):** rodei um script Python de diagnóstico (`Rosmaster()` standalone) **enquanto o `Mcnamu_driver_X3` do `rbd2_robo_hardware` já estava rodando e segurando `/dev/myserial`** — dois processos abrindo a mesma porta serial ao mesmo tempo, o mesmo tipo de conflito descrito na nota acima sobre `rosmaster_main.py`. Antes de qualquer teste standalone de serial, **sempre matar todos os processos do `rbd_robo_hardware_launch.py`** (o `ros2 launch` deixa processos filhos órfãos ao ser encerrado — `pkill -f rbd_robo_hardware` mata só o pai; pode ser necessário `kill -9` nos PIDs filhos individualmente, verificar com `ps aux | grep -E 'Mcnamu|sllidar|base_node|madgwick|ekf_node|joy_X3'`).
+
+**Causa raiz encontrada (2026-07-31, sessão seguinte):** com tudo religado do zero e um único processo segurando `/dev/myserial`, o sintoma persistiu (`/voltage` em `0.0`, IMU zerada) — descartando de vez a hipótese de travamento de estado do power-cycle. Investigação do `dmesg` revelou **dois dispositivos CH340 idênticos** (`idVendor=1a86, idProduct=7523`) ligados na Pi ao mesmo tempo:
+
+- `ttyUSB0` — porta USB `1-1.1`, ligada **direto** na Pi (fora do hub da placa expansora)
+- `ttyUSB1` — porta USB `1-1.2.2`, **dentro do hub** da placa expansora (mesmo hub onde está o RPLIDAR em `1-1.2.1`)
+
+A regra `udev` em `/etc/udev/rules.d/usb.rules` casava o symlink `myserial` só por `idVendor`/`idProduct`, sem distinguir a porta física — com dois dispositivos casando a mesma regra, o `/dev/myserial` podia resolver para qualquer um dos dois dependendo da ordem de enumeração USB no boot. Teste direto com `Rosmaster_Lib` confirmou qual é qual:
+
+```python
+Rosmaster(com='/dev/ttyUSB0')  # → version 3.3, battery 11.5V — Arduino real
+Rosmaster(com='/dev/ttyUSB1')  # → sem resposta (o dispositivo do hub não fala o protocolo Rosmaster)
+```
+
+Ou seja: nesta sessão o `/dev/myserial` tinha resolvido para o CH340 errado (o do hub, não o Arduino) — explicando o comportamento intermitente entre sessões de depuração. Ainda não identificado fisicamente o que é o segundo dispositivo CH340 do hub (possível acessório da placa expansora não documentado).
+
+**Fix aplicado:** regra `udev` pinada na porta física do Arduino confirmado (backup em `usb.rules.bak_20260731`):
+```
+KERNEL=="ttyUSB*", KERNELS=="1-1.1", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", MODE:="0777", SYMLINK+="myserial"
+```
+Após `udevadm control --reload-rules && udevadm trigger --subsystem-match=tty --action=add`, `/dev/myserial → ttyUSB0` (confirmado) e `/dev/rplidar → ttyUSB2` (inalterado).
+
+**Validado após o fix:** `rbd2_robo_hardware` relançado — `/imu/data_raw` com aceleração real (`z ≈ 9.72 m/s²` parado, giro ≈ 0), sem warnings de "free fall"; `/voltage` em `11.4V`; TF `odom→base_footprint` consistente. Passos 7 e 8 confirmados de ponta a ponta.
+
+**Risco conhecido do fix:** a regra pina pela porta física `1-1.1` — se o cabo do Arduino for movido para outra porta USB da Pi, a regra para de funcionar até ser atualizada manualmente.
+
+**Próximo passo:** avançar para o passo 9 — `rbd2_bringup_rviz` (Nav2 + RViz2 com mapa provisório).
+
+### 🐛 Depuração 2026-07-31 (continuação) — AMCL não subia com `rbd2_bringup_rviz`
+
+Ao testar o passo 9 pela primeira vez (com a IMU já corrigida), o Nav2 subiu (map_server, controller_server, planner_server, bt_navigator, costmaps) mas o **AMCL nunca aparecia** em `ros2 node list` — sem nenhum erro visível no log. Sem AMCL não há transform `map→odom`, então o RViz nunca teria mapa localizável e o "2D Pose Estimate" não funcionaria.
+
+**Causa raiz:** o `nav2_bringup` usa `use_composition: true` por padrão — todos os nós Nav2 sobem dentro de **um único processo** (`nav2_container`), carregados via chamadas de serviço ROS2 (`load_node`). Na Raspberry Pi 4B, sob carga de CPU, essa chamada de serviço para carregar o `map_server` sofreu **timeout** (`WARN: failed to send response to /nav2_container/_container/load_node (timeout)`) — o `map_server` chegou a subir internamente, mas o `launch_ros` nunca recebeu a confirmação e **abortou silenciosamente** o resto do grupo de localização (AMCL + `lifecycle_manager_localization` nunca foram sequer solicitados).
+
+Confirmado isolando o teste: `ros2 launch nav2_bringup bringup_launch.py ... use_composition:=False` fez o AMCL subir normalmente, com seu próprio `lifecycle_manager_localization`, junto do `lifecycle_manager_navigation` da navegação.
+
+**Fix aplicado** (`launch/navigation_dwa_launch.py` + `launch/rbd_bringup.launch.py`):
+- `navigation_dwa_launch.py` ganhou o argumento `use_composition` (default `True`, preserva o comportamento em simulação no PC, onde nunca houve esse problema)
+- `rbd_bringup.launch.py` (usado só no robô real) passa `use_composition:='False'` explicitamente — processos Nav2 separados em vez de compostos, evitando o timeout de carregamento na Pi
+
+**⚠️ Correção importante:** a primeira "validação" do fix (feita logo em seguida, via `ros2 node list` mostrando `/amcl` + `/lifecycle_manager_localization` separados) foi um **falso positivo**. Motivo: o container `robodog2_humble` mantém seu **próprio clone git** de `robodog2` em `/home/rbd/ros2_ws/src/robodog2`, independente do clone no host onde o Claude Code estava editando os arquivos — o `colcon build` rodado logo após a edição recompilou o código **antigo** (sem o fix), e o AMCL só subiu "por sorte" porque a Pi estava com menos carga naquele instante específico, permitindo que a composição padrão (`use_composition: true`) completasse a tempo sem timeout. `ros2 node list` não distingue nós compostos de standalone — só checar processos do SO (`ps aux`) revela isso de verdade.
+
+**Lição:** depois de commitar/pushar mudanças de código pelo Claude Code (rodando no host), é preciso `git pull` dentro do clone do container (`docker exec ... git -C /home/rbd/ros2_ws/src/robodog2 pull`) antes de `colcon build` — os dois clones **não** se sincronizam sozinhos.
+
+**Validado de verdade** depois de sincronizar o container (`git pull` → `colcon build`) e relançar: `ps aux` dentro do container confirma **nenhum processo `component_container_isolated`/`nav2_container`** — `amcl`, `map_server`, `controller_server`, `planner_server`, `bt_navigator`, `behavior_server`, `smoother_server`, `waypoint_follower`, `velocity_smoother` e os dois `lifecycle_manager` todos como processos separados. Pose inicial publicada em `/initialpose` (x:-3.0, y:-2.0, yaw:0 — mesmo ponto de spawn da simulação `cma_vazio.world`) foi aceita pelo AMCL (`Setting pose (...): -3.000 -2.000 0.000`) e a TF `map→odom` passou a fluir.
+
+**Nota — erro cosmético do RViz:** aparece um erro de shader (`GLSL link result: active samplers with a different type refer to the same texture image unit`, em `indexed_8bit_image.frag`) ao renderizar a textura do mapa — provavelmente driver de GPU da Pi (categoria semelhante ao fix `OGRE_RTT_MODE=Copy` já documentado para VMs). Não afeta a funcionalidade do Nav2.
+
+**Nota — carga do sistema:** rodar hardware real + Nav2 descomposto (10 processos) + RViz2 juntos também pesa bastante na Pi 4B (load average chegou a 9–13 durante os testes) — comandos `ros2` de introspecção (`topic echo`, `tf2_echo`, `node list`) ficaram lentos ou falharam com `rcl node's context is invalid` sob essa carga. Não é um bug do Nav2/AMCL, é sintoma de sobrecarga — para diagnosticar de forma confiável, dar mais tempo entre comandos ou reduzir o que está rodando simultaneamente.
+
+### 🐛 Achado 2026-07-31 (continuação) — sinais do RPLIDAR aparecem invertidos no RViz
+
+Com o robô fisicamente sobre uma mesa (fora da base real, testes de bancada) e um livro colocado propositalmente na frente do sensor, o `/scan` no RViz mostrou o obstáculo (livro) **atrás** do robô em vez de na frente — os sinais do lidar estão invertidos 180°.
+
+**Hipótese:** o `laser_joint` em `yahboomcar_description/urdf/yahboomcar_X3.urdf` define `rpy="0 0 0"` entre `base_link` e `laser_link` — ou seja, o URDF assume que o "ângulo zero" do RPLIDAR aponta para a frente do robô, sem nenhuma rotação de correção. Se a unidade física está montada com o conector/referência de ângulo zero voltado para trás, o resultado é exatamente essa inversão observada.
+
+**Fix proposto (ainda não implementado):** como não é permitido editar arquivos-fonte de `yahboomcar_*` diretamente (ver `CLAUDE.md`), criar um pacote `robodog2_description` com uma cópia do URDF corrigida (`laser_joint` com `rpy="0 0 3.14159"`), e apontar `rbd_robo_hardware_launch.py` (que já é nosso, em `robodog2/launch/`) para usar essa versão em vez da original. Antes de implementar, vale confirmar fisicamente a marca de "frente" na carcaça do RPLIDAR A1, para garantir que a causa é mesmo montagem invertida e não outra coisa (ex: parâmetro do driver `sllidar_ros2`).
+
+**Adiado para próxima sessão** — Pi estava sob carga alta ao final desta sessão.
+
+### 🐛 Achado 2026-07-31 (continuação) — Gazebo não é viável na Raspberry Pi
+
+Tentativa de rodar o teste de regressão da simulação (`rbd_simulador_x3_launch.py`, casa `cma_vazio`) **dentro do próprio container `robodog2_humble`** (que tem Gazebo Fortress 6.18 instalado) sobrecarregou a Pi 4B: `load average` chegou a **13.84**, e comandos simples como `ros2 topic list` levaram **~18 segundos** para responder. Também revelou processos órfãos acumulados de lançamentos anteriores da sessão (ver lição abaixo) que pioraram ainda mais a sobrecarga.
+
+**Conclusão:** apesar de o `robodog2_humble` ter Gazebo Fortress + RViz2 instalados (documentado como possível no `CLAUDE.md`), rodar a simulação completa (física + Nav2 + RViz) na própria Pi não é praticável. **Testes de regressão da simulação devem ser feitos no PC de desenvolvimento** (Ubuntu 22.04 + Gazebo Fortress), não na Pi.
+
+### 📝 Lição — limpeza de processos `ros2 launch` dentro do container
+
+Matar só os processos filhos encontrados por `ps aux | grep <nome_do_nó>` não é suficiente — o processo pai `ros2 launch` pode continuar vivo e novos filhos (como `joint_state_publisher`/`robot_state_publisher`) escapam de greps focados em nomes de nós específicos. Processos órfãos de testes de horas atrás foram encontrados ainda rodando nesta sessão, contribuindo para a sobrecarga da Pi. Para limpar de verdade: `ps aux | grep -E '/opt/ros/humble/(lib|bin)|/home/rbd/ros2_ws/install'` (sem filtrar por nome de nó) e matar todos os PIDs retornados, incluindo o `ros2 launch` em si.
+
+### ✅ Pose inicial confirmada manualmente (2026-07-31)
+
+Com o AMCL validado de verdade (seção acima), a pose inicial foi testada da forma real de uso — clique em "2D Pose Estimate" no RViz2, sem publicar `/initialpose` via linha de comando. Aceita normalmente pelo AMCL, TF `map→odom` consistente. **Passo 10 do fluxo de hardware físico concluído.**
+
+**Incidente durante a sessão:** logo após essa confirmação, com RViz2 + Nav2 descomposto + hardware ainda todos rodando (Pi já sob carga alta, ver nota acima), a sessão do Claude Code travou ao tentar registrar esse avanço no README. **Lição:** encerrar ou pelo menos minimizar RViz2/Nav2 antes de tarefas longas de edição/documentação enquanto a pilha real está no ar — a carga da Pi (load 9–13) afeta também o próprio Claude Code rodando no host, não só comandos `ros2`.
+
+### 🐛 Reconfirmado 2026-07-31 — inversão do lidar real (frente/trás)
+
+Novo teste do robô físico reconfirmou a inversão já registrada acima: `/scan` real aparece invertido 180° no RViz2 (sinal que deveria estar na frente aparece atrás). **Ainda não testado no simulador Gazebo** para confirmar se o mesmo comportamento aparece lá — teste anterior em simulação não indicou esse problema, o que reforça a hipótese de causa física (montagem do RPLIDAR) ou do URDF real (`yahboomcar_X3.urdf`), não do driver `sllidar_ros2` em si. Fix proposto continua o mesmo: pacote `robodog2_description` com `laser_joint` corrigido (`rpy="0 0 3.14159"`).
+
+**Decisão:** antes de abrir o PR desta sessão, repetir os testes (pose inicial + observação do lidar) para confirmar que tudo está estável, já que a sessão anterior foi interrompida pelo travamento do Claude Code. PR fica para depois dessa nova rodada de testes.
+
+**Próximo passo:** retestar pose inicial + inversão do lidar (incluindo no simulador Gazebo, no PC dev) antes de abrir o PR; depois resolver a inversão do lidar (`robodog2_description`) e rodar o teste de regressão da simulação no PC.
+
+### ✅ Reteste 2026-07-31 (continuação) — pose inicial confirmada de novo, lidar continua invertido
+
+Retestado no robô físico, do zero (Terminal 1 + Terminal 2 relançados):
+
+- **Pose inicial:** "2D Pose Estimate" no RViz2 aceito pelo AMCL (log `Setting pose (...)`), TF `map→odom` confirmada fluindo via `tf2_echo` depois da aceitação. **Achado à parte:** ao lançar o RViz2 do container em background via `docker exec` (rodando como `root`), a primeira tentativa falhou (`qt.qpa.xcb: could not connect to display`) porque o `xhost` do host só autorizava o usuário `pi`, não `root`. Corrigido com `xhost +local:root` no host antes de relançar. Também observado: sob carga alta da Pi (load 12+, mesmo padrão já documentado), comandos `ros2` de introspecção (`ros2 node list`, `tf2_echo`) podem falhar transitoriamente ("frame does not exist") mesmo com tudo funcionando — repetir o comando depois de alguns segundos resolve.
+- **Lidar:** reconfirmado invertido 180° pelo usuário no teste físico (obstáculo colocado na frente do robô aparece atrás no `/scan`). Ainda não corrigido — fix continua sendo o pacote `robodog2_description` com `laser_joint` ajustado (ver acima), a implementar numa próxima sessão.
+
+**Decisão final:** os dois pontos pendentes (pose inicial + lidar) foram retestados com sucesso/reconfirmados nesta sessão — a pose inicial está validada de ponta a ponta, e a inversão do lidar é um problema conhecido e documentado, não um bloqueio para abrir o PR. **PR desta sessão (branch `debug_container_humble`) segue agora**, com o fix do lidar adiado para uma sessão futura. Teste de regressão da simulação Gazebo fica para o PC de desenvolvimento, depois do merge, antes de continuar evoluindo o código.
+
+### Aliases `rbd2_*` dentro do `robodog2_humble`
+
+O container já tem `/root/.bash_aliases` com todos os aliases da seção [Aliases](#aliases-bash_aliases) abaixo, incluindo o `source` automático do ambiente ROS2 (`/opt/ros/humble/setup.bash` + `install/setup.bash`). Como `docker exec` entra como `root` (`$HOME=/root`) mas o workspace vive em `/home/rbd/ros2_ws`, os aliases usam `$RBD2_WS` explicitamente em vez de `~/ros2_ws`. **Terminais abertos antes dessa configuração precisam rodar `source ~/.bash_aliases` manualmente uma vez** para carregar o ambiente.
+
+### Manutenção — espaço em disco do container
+
+Cada `docker commit` do `robodog2_humble` gera uma imagem de ~4.6GB. Snapshots antigos acumulam rápido e podem lotar o disco da Pi (já aconteceu em 2026-07-30 — partição raiz foi a 0 disponível). Boas práticas:
+- Manter só o snapshot mais recente confirmado bom (`docker images robodog2_humble_snapshot` + `docker rmi` dos antigos).
+- **Sempre pedir confirmação antes de rodar `docker commit`** — a operação pausa o container (todos os processos congelam) e demora, então evitar rodar no meio de um teste com motores em movimento.
+- `docker system df` mostra rapidamente quanto espaço é reciclável.
 
 ---
 
@@ -159,7 +276,7 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
 
 ---
 
-## Status atual (2026-06-19)
+## Status atual (2026-07-30)
 
 ### Validado ✅
 
@@ -176,19 +293,30 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
 - **`rbd2_navega` funcional em `cma_moveis.world`** — navegação autónoma validada com tuning Nav2
 - **Tuning Nav2 para `cma_moveis.world`** — `inflation_radius`, `cost_scaling_factor`, `sim_time`, `acc_lim_theta` e partículas AMCL ajustados
 - Fix GLSL RViz em VM: `OGRE_RTT_MODE=Copy` em `~/.bash_aliases`
+- **`robodog2_humble` operacional no ROSMASTER X3 físico**: `rbd2_robo_hardware` sobe driver Arduino + RPLIDAR sem erro, `/scan`/`/odom`/`/imu`/TF consistentes, fix de `frame_id` do RPLIDAR aplicado
+- **IMU real validada (2026-07-31)** — bug de udev corrigido (CH340 duplicado causava symlink `/dev/myserial` ambíguo); `/imu/data_raw` com aceleração e giro reais, sem warnings de "free fall"
+- **Nav2 real com AMCL validado (2026-07-31)** — bug de composição do `nav2_bringup` corrigido (`use_composition:=False` no robô real evita timeout de carregamento do AMCL na Pi 4B); `rbd2_bringup_rviz` sobe com AMCL, map_server e RViz2 recebendo sinais reais
+- **Rodas mecanum reais testadas** via `rbd2_teclado` (teleop direto em `/cmd_vel`) — motores respondendo corretamente (2026-07-30)
+- **Aliases `rbd2_*` ativos dentro do `robodog2_humble`** — ver seção "Containers Docker no ROSMASTER X3 físico"
+- **Pose inicial real confirmada (2026-07-31)** — "2D Pose Estimate" no RViz2 aceito pelo AMCL, TF `map→odom` consistente (passo 10 do fluxo de hardware concluído); reconfirmada num reteste do zero na mesma sessão
 
 ### Em progresso 🎯
 
 - **Lava tube v1.1** — validar em Gazebo teleop + lidar na zona navegável parcial (`rbd_lava_tube`)
 - Testar código Yahboom original no Gazebo — comparar comportamento de navegação com robodog2
-- Testar código robodog2 no robot real (`rbd2_bringup` no ROSMASTER X3 físico)
+- **Inversão do lidar real (frente/trás)** — reconfirmada em 2026-07-31 (duas vezes); ainda falta testar no simulador Gazebo para confirmar se o comportamento se repete lá. Não bloqueia o PR desta sessão — fix adiado (pacote `robodog2_description`)
+- **Próximo passo imediato:** abrir o PR desta sessão (branch `debug_container_humble`); depois, no PC de desenvolvimento, confirmar a simulação Gazebo (regressão) e continuar evoluindo o código — provavelmente controlando o robô remotamente, monitorando o RViz2 no PC com os sinais reais do robô físico
 
 ### Por fazer ❌
 
 - Testar código Yahboom no robot real (X3 físico)
 - Integrar Rosmaster ↔ robodog2 — cruzar o melhor dos dois códigos
-- Calibração de `rbd_tabelas.py` para `cma_moveis.world`
-- Ciclo autónomo em hardware físico
+- SLAM real da casa física → gerar mapa físico (ver "Estratégia de pose inicial" no `CLAUDE.md`)
+- Calibração de `rbd_tabelas.py` para a casa real (waypoints do robô físico)
+- Ciclo autónomo completo (`rbd2_navega`) em hardware físico
+- Corrigir inversão do lidar real (pacote `robodog2_description` com `laser_joint` ajustado)
+- Testar `rbd2_navega` no robô físico com o mapa provisório
+- Confirmar regressão da simulação Gazebo no PC de desenvolvimento (fora da Pi, que não aguenta Gazebo+Nav2 juntos)
 
 ---
 

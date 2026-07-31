@@ -35,6 +35,14 @@ def generate_launch_description():
         'map', default=os.path.join(package_path, 'maps', 'rbd_mapa_vazio.yaml'))
     nav2_param_path = LaunchConfiguration('params_file', default=os.path.join(
         package_path, 'params', 'rbd_dwa_nav_params.yaml'))
+    # use_composition=True (default do nav2_bringup) carrega todos os nós Nav2
+    # num único processo via chamadas de serviço ROS2. Na Raspberry Pi 4B, sob
+    # carga, essas chamadas podem sofrer timeout — quando isso acontece no
+    # carregamento do map_server, o nav2_bringup aborta silenciosamente o
+    # resto do grupo de localização e o AMCL nunca sobe (sem erro visível).
+    # No robô real usamos processos separados (use_composition=False) para
+    # evitar esse timeout; em simulação (PC) o composition continua ligado.
+    use_composition = LaunchConfiguration('use_composition', default='True')
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value=use_sim_time,
@@ -43,6 +51,8 @@ def generate_launch_description():
                               description='Full path to map file to load'),
         DeclareLaunchArgument('params_file', default_value=nav2_param_path,
                               description='Full path to param file to load'),
+        DeclareLaunchArgument('use_composition', default_value=use_composition,
+                              description='Nav2 em processo único (composição) — desligar no robô real (Pi 4B)'),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -50,6 +60,7 @@ def generate_launch_description():
             launch_arguments={
                 'map': map_yaml_path,
                 'use_sim_time': use_sim_time,
-                'params_file': nav2_param_path}.items(),
+                'params_file': nav2_param_path,
+                'use_composition': use_composition}.items(),
         ),
     ])
