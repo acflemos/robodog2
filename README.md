@@ -152,6 +152,22 @@ idVendor=10c4 idProduct=ea60 (chip CP210x, RPLIDAR) → symlink /dev/rplidar
 
 **Nota:** o programa de autostart do controle remoto (`rosmaster_main.py`) funciona normalmente com a placa expansora ligada, mas consome mais energia (mantém RPLIDAR e serial ativos) e ocupa `/dev/myserial` — por isso o passo 1 é sempre necessário antes de trabalhar com ROS2.
 
+### 🐛 Depuração 2026-07-31 — IMU sem dados (accel/gyro/mag zerados)
+
+Ao subir `rbd2_robo_hardware` limpo, `/odom` e `/scan` (com `frame_id: laser_link` correto) publicaram normalmente e a TF (`odom→base_footprint`, `base_link→laser_link`) ficou consistente — confirmando os passos 7 e 8 acima. Mas o `imu_filter_madgwick` ficou em warning constante (`The IMU seems to be in free fall`), e `/imu/data_raw` mostrou aceleração sempre `(0, 0, 0)`.
+
+**Investigação:**
+1. Comparado `Mcnamu_driver_X3.py` e `Rosmaster_Lib.py` entre o container original (`yahboomtechnology/ros-foxy:4.0.5`) e o `robodog2_humble` → **idênticos** (só diferem comentários pedagógicos). Pacotes ausentes no novo container (`yahboomcar_slam`, `yahboomcar_multi`, `yahboomcar_point`, `yahboomcar_KCFTracker`, `robot_pose_publisher_ros2`) não são usados no bringup — descartada diferença de compilação como causa.
+2. Teste isolado com `Rosmaster_Lib` (fora do ROS2) mostrou `get_version()` retornando `-1` e bateria `0.0` — não é só o IMU, é a porta inteira sem resposta.
+3. Teste com `pyserial` puro (sem `Rosmaster_Lib`), em escuta passiva por 4s: **0 bytes recebidos**. TX (Pi → Arduino) funciona; RX (Arduino → Pi) está mudo.
+4. `dmesg` confirmou que após o power-cycle da placa expansora o CH340 (Arduino) reconectou corretamente como `ttyUSB2`, e `/dev/myserial` aponta pra ele certo — mapeamento de porta e udev **não são a causa**.
+
+**Erro cometido durante a depuração (lição para não repetir):** rodei um script Python de diagnóstico (`Rosmaster()` standalone) **enquanto o `Mcnamu_driver_X3` do `rbd2_robo_hardware` já estava rodando e segurando `/dev/myserial`** — dois processos abrindo a mesma porta serial ao mesmo tempo, o mesmo tipo de conflito descrito na nota acima sobre `rosmaster_main.py`. Antes de qualquer teste standalone de serial, **sempre matar todos os processos do `rbd_robo_hardware_launch.py`** (o `ros2 launch` deixa processos filhos órfãos ao ser encerrado — `pkill -f rbd_robo_hardware` mata só o pai; pode ser necessário `kill -9` nos PIDs filhos individualmente, verificar com `ps aux | grep -E 'Mcnamu|sllidar|base_node|madgwick|ekf_node|joy_X3'`).
+
+**Estado ao pausar a sessão:** containers parados, placa expansora será desligada e religada do zero (evitando usar botões de reset físico ainda não documentados) para descartar qualquer travamento de estado. Nenhuma mudança de código foi feita — só investigação.
+
+**Próximo passo:** com tudo desligado e religado do zero, repetir passo 8 (`rbd2_robo_hardware`) com **um único processo** tocando `/dev/myserial` por vez, e conferir se `/imu/data_raw` volta a ter aceleração não-zero antes de avançar para o passo 9 (Nav2 + RViz).
+
 ### Aliases `rbd2_*` dentro do `robodog2_humble`
 
 O container já tem `/root/.bash_aliases` com todos os aliases da seção [Aliases](#aliases-bash_aliases) abaixo, incluindo o `source` automático do ambiente ROS2 (`/opt/ros/humble/setup.bash` + `install/setup.bash`). Como `docker exec` entra como `root` (`$HOME=/root`) mas o workspace vive em `/home/rbd/ros2_ws`, os aliases usam `$RBD2_WS` explicitamente em vez de `~/ros2_ws`. **Terminais abertos antes dessa configuração precisam rodar `source ~/.bash_aliases` manualmente uma vez** para carregar o ambiente.
